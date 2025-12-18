@@ -1,14 +1,15 @@
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+'use client';
 
-export default async function DashboardPage() {
-  const session = await auth();
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import AuthGuard from "@/app/components/AuthGuard";
 
-  if (!session?.user) {
-    redirect("/login");
-  }
+export default function DashboardPage() {
+  const { data: session } = useSession();
 
   return (
+    <AuthGuard>
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="bg-white rounded-lg shadow-md p-8">
@@ -38,5 +39,6 @@ export default async function DashboardPage() {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 }
