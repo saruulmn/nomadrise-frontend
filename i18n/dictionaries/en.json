@@ -1,0 +1,94 @@
+{
+  "nav": {
+    "sponsorship": "Become a Sponsor",
+    "programs": "Programs",
+    "scholarships": "Scholarships",
+    "events": "Events",
+    "ourTeam": "Our Team",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "master": "Master's Program",
+    "phd": "PhD Program",
+    "exchange": "Student Exchange",
+    "internship": "Internship Program"
+  },
+  "team": {
+    "title": "Our Team",
+    "subtitle": "We connect future professionals and open opportunities."
+  },
+  "categories": {
+    "title": "Popular Categories",
+    "exploreMore": "Explore More Categories",
+    "byField": "By Field",
+    "byType": "By Type",
+    "byCountry": "By Country",
+    "byEmployer": "By Employer"
+  },
+  "about": {
+    "title": "NomadRise: Connecting Talent to Global Opportunities",
+    "vision": {
+      "title": "Our Vision",
+      "text": "NomadRise aims to connect ambitious and talented students and professionals from Mongolia with world-class education and career opportunities."
+    },
+    "challenge": {
+      "title": "The Challenge",
+      "text": "Highly capable youth from Mongolia aspire to actively participate on the global stage. NomadRise works with your ambitions to provide structured career preparation services, international career paths, and expert advice."
+    },
+    "solution": {
+      "title": "The Solution",
+      "text": "We connect users with critical global resources, providing professional training, international advisor guidance, verified internships and job opportunities. We work to open real, measurable participation in the global innovation ecosystem."
+    },
+    "cta": "Ready to join the movement? Explore our programs and become a Nomad Scholar."
+  },
+  "login": {
+    "title": "Nomadrise нэвтрэх",
+    "subtitle": "Нэвтрэх аргаа сонгоно уу",
+    "termsText": "Үргэлжлүүлснээр та манай",
+    "termsLink": "Үйлчилгээний нөхцөл",
+    "and": "болон",
+    "privacyLink": "Нууцлалын бодлого",
+    "agreeText": "-той зөвшөөрч байна"
+  },
+  "scholarship": {
+    "checkMaterials": "Check Materials",
+    "applyNow": "Apply Now",
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "school": "Current/Previous School",
+    "gpa": "GPA",
+    "ielts": "IELTS Score",
+    "fieldOfStudy": "Field of Study",
+    "essay": "Motivation Essay",
+    "documents": "Required Documents",
+    "submit": "Submit Application",
+    "cancel": "Cancel",
+    "requiredField": "Required field",
+    "enterFullName": "Please enter your full name",
+    "enterEmail": "Please enter your email",
+    "validEmail": "Please enter a valid email",
+    "enterPhone": "Please enter your phone number",
+    "enterSchool": "Please enter your school name",
+    "enterGpa": "Please enter your GPA",
+    "enterIelts": "Please enter your IELTS score",
+    "selectField": "Please select your field of study",
+    "writeEssay": "Please write your essay",
+    "essayMinLength": "Please write at least 200 characters",
+    "uploadDocuments": "Please upload required documents",
+    "selectFiles": "Select Files",
+    "documentHint": "Diploma copy, transcript, CV, passport copy, etc.",
+    "essayPlaceholder": "Introduce yourself and explain why you are the best candidate for this scholarship...",
+    "successMessage": "Application submitted successfully!",
+    "errorMessage": "Failed to submit application",
+    "fields": {
+      "computerScience": "Computer Science",
+      "engineering": "Engineering",
+      "business": "Business",
+      "medicine": "Medicine",
+      "arts": "Arts & Humanities",
+      "sciences": "Natural Sciences",
+      "socialSciences": "Social Sciences",
+      "other": "Other"
+    }
+  }
+}

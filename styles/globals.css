@@ -1,0 +1,337 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #0b5fff; /* bright blue */
+  --muted: #6b7280; /* gray-500 */
+  --surface: #f8fafc; /* off-white */
+  --accent: #0ea5a0; /* teal */
+  --radius: 10px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+/* Header / Nav tokens */
+.site-header {
+  position: absolute;
+  inset: 0 0 auto 0;
+  background: transparent;
+  z-index: 60;
+  transition: background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 18px 20px; display:flex; align-items:center; gap:16px }
+.logo a { font-weight:700; font-size:1.125rem; color: white; text-decoration:none }
+.nav-menu { display:flex; gap:20px; justify-content:center; flex:1 }
+.nav-menu a { color: white; text-decoration: none; text-transform: uppercase; letter-spacing: 0.02em; font-weight:400 }
+.header-actions { display:flex; gap:12px; align-items:center }
+.header-actions a { text-transform: uppercase; letter-spacing: 0.02em; font-weight:400 }
+.btn-primary { background:var(--primary); color:white; padding:8px 14px; border-radius:9999px; font-weight:600 }
+.btn-ghost { background:transparent; color:white; padding:8px 12px; border-radius:9999px; border:1px solid rgba(255,255,255,0.12) }
+
+/* Sign-in button style: dark, semi-transparent (over hero) */
+.btn-signin {
+  background: rgba(0,0,0,0.28);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 8px 14px;
+  border-radius: 9999px;
+  transition: background-color 160ms ease, transform 120ms ease;
+}
+.btn-signin:hover { background: rgba(0,0,0,0.36); transform: translateY(-1px); }
+
+/* When header becomes solid (light background), make the sign-in button subtle */
+.site-header.solid .btn-signin {
+  background: rgba(0,0,0,0.06);
+  color: var(--foreground);
+  border-color: rgba(0,0,0,0.06);
+}
+
+.site-header.solid { position: sticky; background: var(--background); box-shadow: 0 1px 0 rgba(0,0,0,0.04); }
+.site-header.solid .logo a,
+.site-header.solid .nav-menu a,
+.site-header.solid .btn-ghost { color: var(--foreground); border-color: rgba(0,0,0,0.06); }
+
+.site-header.overlay {
+  background: rgba(2,6,23,0.28);
+  backdrop-filter: blur(6px) saturate(120%);
+  -webkit-backdrop-filter: blur(6px) saturate(120%);
+  box-shadow: none;
+}
+
+.site-header.overlay .logo a,
+.site-header.overlay .nav-menu a,
+.site-header.overlay .btn-ghost { color: white; }
+.site-header.overlay .dropdown-toggle { color: white; }
+.site-header.solid .dropdown-toggle { color: var(--foreground); }
+
+/* Hero */
+.hero {
+  position: relative;
+  background: linear-gradient(180deg, rgba(11,95,255,0.04), transparent 60%);
+}
+
+.hero-banner {
+  width: 100vw;
+  max-width: 100%;
+  /* taller hero: min 420px, prefer 60vh, max 880px */
+  height: clamp(500px, 60vh, 880px);
+  object-fit: cover;
+  display: block;
+}
+
+.hero-inner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+/* subtle overlay to improve text contrast on bright images */
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.28), rgba(0,0,0,0.12));
+  pointer-events: none;
+}
+
+.hero-inner > * { pointer-events: auto; }
+
+.hero-content {
+  max-width: 1000px;
+  padding: 0 48px; 
+  margin: 0 24px;
+  text-align: center;
+  color: white;
+  text-shadow: 0 6px 18px rgba(2,6,23,0.35);
+}
+
+.hero-title { font-size:2.125rem; line-height:1.05; font-weight:700; margin-bottom:12px }
+.hero-sub { color: rgba(255,255,255,0.9); margin-bottom:20px }
+.hero-search { display:flex; gap:8px; justify-content:center; align-items:center; margin-top:20px }
+.search-input { padding:12px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.12); width:520px; max-width:100%; background:rgba(255,255,255,0.06); color:inherit }
+.search-btn { padding:12px 18px; background:var(--primary); color:white; border-radius:8px }
+
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Site layout styles */
+.site-header.solid {
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  background: var(--background);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+}
+
+.logo a {
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex: 1 1 auto;
+}
+
+.nav-menu a {
+  color: inherit;
+  text-decoration: none;
+  padding: 8px 6px;
+}
+
+/* Hover underline → bottom border (avoid layout shift with transparent base) */
+.nav-menu a,
+.dropdown-toggle {
+  border-bottom: 2px solid transparent;
+  transition: border-color 140ms ease;
+}
+
+.nav-menu a:hover,
+.dropdown-toggle:hover {
+  text-decoration: none;
+  border-bottom-color: currentColor; /* uses white in overlay, foreground in solid */
+}
+
+/* Active state keeps the bottom border visible */
+.nav-menu a.nav-active,
+.dropdown-toggle.nav-active {
+  border-bottom-color: currentColor;
+}
+
+/* Dropdown styles for header */
+.dropdown { position: relative; display: inline-block; }
+.dropdown-toggle { background: transparent; color: inherit; border: none; padding: 8px 6px; cursor: pointer; font: inherit; text-transform: uppercase; letter-spacing: 0.02em; font-weight:400 }
+.dropdown-toggle:focus { outline: 2px solid rgba(0,0,0,0.12); }
+.dropdown-menu { position: absolute; top: calc(100% + 8px); left: 0; min-width: 196px; background: white; color: var(--foreground); border-radius: 8px; box-shadow: 0 8px 24px rgba(2,6,23,0.12); padding: 8px 0; display: none; z-index: 80 }
+.dropdown-menu.open { display: block }
+.dropdown-menu li { list-style: none }
+.dropdown-menu a { display: block; padding: 8px 14px; color: inherit; text-decoration: none }
+.dropdown-menu a:hover { background: rgba(0,0,0,0.04) }
+
+@media (max-width: 640px) {
+  .dropdown-menu { position: static; box-shadow: none; background: transparent; padding: 0 }
+  .dropdown-menu a { padding: 10px 0 }
+}
+
+/* Ant Design dropdown/menu items: uppercase to match navbar */
+.ant-dropdown .ant-menu-item,
+.ant-dropdown .ant-menu-item > a,
+.ant-dropdown .ant-dropdown-menu-item,
+.ant-dropdown .ant-dropdown-menu-item > a,
+.ant-menu-item a {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-weight: 400;
+}
+
+/* Force white border in overlay mode, matching white text */
+.site-header.overlay .nav-menu a:hover,
+.site-header.overlay .dropdown-toggle:hover {
+  border-bottom-color: #fff;
+}
+.site-header.overlay .nav-menu a.nav-active,
+.site-header.overlay .dropdown-toggle.nav-active {
+  border-bottom-color: #fff;
+}
+
+.social-links {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.social-links a { color: inherit; display:inline-flex; align-items:center; }
+
+.site-content {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 0 16px;
+  min-height: 60vh;
+}
+
+.site-footer {
+  border-top: 1px solid rgba(0,0,0,0.06);
+  padding: 18px 0;
+  background: var(--background);
+}
+
+.footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; color: #666; text-align:center }
+
+@media (max-width: 640px) {
+  .nav-menu { display: none; }
+  .hero-inner { position: static; }
+  .hero-content { color: var(--foreground); text-shadow: none; padding: 24px 20px; margin: 0 8px }
+  .search-input { width: 100%; }
+  .mobile-toggle { display: inline-flex; align-items:center; justify-content:center; color: white; background: transparent; border: none; font-size: 22px; margin-left: 8px; }
+  .header-actions { display: none; }
+}
+
+/* default: hide mobile toggle on larger screens */
+.mobile-toggle { display: none; }
+
+/* Popular categories / listings card */
+.popular-cats-wrap { padding: 28px 0 40px; background: var(--surface, #f3f4f6); }
+.popular-cats-wrap .pc-badge { display:inline-block; background: rgba(34,193,255,0.12); color: var(--primary, #22c1ff); padding:6px 14px; border-radius:20px; font-weight:600; font-size:12px; margin-bottom:8px }
+.popular-cats-wrap .pc-title { font-size:28px; margin: 4px 0 10px; }
+.pc-card-wrapper { display:flex; justify-content:center }
+.pc-card { width:100%; max-width:1120px; background: #fff; border-radius:8px; box-shadow: 0 6px 18px rgba(16,24,40,0.06); padding: 18px; border-top:4px solid var(--primary, #22c1ff); }
+.pc-grid { display:grid; grid-template-columns: repeat(4,1fr); gap: 18px 28px; }
+.pc-col h4 { font-size:16px; margin:8px 0 14px; font-weight:600; color: var(--foreground); }
+.pc-title { color: var(--foreground); font-weight:700; }
+.pc-col ul { list-style:none; padding:0; margin:0 }
+.pc-item { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:10px 6px; border-radius:4px }
+.pc-item a { color: #111827; text-decoration:none }
+.pc-item .muted { color: #9CA3AF; font-size:13px }
+
+.pc-cta { display:inline-block; background: linear-gradient(90deg,var(--primary,#22c1ff),#42e1ff); color: white; padding: 14px 40px; border-radius:999px; text-decoration:none; font-weight:600 }
+
+@media (max-width: 900px) {
+  .pc-grid { grid-template-columns: repeat(2,1fr) }
+}
+
+@media (max-width: 520px) {
+  .pc-grid { grid-template-columns: 1fr }
+  .popular-cats-wrap { padding: 28px 0 }
+  .pc-card { padding: 16px }
+  .pc-cta { padding: 12px 22px }
+}
+
+.popular-cats-wrap .site-content {
+  min-height: unset;
+  margin: 0 auto 8px;
+  padding: 0 16px;
+}
+
+.popular-cats-wrap .site-content.center,
+.popular-cats-wrap .site-content.text-center {
+  text-align: center;
+}
+.popular-cats-wrap .pc-cta { display: inline-block; margin: 20px auto 0; }
+
+/* Partners carousel */
+.partners-wrap { padding: 28px 0 44px; background: var(--background); }
+.partners-title { margin: 0 0 14px; font-size: 20px; color: var(--muted); font-weight: 600; }
+.partners-container { width: 100%; margin: 0; padding: 0; }
+.partner-chip { display:flex; align-items:center; justify-content:center; height:64px; border-radius:10px; background:#fff; border:1px solid rgba(0,0,0,0.06); color:#111827; font-weight:600; letter-spacing:0.01em; box-shadow: 0 4px 12px rgba(2,6,23,0.04); }
+.partner-chip:hover { box-shadow: 0 6px 18px rgba(2,6,23,0.08); }
+
+/* Team section */
+.team-wrap { padding: 28px 0 18px; background: var(--background); }
+.team-header { text-align: center; margin-bottom: 12px; }
+.team-title { font-size: 28px; margin: 0 0 4px; text-align:center; }
+.team-sub { color: var(--muted); text-align:center; margin: 0 0 8px; }
+.team-grid { max-width: 1200px; margin: 0 auto; padding: 0 16px; display:grid; gap: 12px; grid-template-columns: repeat(5, 1fr); }
+.team-card { background: #fff; border: 1px solid rgba(0,0,0,0.06); border-radius: 12px; padding: 14px 10px; text-align:center; box-shadow: 0 6px 18px rgba(2,6,23,0.05); }
+.team-photo { width: 84px; height: 84px; border-radius: 999px; object-fit: cover; display:block; margin: 0 auto 10px; border: 3px solid rgba(11,95,255,0.15); }
+.avatar-initial { width: 84px; height: 84px; border-radius:999px; display:grid; place-items:center; margin: 0 auto 10px; color:#fff; font-weight:700; background: linear-gradient(135deg, #0b5fff, #00d0ff); box-shadow: inset 0 0 0 3px rgba(11,95,255,0.15); }
+.avatar-initial span { font-size: 28px; letter-spacing: 0.5px; }
+.team-name { font-weight: 700; margin-bottom: 2px; }
+.team-role { color: var(--muted); font-size: 14px; }
+
+@media (max-width: 1024px) { .team-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 640px) { .team-grid { grid-template-columns: repeat(2, 1fr); } .team-wrap { padding: 28px 0; } }
+
+/* Content section */
+.content-wrap { padding: 32px 0; background: var(--background); }
+.content-container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+.about-section { text-align: left; }
+.about-title { font-size: 24px; margin: 0 0 12px; color: var(--foreground); font-weight: 600; text-align: center; }
+.about-text { text-align: justify; color: rgb(75 85 99); line-height: 1.6; margin: 0; max-width: 100%; }
+
+/* If later using logos, keep them subtle by default */
+.partner-logo img { max-height: 40px; max-width: 160px; filter: grayscale(1); opacity: .85; transition: filter .2s ease, opacity .2s ease }
+.partner-logo:hover img { filter: none; opacity: 1 }
+
