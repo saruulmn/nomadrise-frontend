@@ -10,16 +10,24 @@ import UserProfile from "./UserProfile";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 
-export default function NavBar() {
+interface NavBarProps {
+  dictionary?: any;
+}
+
+export default function NavBar({ dictionary: propDictionary }: NavBarProps = {}) {
   const pathname = usePathname();
   const lang = (pathname.startsWith("/en") ? "en" : "mn") as Locale;
-  const [dictionary, setDictionary] = useState<any>(null);
+  const [dictionary, setDictionary] = useState<any>(propDictionary);
   const [open, setOpen] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    getDictionary(lang).then(setDictionary);
-  }, [lang]);
+    if (!propDictionary) {
+      getDictionary(lang).then(setDictionary);
+    } else {
+      setDictionary(propDictionary);
+    }
+  }, [lang, propDictionary]);
 
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");

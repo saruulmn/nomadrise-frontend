@@ -6,6 +6,7 @@ import { Modal, Form, Input, Upload, Button, InputNumber, message, Select } from
 import { UploadOutlined, FileTextOutlined, ArrowLeftOutlined, CalendarOutlined, DollarOutlined, BookOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd";
 import { getDictionary } from "@/i18n/dictionaries";
+import type { Locale } from "@/i18n/config";
 import Link from "next/link";
 
 const { TextArea } = Input;
@@ -47,7 +48,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
     Promise.resolve(params).then(async (resolvedParams) => {
       setLang(resolvedParams.lang);
       setScholarshipId(resolvedParams.id);
-      const dictionary = await getDictionary(resolvedParams.lang);
+      const dictionary = await getDictionary(resolvedParams.lang as Locale);
       setDict(dictionary);
     });
   }, [params]);
