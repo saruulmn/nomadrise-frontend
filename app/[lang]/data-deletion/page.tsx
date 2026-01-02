@@ -26,11 +26,8 @@ export default function DataDeletionPage({ params }: Params) {
   const isLoggedIn = status === 'authenticated' && session?.user;
 
   const getAuthProvider = (): string => {
-    // Extract provider from session
-    if (session?.user?.email) {
-      // This is a basic check - you may need to store provider info in session
-      return session?.provider || 'unknown';
-    }
+    // Note: Provider info should be stored in your session/database
+    // For now, return 'unknown' as default
     return 'unknown';
   };
 
