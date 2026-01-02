@@ -2,11 +2,11 @@
 
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import { Autoplay, Pagination, EffectFade } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
-import "swiper/css/navigation";
+import "swiper/css/effect-fade";
 
 export default function Hero() {
   const sliderImages = [
@@ -18,15 +18,16 @@ export default function Hero() {
   return (
     <section className="hero">
       <Swiper
-        modules={[Autoplay, Pagination, Navigation]}
+        modules={[Autoplay, Pagination, EffectFade]}
         spaceBetween={0}
         slidesPerView={1}
+        effect="fade"
+        fadeEffect={{ crossFade: true }}
         autoplay={{
           delay: 3000,
           disableOnInteraction: false,
         }}
         pagination={{ clickable: true }}
-        navigation
         loop
         className="hero-swiper"
       >

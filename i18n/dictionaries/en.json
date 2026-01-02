@@ -1,6 +1,6 @@
 {
   "nav": {
-    "sponsorship": "Become a Sponsor",
+    "sponsor": "Become a Sponsor",
     "programs": "Programs",
     "scholarships": "Scholarships",
     "events": "Events",
@@ -43,6 +43,10 @@
   "login": {
     "title": "Nomadrise нэвтрэх",
     "subtitle": "Нэвтрэх аргаа сонгоно уу",
+    "continueGoogle": "Continue with Google",
+    "continueFacebook": "Continue with Facebook",
+    "continueApple": "Continue with Apple",
+    "agreeCheckbox": "I agree to the Terms of Service and Privacy Policy",
     "termsText": "Үргэлжлүүлснээр та манай",
     "termsLink": "Үйлчилгээний нөхцөл",
     "and": "болон",
@@ -50,6 +54,8 @@
     "agreeText": "-той зөвшөөрч байна"
   },
   "scholarship": {
+    "title": "Available Scholarships",
+    "subtitle": "Discover scholarship opportunities for your educational journey",
     "checkMaterials": "Check Materials",
     "applyNow": "Apply Now",
     "fullName": "Full Name",
@@ -90,5 +96,36 @@
       "socialSciences": "Social Sciences",
       "other": "Other"
     }
+  },
+  "sponsor": {
+    "title": "Become a Sponsor",
+    "subtitle": "Partner with us to empower the next generation of global talent",
+    "description": "Your support helps talented students and professionals from Mongolia access world-class education and career opportunities. Join us in building bridges to global success.",
+    "formTitle": "Request Sponsorship Information",
+    "fullName": "Full Name / Company Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "sponsorshipType": "Type of Sponsorship",
+    "message": "Message",
+    "submit": "Request Sponsorship Info",
+    "requiredField": "This field is required",
+    "validEmail": "Please enter a valid email address",
+    "enterFullName": "Please enter your name or company name",
+    "enterEmail": "Please enter your email address",
+    "enterPhone": "Please enter your phone number",
+    "selectType": "Please select sponsorship type",
+    "enterMessage": "Please enter your message",
+    "messagePlaceholder": "Tell us about your interest in sponsoring NomadRise programs...",
+    "successMessage": "Thank you! We will contact you soon.",
+    "errorMessage": "Failed to submit request. Please try again.",
+    "types": {
+      "scholarship": "Scholarship Sponsorship",
+      "program": "Program Sponsorship",
+      "event": "Event Sponsorship",
+      "general": "General Partnership",
+      "other": "Other"
+    },
+    "contactText": "Have questions? Contact us at",
+    "contactEmail": "sponsor@nomadrise.mn"
   }
 }

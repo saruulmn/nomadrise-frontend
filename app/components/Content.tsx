@@ -77,28 +77,28 @@ export default function Content({ dictionary }: ContentProps) {
       <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "0 2rem" }}>
         {/* Static dictionary content */}
         <div style={{ marginBottom: "3rem" }}>
-          <h3 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
             {dictionary.about.vision.title}
           </h3>
-          <p style={{ fontSize: "1.125rem", lineHeight: "1.75", color: "#4b5563" }}>
+          <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
             {dictionary.about.vision.text}
           </p>
         </div>
 
         <div style={{ marginBottom: "3rem" }}>
-          <h3 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
             {dictionary.about.challenge.title}
           </h3>
-          <p style={{ fontSize: "1.125rem", lineHeight: "1.75", color: "#4b5563" }}>
+          <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
             {dictionary.about.challenge.text}
           </p>
         </div>
 
         <div style={{ marginBottom: "3rem" }}>
-          <h3 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
+          <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
             {dictionary.about.solution.title}
           </h3>
-          <p style={{ fontSize: "1.125rem", lineHeight: "1.75", color: "#4b5563" }}>
+          <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
             {dictionary.about.solution.text}
           </p>
         </div>
@@ -106,7 +106,7 @@ export default function Content({ dictionary }: ContentProps) {
         {/* Dynamic content from API */}
         {contents.length > 0 && (
           <div style={{ marginTop: "3rem" }}>
-            <h3 style={{ fontSize: "1.5rem", fontWeight: "600", marginBottom: "1.5rem", color: "#1f2937" }}>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1.5rem", color: "#1f2937" }}>
               Latest Updates
             </h3>
             <div style={{ display: "grid", gap: "1.5rem" }}>
@@ -127,10 +127,10 @@ export default function Content({ dictionary }: ContentProps) {
                     e.currentTarget.style.boxShadow = "none";
                   }}
                 >
-                  <h4 style={{ fontSize: "1.25rem", fontWeight: "600", marginBottom: "0.75rem", color: "#1f2937" }}>
+                  <h4 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.75rem", color: "#1f2937" }}>
                     {content.title}
                   </h4>
-                  <p style={{ fontSize: "1rem", lineHeight: "1.5", color: "#4b5563" }}>
+                  <p style={{ fontSize: "0.8rem", lineHeight: "1.5", color: "#4b5563" }}>
                     {content.description}
                   </p>
                 </div>
@@ -140,7 +140,7 @@ export default function Content({ dictionary }: ContentProps) {
         )}
 
         <div style={{ textAlign: "center", padding: "2rem", background: "#f9fafb", borderRadius: "0.5rem", marginTop: "3rem" }}>
-          <p style={{ fontSize: "1.25rem", fontWeight: "500", color: "#1f2937" }}>
+          <p style={{ fontSize: "1rem", fontWeight: "500", color: "#1f2937" }}>
             {dictionary.about.cta}
           </p>
         </div>

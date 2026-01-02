@@ -15,8 +15,14 @@ export default function LanguageSwitcher() {
   ];
 
   const switchLanguage = (langCode: string) => {
-    const newPathname = pathname.replace(/^\/(en|mn)/, `/${langCode}`);
-    router.push(newPathname);
+    // Check if pathname already has a locale
+    if (pathname.startsWith("/en") || pathname.startsWith("/mn")) {
+      const newPathname = pathname.replace(/^\/(en|mn)/, `/${langCode}`);
+      router.push(newPathname);
+    } else {
+      // If no locale in pathname, add it
+      router.push(`/${langCode}${pathname}`);
+    }
     setIsOpen(false);
   };
 

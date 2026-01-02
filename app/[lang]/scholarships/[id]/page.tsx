@@ -8,6 +8,8 @@ import type { UploadFile } from "antd";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import Link from "next/link";
+import { ScholarshipDetailSkeleton } from "@/app/components/Skeleton";
+import { useLoading } from "@/app/components/LoadingProvider";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -35,7 +37,7 @@ type ScholarshipDetailPageProps = {
 
 export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageProps) {
   const [scholarship, setScholarship] = useState<Scholarship | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLocalLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [form] = Form.useForm();
@@ -43,6 +45,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
   const [lang, setLang] = useState("en");
   const [dict, setDict] = useState<any>(null);
   const [scholarshipId, setScholarshipId] = useState<string>("");
+  const { setLoading } = useLoading();
 
   useEffect(() => {
     Promise.resolve(params).then(async (resolvedParams) => {
@@ -58,16 +61,19 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
     
     const fetchScholarship = async () => {
       try {
+        setLocalLoading(true);
+        setLoading(true);
         const response = await scholarshipApi.getById(parseInt(scholarshipId));
         setScholarship(response.data);
+        setLocalLoading(false);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching scholarship:", err);
         setError("Failed to load scholarship");
+        setLocalLoading(false);
         setLoading(false);
       }
     };
-
     fetchScholarship();
   }, [scholarshipId]);
 
@@ -143,15 +149,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
   };
 
   if (loading) {
-    return (
-      <div style={{ minHeight: "100vh", padding: "4rem 2rem" }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto", textAlign: "center" }}>
-          <p style={{ fontSize: "1.125rem", color: "#6b7280" }}>
-            {lang === "mn" ? "Уншиж байна..." : "Loading..."}
-          </p>
-        </div>
-      </div>
-    );
+    return <ScholarshipDetailSkeleton />;
   }
 
   if (error || !scholarship) {

@@ -20,7 +20,7 @@ export default function DashboardPage() {
             
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center space-x-4">
-                {session.user.image && (
+                {session?.user?.image && (
                   <img
                     src={session.user.image}
                     alt={session.user.name || "User"}
@@ -29,9 +29,9 @@ export default function DashboardPage() {
                 )}
                 <div>
                   <p className="text-lg font-medium text-gray-900">
-                    {session.user.name}
+                    {session?.user?.name}
                   </p>
-                  <p className="text-gray-600">{session.user.email}</p>
+                  <p className="text-gray-600">{session?.user?.email}</p>
                 </div>
               </div>
             </div>

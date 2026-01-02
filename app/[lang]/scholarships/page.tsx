@@ -3,6 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { scholarshipApi } from "@/lib/api";
 import Link from "next/link";
+import { ScholarshipListSkeleton } from "@/app/components/Skeleton";
+import { useLoading } from "@/app/components/LoadingProvider";
+import { useSearchParams } from "next/navigation";
+import { getDictionary } from "@/i18n/dictionaries";
+import { Locale } from "@/i18n/config";
 
 type Scholarship = {
   url: string;
@@ -26,33 +31,54 @@ type ScholarshipsPageProps = {
 };
 
 export default function ScholarshipsPage({ params }: ScholarshipsPageProps) {
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [filteredScholarships, setFilteredScholarships] = useState<Scholarship[]>([]);
+  const [loading, setLocalLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lang, setLang] = useState("en");
+  const [dictionary, setDictionary] = useState<any>(null);
+
+  // connect to global loading state
+  const { setLoading: setGlobalLoading } = useLoading();
 
   useEffect(() => {
     const fetchScholarships = async () => {
       try {
+        setLocalLoading(true);
+        setGlobalLoading(true);
         const response = await scholarshipApi.getAll();
         // Handle paginated response with results array
         const data = response.data || response;
         const scholarshipsData = data.results || data;
         setScholarships(Array.isArray(scholarshipsData) ? scholarshipsData : []);
-        setLoading(false);
+        setLocalLoading(false);
+        setGlobalLoading(false);
       } catch (err) {
         console.error("Error fetching scholarships:", err);
         setError("Failed to load scholarships");
-        setLoading(false);
+        setLocalLoading(false);
+        setGlobalLoading(false);
       }
     };
-
     fetchScholarships();
   }, []);
 
   useEffect(() => {
-    Promise.resolve(params).then((resolvedParams) => {
+    if (category && scholarships.length > 0) {
+      const filtered = scholarships.filter(s => s.study_level === category);
+      setFilteredScholarships(filtered);
+    } else {
+      setFilteredScholarships(scholarships);
+    }
+  }, [category, scholarships]);
+
+  useEffect(() => {
+    Promise.resolve(params).then(async (resolvedParams) => {
       setLang(resolvedParams.lang);
+      const dict = await getDictionary(resolvedParams.lang as Locale);
+      setDictionary(dict);
     });
   }, [params]);
 
@@ -85,14 +111,31 @@ export default function ScholarshipsPage({ params }: ScholarshipsPageProps) {
     return labels[level] || level;
   };
 
+  const getPageTitle = () => {
+    if (!category || !dictionary) {
+      return dictionary?.scholarship?.title || (lang === "mn" ? "Боломжтой Тэтгэлгүүд" : "Available Scholarships");
+    }
+    
+    const categoryMap: { [key: string]: string } = {
+      postgraduate: dictionary?.nav?.master || (lang === "mn" ? "Магистрын хөтөлбөр" : "Master's Program"),
+      doctorate: dictionary?.nav?.phd || (lang === "mn" ? "Докторын хөтөлбөр" : "PhD Program"),
+      exchange: dictionary?.nav?.exchange || (lang === "mn" ? "Оюутан солилцоо" : "Student Exchange"),
+      internship: dictionary?.nav?.internship || (lang === "mn" ? "Дадлагын хөтөлбөр" : "Internship Program"),
+    };
+    
+    return categoryMap[category] || dictionary?.scholarship?.title || (lang === "mn" ? "Боломжтой Тэтгэлгүүд" : "Available Scholarships");
+  };
+
   if (loading) {
     return (
-      <div style={{ minHeight: "100vh", padding: "4rem 2rem" }}>
-        <div style={{ maxWidth: "1200px", margin: "0 auto", textAlign: "center" }}>
-          <h1 style={{ fontSize: "2.5rem", fontWeight: "700", marginBottom: "2rem", color: "#1f2937" }}>
-            Scholarships
-          </h1>
-          <p style={{ fontSize: "1.125rem", color: "#6b7280" }}>Loading scholarships...</p>
+      <div style={{ minHeight: "100vh", padding: "4rem 2rem", background: "#f9fafb" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <h1 style={{ fontSize: "2.5rem", fontWeight: "700", marginBottom: "1rem", color: "#1f2937" }}>
+              Scholarships
+            </h1>
+          </div>
+          <ScholarshipListSkeleton />
         </div>
       </div>
     );
@@ -116,24 +159,19 @@ export default function ScholarshipsPage({ params }: ScholarshipsPageProps) {
       <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div style={{ textAlign: "center", marginBottom: "3rem" }}>
           <h1 style={{ fontSize: "2.5rem", fontWeight: "700", marginBottom: "1rem", color: "#1f2937" }}>
-            {lang === "mn" ? "Боломжтой Тэтгэлгүүд" : "Available Scholarships"}
+            {getPageTitle()}
           </h1>
-          <p style={{ fontSize: "1.125rem", color: "#6b7280", maxWidth: "700px", margin: "0 auto" }}>
-            {lang === "mn" 
-              ? "Боловсролын зорилгодоо хүрэхэд туслах тэтгэлгийн боломжуудтай танилцаарай" 
-              : "Discover scholarship opportunities for your educational journey"}
-          </p>
         </div>
 
-        {scholarships.length === 0 ? (
+        {filteredScholarships.length === 0 ? (
           <div style={{ textAlign: "center", padding: "3rem", background: "white", borderRadius: "1rem" }}>
             <p style={{ fontSize: "1.125rem", color: "#6b7280" }}>
-              {lang === "mn" ? "Одоогоор тэтгэлэг байхгүй байна." : "No scholarships available at the moment."}
+              {lang === "mn" ? "Одоогоор мэдээлэл байхгүй байна." : "No information available at the moment."}
             </p>
           </div>
         ) : (
           <div style={{ display: "grid", gap: "2rem", gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))" }}>
-            {scholarships.map((scholarship, index) => (
+            {filteredScholarships.map((scholarship, index) => (
               <div
                 key={index}
                 style={{

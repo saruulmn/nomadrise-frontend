@@ -7,6 +7,7 @@ import { MenuOutlined } from "@ant-design/icons";
 import { usePathname } from "next/navigation";
 import LanguageSwitcher from "./LanguageSwitcher";
 import UserProfile from "./UserProfile";
+import ThemeToggle from "./ThemeToggle";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 
@@ -35,11 +36,10 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
   if (!dictionary) return null;
 
   const items = [
-    { key: "master", label: <Link href="/programs/master">{dictionary.nav.master}</Link> },
-    { key: "phd", label: <Link href="/programs/phd">{dictionary.nav.phd}</Link> },
-    { key: "exchange", label: <Link href="/programs/exchange">{dictionary.nav.exchange}</Link> },
-    { key: "internship", label: <Link href="/programs/internship">{dictionary.nav.internship}</Link> },
-    { key: "scholarships", label: <Link href={`/${lang}/scholarships`}>{dictionary.nav.scholarships}</Link> },
+    { key: "master", label: <Link href={`/${lang}/scholarships?category=postgraduate`}>{dictionary.nav.master}</Link> },
+    { key: "phd", label: <Link href={`/${lang}/scholarships?category=doctorate`}>{dictionary.nav.phd}</Link> },
+    { key: "exchange", label: <Link href={`/${lang}/scholarships?category=exchange`}>{dictionary.nav.exchange}</Link> },
+    { key: "internship", label: <Link href={`/${lang}/scholarships?category=internship`}>{dictionary.nav.internship}</Link> },
   ];
 
   const mobileMenuItems = [
@@ -47,29 +47,28 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
       key: "programs",
       label: dictionary.nav.programs,
       children: [
-        { key: "m1", label: <Link href="/programs/master">{dictionary.nav.master}</Link> },
-        { key: "m2", label: <Link href="/programs/phd">{dictionary.nav.phd}</Link> },
-        { key: "m3", label: <Link href="/programs/exchange">{dictionary.nav.exchange}</Link> },
-        { key: "m4", label: <Link href="/programs/internship">{dictionary.nav.internship}</Link> },
-        { key: "m5", label: <Link href={`/${lang}/scholarships`}>{dictionary.nav.scholarships}</Link> },
+        { key: "m1", label: <Link href={`/${lang}/scholarships?category=postgraduate`}>{dictionary.nav.master}</Link> },
+        { key: "m2", label: <Link href={`/${lang}/scholarships?category=doctorate`}>{dictionary.nav.phd}</Link> },
+        { key: "m3", label: <Link href={`/${lang}/scholarships?category=exchange`}>{dictionary.nav.exchange}</Link> },
+        { key: "m4", label: <Link href={`/${lang}/scholarships?category=internship`}>{dictionary.nav.internship}</Link> },
       ],
     },
-    { key: "sponsor", label: <Link href="/sponsorship">{dictionary.nav.sponsorship}</Link> },
-    { key: "events", label: <Link href="/events">{dictionary.nav.events}</Link> },
-    { key: "about", label: <Link href="/about">{dictionary.nav.ourTeam}</Link> },
-    { key: "signin", label: <Link href="/signin">{dictionary.nav.signIn}</Link> },
+    { key: "sponsor", label: <Link href={`/${lang}/sponsor`}>{dictionary.nav.sponsor}</Link> },
+    { key: "events", label: <Link href={`/${lang}/events`}>{dictionary.nav.events}</Link> },
+    { key: "about", label: <Link href={`/${lang}#team`}>{dictionary.nav.ourTeam}</Link> },
+    { key: "signin", label: <Link href={`/${lang}/signin`}>{dictionary.nav.signIn}</Link> },
   ];
 
   return (
     <header className="site-header overlay">
       <div className="header-inner">
         <div className="logo" style={{ marginRight: 8 }}>
-          <Link href="/">nomadrise.mn</Link>
+          <Link href={`/${lang}`}>nomadrise.mn</Link>
         </div>
 
         <nav className="nav-menu" aria-label="Main navigation">
-          <Link href="/sponsorship" className={isActive("/sponsorship") ? "nav-active" : undefined}>
-            {dictionary.nav.sponsorship}
+          <Link href={`/${lang}/sponsor`} className={isActive(`/${lang}/sponsor`) ? "nav-active" : undefined}>
+            {dictionary.nav.sponsor}
           </Link>
 
           <Dropdown
@@ -80,7 +79,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
             onOpenChange={(next) => setOpen(next)}
           >
             <button
-              className={`dropdown-toggle ${pathname.startsWith("/programs") ? "nav-active" : ""}`}
+              className={`dropdown-toggle ${pathname.includes("/programs") ? "nav-active" : ""}`}
               onFocus={() => setOpen(true)}
               onBlur={() => setOpen(false)}
               aria-haspopup="true"
@@ -90,16 +89,17 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
             </button>
           </Dropdown>
 
-          <Link href="/events" className={isActive("/events") ? "nav-active" : undefined}>
+          <Link href={`/${lang}/events`} className={isActive(`/${lang}/events`) ? "nav-active" : undefined}>
             {dictionary.nav.events}
           </Link>
           
-          <Link href="/about" className={isActive("/about") ? "nav-active" : undefined}>
+          <Link href={`/${lang}#team`}>
             {dictionary.nav.ourTeam}
           </Link>
         </nav>
 
         <div className="header-actions">
+          <ThemeToggle />
           <LanguageSwitcher />
           <UserProfile />
         </div>
@@ -110,7 +110,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
       </div>
 
       <Drawer
-        title={<Link href="/">nomadrise.mn</Link>}
+        title={<Link href={`/${lang}`}>nomadrise.mn</Link>}
         placement="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}

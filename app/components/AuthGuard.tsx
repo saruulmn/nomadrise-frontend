@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { DashboardSkeleton } from './Skeleton';
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -17,7 +18,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [session, status, router]);
 
   if (status === 'loading') {
-    return <div>Loading...</div>;
+    return <DashboardSkeleton />;
   }
 
   if (!session) {

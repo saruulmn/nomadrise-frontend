@@ -4,6 +4,8 @@ import 'antd/dist/reset.css';
 import "../styles/globals.css";
 import NavBar from "./components/NavBar";
 import AuthProvider from "./components/AuthProvider";
+import { ThemeProvider } from "./components/ThemeProvider";
+import { LoadingProvider } from "./components/LoadingProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +32,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>
-          <NavBar />
+        <ThemeProvider>
+          <AuthProvider>
+            <LoadingProvider>
+              {children}
 
-          {children}
-
-          <footer className="site-footer">
-            <div className="footer-inner">© {new Date().getFullYear()} nomadrise.mn — All rights reserved.</div>
-          </footer>
-        </AuthProvider>
+              <footer className="site-footer">
+                <div className="footer-inner">© {new Date().getFullYear()} nomadrise.mn — All rights reserved.</div>
+              </footer>
+            </LoadingProvider>
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

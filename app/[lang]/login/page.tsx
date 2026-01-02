@@ -5,10 +5,13 @@ import { GoogleOutlined, FacebookOutlined, AppleOutlined } from "@ant-design/ico
 import { useEffect, useState } from "react";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
+import PolicyModal from "@/app/components/PolicyModal";
 
 export default function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const [lang, setLang] = useState<Locale>("mn");
   const [dictionary, setDictionary] = useState<any>(null);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [showPolicyModal, setShowPolicyModal] = useState(false);
 
   useEffect(() => {
     params.then((p) => {
@@ -20,15 +23,21 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
   if (!dictionary) return null;
 
   const handleGoogleSignIn = async () => {
-    await signIn("google", { callbackUrl: "/dashboard" });
+    if (agreeTerms) {
+      await signIn("google", { callbackUrl: "/dashboard" });
+    }
   };
 
   const handleFacebookSignIn = async () => {
-    await signIn("facebook", { callbackUrl: "/dashboard" });
+    if (agreeTerms) {
+      await signIn("facebook", { callbackUrl: "/dashboard" });
+    }
   };
 
   const handleAppleSignIn = async () => {
-    await signIn("apple", { callbackUrl: "/dashboard" });
+    if (agreeTerms) {
+      await signIn("apple", { callbackUrl: "/dashboard" });
+    }
   };
 
   return (
@@ -135,9 +144,9 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
           <button
             onClick={handleGoogleSignIn}
+            disabled={!agreeTerms}
             className="social-btn"
             style={{
               width: '100%',
@@ -148,20 +157,22 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               gap: '12px',
               border: '2px solid #e5e7eb',
               borderRadius: '14px',
-              background: '#eee',
+              background: agreeTerms ? '#eee' : '#f3f4f6',
               fontSize: '16px',
               fontWeight: '600',
-              color: '#374151',
-              cursor: 'pointer',
-              position: 'relative'
+              color: agreeTerms ? '#374151' : '#d1d5db',
+              cursor: agreeTerms ? 'pointer' : 'not-allowed',
+              position: 'relative',
+              opacity: agreeTerms ? 1 : 0.6
             }}
           >
-            <GoogleOutlined style={{ fontSize: '20px', color: '#374151' }} />
-            <span>Continue with Google</span>
+            <GoogleOutlined style={{ fontSize: '20px', color: agreeTerms ? '#374151' : '#d1d5db' }} />
+            <span>{dictionary.login.continueGoogle || 'Continue with Google'}</span>
           </button>
 
           <button
             onClick={handleFacebookSignIn}
+            disabled={!agreeTerms}
             className="social-btn"
             style={{
               width: '100%',
@@ -172,20 +183,22 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               gap: '12px',
               border: '2px solid #e5e7eb',
               borderRadius: '14px',
-              background: '#eee',
+              background: agreeTerms ? '#eee' : '#f3f4f6',
               fontSize: '16px',
               fontWeight: '600',
-              color: '#374151',
-              cursor: 'pointer',
-              position: 'relative'
+              color: agreeTerms ? '#374151' : '#d1d5db',
+              cursor: agreeTerms ? 'pointer' : 'not-allowed',
+              position: 'relative',
+              opacity: agreeTerms ? 1 : 0.6
             }}
           >
-            <FacebookOutlined style={{ fontSize: '20px', color: '#374151' }} />
-            <span>Continue with Facebook</span>
+            <FacebookOutlined style={{ fontSize: '20px', color: agreeTerms ? '#374151' : '#d1d5db' }} />
+            <span>{dictionary.login.continueFacebook || 'Continue with Facebook'}</span>
           </button>
 
           <button
             onClick={handleAppleSignIn}
+            disabled={!agreeTerms}
             className="social-btn"
             style={{
               width: '100%',
@@ -196,39 +209,88 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               gap: '12px',
               border: '2px solid #e5e7eb',
               borderRadius: '14px',
-              background: '#eee',
+              background: agreeTerms ? '#eee' : '#f3f4f6',
               fontSize: '16px',
               fontWeight: '600',
-              color: '#374151',
-              cursor: 'pointer',
-              position: 'relative'
+              color: agreeTerms ? '#374151' : '#d1d5db',
+              cursor: agreeTerms ? 'pointer' : 'not-allowed',
+              position: 'relative',
+              opacity: agreeTerms ? 1 : 0.6
             }}
           >
-            <AppleOutlined style={{ fontSize: '20px', color: '#374151' }} />
-            <span>Continue with Apple</span>
+            <AppleOutlined style={{ fontSize: '20px', color: agreeTerms ? '#374151' : '#d1d5db' }} />
+            <span>{dictionary.login.continueApple || 'Continue with Apple'}</span>
           </button>
         </div>
+
+        {/* Terms Checkbox */}
         <div style={{
-          marginTop: '32px',
-          textAlign: 'center',
-          fontSize: '13px',
-          color: '#9ca3af',
-          lineHeight: '1.6'
+          marginTop: '24px',
+          padding: '16px',
+          backgroundColor: '#f9fafb',
+          borderRadius: '12px',
+          border: agreeTerms ? '2px solid #667eea' : '2px solid #e5e7eb',
+          transition: 'all 0.3s ease'
         }}>
-          <p>
-            {dictionary.login.termsText}{" "}
-            <a href="/terms" style={{ color: '#667eea', textDecoration: 'none', fontWeight: '500' }}>
-              {dictionary.login.termsLink}
-            </a>{" "}
-            {dictionary.login.and}{" "}
-            <a href="/privacy" style={{ color: '#667eea', textDecoration: 'none', fontWeight: '500' }}>
-              {dictionary.login.privacyLink}
-            </a>
-            {dictionary.login.agreeText}
-          </p>
+          <label style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: '12px',
+            cursor: 'pointer'
+          }}>
+            <input
+              type="checkbox"
+              checked={agreeTerms}
+              onChange={(e) => setAgreeTerms(e.target.checked)}
+              style={{
+                width: '20px',
+                height: '20px',
+                marginTop: '2px',
+                cursor: 'pointer',
+                accentColor: '#667eea'
+              }}
+            />
+            <span style={{ 
+              fontSize: '14px',
+              color: '#374151',
+              lineHeight: '1.5',
+              fontWeight: '500'
+            }}>
+              <button
+                type="button"
+                onClick={() => setShowPolicyModal(true)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#667eea',
+                  cursor: 'pointer',
+                  textDecoration: 'underline',
+                  padding: '0',
+                  fontSize: 'inherit',
+                  fontWeight: 'inherit',
+                  fontFamily: 'inherit'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#764ba2'}
+                onMouseLeave={(e) => e.currentTarget.style.color = '#667eea'}
+              >
+                Үйлчилгээний нөхцлийг зөвшөөрч байна
+              </button>
+            </span>
+          </label>
         </div>
       </div>
-          </div>
-          </div>
+
+      {/* Policy Modal */}
+      <PolicyModal
+        isOpen={showPolicyModal}
+        onClose={() => setShowPolicyModal(false)}
+        onApprove={() => {
+          setAgreeTerms(true);
+          setShowPolicyModal(false);
+        }}
+        showApproveButton={true}
+        lang={lang as 'en' | 'mn'}
+      />
+    </div>
   );
 }
