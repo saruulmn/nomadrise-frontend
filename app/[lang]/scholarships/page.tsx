@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { scholarshipApi } from "@/lib/api";
 import Link from "next/link";
 import { ScholarshipListSkeleton } from "@/app/components/Skeleton";
@@ -30,7 +30,7 @@ type ScholarshipsPageProps = {
   params: Promise<{ lang: string }>;
 };
 
-export default function ScholarshipsPage({ params }: ScholarshipsPageProps) {
+function ScholarshipsContent({ params }: ScholarshipsPageProps) {
   const searchParams = useSearchParams();
   const category = searchParams.get("category");
   const [scholarships, setScholarships] = useState<Scholarship[]>([]);
@@ -297,5 +297,13 @@ export default function ScholarshipsPage({ params }: ScholarshipsPageProps) {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ScholarshipsPage({ params }: ScholarshipsPageProps) {
+  return (
+    <Suspense fallback={<ScholarshipListSkeleton />}>
+      <ScholarshipsContent params={params} />
+    </Suspense>
   );
 }
