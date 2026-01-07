@@ -21,185 +21,78 @@ export default function PolicyPage({ params }: { params: Promise<{ lang: Locale 
           <>
             {/* PRIVACY POLICY - ENGLISH */}
             <h1>Privacy Policy</h1>
-            <p className="last-updated">Last updated: January 7, 2026</p>
 
             <p>
-              This Privacy Policy describes how NomadRise ("we", "us", "our")
-              collects, uses, and protects your personal information when you
-              use our website and mobile application ("Service").
+              This Privacy Policy explains how we collect, use, and protect personal information
+              when you use our website, mobile application, and related services ("Service").
             </p>
 
-            <h2>1. Information We Collect</h2>
-            <p>We collect the following types of information:</p>
+            <h2>Information We Collect</h2>
             <ul>
-              <li><strong>Account Information:</strong> Name, email address, profile picture</li>
-              <li><strong>Authentication Data:</strong> Unique user ID from social login providers (Google, Facebook, Apple)</li>
-              <li><strong>Technical Data:</strong> IP address, browser type, device information, operating system</li>
-              <li><strong>Usage Data:</strong> Login history, pages visited, features used</li>
-              <li><strong>Cookies:</strong> Session cookies, authentication tokens, analytics cookies</li>
+              <li>Name and email address (via Google / Facebook / Apple login)</li>
+              <li>IP address and device information</li>
+              <li>Cookies and usage data</li>
             </ul>
 
-            <h2>2. How We Use Your Information</h2>
-            <p>We use your information to:</p>
+            <h2>How We Use Information</h2>
             <ul>
-              <li>Create and manage your account</li>
-              <li>Provide and improve our Service</li>
-              <li>Authenticate your identity via social login</li>
-              <li>Communicate with you about the Service</li>
-              <li>Analyze usage patterns and improve user experience</li>
-              <li>Comply with legal obligations</li>
+              <li>To authenticate users</li>
+              <li>To improve our services</li>
+              <li>To ensure security</li>
             </ul>
 
-            <h2>3. Social Login (Google, Facebook, Apple)</h2>
+            <h2>Third-Party Services</h2>
             <p>
-              You may sign in using Google, Facebook, or Apple. When you do, we
-              receive your name, email address, profile picture, and a unique
-              identifier from the provider. We do not receive or store your
-              social network password.
+              We may use third-party authentication services such as Google, Meta (Facebook), and Apple.
             </p>
 
-            <h2>4. Cookies and Tracking</h2>
+            <h2>Data Deletion</h2>
             <p>
-              We use cookies and similar technologies for authentication,
-              session management, and analytics. You can control cookies through
-              your browser settings, but disabling them may affect Service
-              functionality.
+              Users can request deletion of their account and personal data after logging in.
+              Deleted data cannot be restored.
             </p>
 
-            <h2>5. Third-Party Services</h2>
-            <p>
-              We use third-party services including Google, Meta (Facebook), and
-              Apple for authentication. These providers have their own privacy
-              policies. We are not responsible for their data practices.
-            </p>
-
-            <h2>6. Data Retention</h2>
-            <p>
-              We retain your personal data for as long as your account is active
-              or as needed to provide the Service. After account deletion, data
-              is permanently removed within 30 days.
-            </p>
-
-            <h2>7. Your Rights</h2>
-            <p>You have the right to:</p>
-            <ul>
-              <li>Access your personal data</li>
-              <li>Correct inaccurate data</li>
-              <li>Delete your account and all associated data</li>
-              <li>Withdraw consent at any time</li>
-            </ul>
-
-            <h2>8. Data Deletion</h2>
-            <p>
-              You can delete your account and all personal data directly within
-              the app. While logged in, go to the <strong>Data Deletion</strong>{' '}
-              page and click the "Request Account Deletion" button. No email
-              required. Deletion is processed immediately or within 30 days
-              maximum. This action is permanent and cannot be undone.
-            </p>
-
-            <h2>9. Data Security</h2>
-            <p>
-              We implement appropriate technical and organizational measures to
-              protect your personal data against unauthorized access, alteration,
-              or destruction.
-            </p>
-
-            <h2>10. Contact Us</h2>
-            <p>
-              For privacy-related questions, contact us at:{' '}
-              <strong>nomadriseworld@gmail.com</strong>
-            </p>
+            <h2>Contact</h2>
+            <p>Email: <strong>nomadriseworld@gmail.com</strong></p>
           </>
         ) : (
           <>
             {/* PRIVACY POLICY - MONGOLIAN */}
-            <h1>Нууцлалын Бодлого</h1>
-            <p className="last-updated">Сүүлд шинэчлэгдсэн: 2026 оны 1-р сарын 7</p>
+            <h1>Нууцлалын бодлого</h1>
 
             <p>
-              Энэхүү Нууцлалын Бодлого нь NomadRise ("бид", "манай") таны хувийн
-              мэдээллийг хэрхэн цуглуулж, ашиглаж, хамгаалж байгааг тодорхойлно.
+              Манай веб сайт, мобайл апп болон түүнтэй холбоотой үйлчилгээ (цаашид "Үйлчилгээ") нь
+              хэрэглэгчийн хувийн мэдээллийг Монгол Улсын холбогдох хууль тогтоомж болон
+              олон улсын стандартын дагуу цуглуулж, ашиглаж, хамгаална.
             </p>
 
-            <h2>1. Цуглуулах Мэдээлэл</h2>
-            <p>Бид дараах төрлийн мэдээллийг цуглуулна:</p>
+            <h2>Цуглуулах мэдээлэл</h2>
             <ul>
-              <li><strong>Бүртгэлийн мэдээлэл:</strong> Нэр, и-мэйл хаяг, профайл зураг</li>
-              <li><strong>Нэвтрэлтийн мэдээлэл:</strong> Нийгмийн сүлжээний (Google, Facebook, Apple) уник таних ID</li>
-              <li><strong>Техникийн мэдээлэл:</strong> IP хаяг, браузер төрөл, төхөөрөмжийн мэдээлэл</li>
-              <li><strong>Ашиглалтын мэдээлэл:</strong> Нэвтрэлтийн түүх, үзсэн хуудас, ашигласан боломжууд</li>
-              <li><strong>Cookie:</strong> Сессийн cookie, нэвтрэлтийн token, аналитик cookie</li>
+              <li>Нэр, и-мэйл хаяг (Google / Facebook / Apple нэвтрэлт)</li>
+              <li>IP хаяг, төхөөрөмжийн мэдээлэл</li>
+              <li>Cookie болон ашиглалтын мэдээлэл</li>
             </ul>
 
-            <h2>2. Мэдээллийг Хэрхэн Ашиглах</h2>
-            <p>Бид таны мэдээллийг дараах зорилгоор ашиглана:</p>
+            <h2>Мэдээлэл ашиглах зорилго</h2>
             <ul>
-              <li>Бүртгэл үүсгэх, удирдах</li>
-              <li>Үйлчилгээг хангах, сайжруулах</li>
-              <li>Нийгмийн сүлжээгээр таныг таних</li>
-              <li>Тантай холбогдох</li>
-              <li>Ашиглалтын статистик шинжилгээ хийх</li>
-              <li>Хуулийн үүргээ биелүүлэх</li>
+              <li>Хэрэглэгчийг баталгаажуулах</li>
+              <li>Үйлчилгээг сайжруулах</li>
+              <li>Аюулгүй байдлыг хангах</li>
             </ul>
 
-            <h2>3. Нийгмийн Сүлжээгээр Нэвтрэх (Google, Facebook, Apple)</h2>
+            <h2>Гуравдагч тал</h2>
             <p>
-              Та Google, Facebook, Apple-ээр нэвтрэх үед бид таны нэр, и-мэйл
-              хаяг, профайл зураг, уник таних ID авна. Бид нийгмийн сүлжээний
-              нууц үгийг хадгалдаггүй.
+              Бид Google, Meta (Facebook), Apple зэрэг гуравдагч талын нэвтрэлтийн үйлчилгээг ашиглаж болно.
             </p>
 
-            <h2>4. Cookie ба Хянах Технологи</h2>
+            <h2>Мэдээлэл устгах</h2>
             <p>
-              Бид cookie болон ижил төстэй технологиудыг нэвтрэлт, сессийн
-              удирдлага, аналитик зорилгоор ашиглана. Та браузерын тохиргоогоор
-              cookie-г удирдах боломжтой.
+              Хэрэглэгч бүртгэлдээ нэвтэрсний дараа өөрийн бүртгэл болон хувийн мэдээллийг устгах
+              хүсэлт гаргах боломжтой. Устгасан мэдээллийг сэргээх боломжгүй.
             </p>
 
-            <h2>5. Гуравдагч Талын Үйлчилгээ</h2>
-            <p>
-              Бид Google, Meta (Facebook), Apple-ийн нэвтрэлтийн үйлчилгээг
-              ашигладаг. Эдгээр үйлчилгээ үзүүлэгчид өөрсдийн нууцлалын бодлоготой.
-              Бид тэдний өгөгдлийн практикт хариуцлага хүлээхгүй.
-            </p>
-
-            <h2>6. Өгөгдөл Хадгалах Хугацаа</h2>
-            <p>
-              Таны бүртгэл идэвхтэй байх хугацаанд бид таны мэдээллийг хадгална.
-              Бүртгэл устгасны дараа өгөгдлийг 30 хоногийн дотор бүрмөсөн устгана.
-            </p>
-
-            <h2>7. Таны Эрхүүд</h2>
-            <p>Та дараах эрхтэй:</p>
-            <ul>
-              <li>Өөрийн мэдээлэлд хандах</li>
-              <li>Буруу мэдээллийг засах</li>
-              <li>Бүртгэл болон бүх мэдээллийг устгах</li>
-              <li>Зөвшөөрлөө хүссэн үедээ цуцлах</li>
-            </ul>
-
-            <h2>8. Мэдээлэл Устгах</h2>
-            <p>
-              Та өөрийн бүртгэл болон бүх хувийн мэдээллийг апп дотроос шууд
-              устгах боломжтой. Нэвтэрсэн үедээ <strong>Мэдээлэл Устгах</strong>{' '}
-              хуудас руу орж "Бүртгэл Устгах Хүсэлт" товчийг дарна уу. И-мэйл
-              шаардлагагүй. Устгалт шууд эсвэл хамгийн ихдээ 30 хоногийн дотор
-              боловсруулагдана. Энэ үйлдэл бүрмөсөн бөгөөд буцаах боломжгүй.
-            </p>
-
-            <h2>9. Өгөгдлийн Аюулгүй Байдал</h2>
-            <p>
-              Бид таны хувийн мэдээллийг зөвшөөрөлгүй хандалт, өөрчлөлт, устгалтаас
-              хамгаалах зохих техникийн болон зохион байгуулалтын арга хэмжээг
-              хэрэгжүүлдэг.
-            </p>
-
-            <h2>10. Холбоо Барих</h2>
-            <p>
-              Нууцлалтай холбоотой асуултаа дараах хаягаар илгээнэ үү:{' '}
-              <strong>nomadriseworld@gmail.com</strong>
-            </p>
+            <h2>Холбоо барих</h2>
+            <p>И-мэйл: <strong>nomadriseworld@gmail.com</strong></p>
           </>
         )}
       </article>

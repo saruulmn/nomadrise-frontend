@@ -21,156 +21,70 @@ export default function TermsPage({ params }: { params: Promise<{ lang: Locale }
           <>
             {/* TERMS OF SERVICE - ENGLISH */}
             <h1>Terms of Service</h1>
-            <p className="last-updated">Last updated: January 7, 2026</p>
 
             <p>
-              By accessing or using NomadRise ("Service"), you agree to be bound
-              by these Terms of Service ("Terms"). If you disagree with any part
-              of these Terms, you may not access the Service.
+              These Terms govern your use of our website, mobile application, and related services.
             </p>
 
-            <h2>1. Service Description</h2>
+            <h2>Use of Service</h2>
             <p>
-              NomadRise provides information, digital content, scholarship
-              listings, and educational resources through our website and mobile
-              application.
+              You agree to use the Service only for lawful purposes.
             </p>
 
-            <h2>2. User Responsibilities</h2>
-            <p>You agree to:</p>
-            <ul>
-              <li>Provide accurate information when creating an account</li>
-              <li>Maintain the security of your login credentials</li>
-              <li>Use the Service only for lawful purposes</li>
-              <li>Not engage in fraudulent, abusive, or harmful activities</li>
-              <li>Not violate the rights of others</li>
-            </ul>
-
-            <h2>3. Account Termination</h2>
+            <h2>Account Responsibility</h2>
             <p>
-              We may suspend or terminate your account if you violate these
-              Terms. You may delete your account at any time through the in-app
-              Data Deletion feature.
+              You are responsible for maintaining the security of your account.
             </p>
 
-            <h2>4. Intellectual Property</h2>
+            <h2>Limitation of Liability</h2>
             <p>
-              All content, logos, designs, and software on the Service are owned
-              by NomadRise or our licensors and protected by intellectual
-              property laws. Unauthorized use, copying, or distribution is
-              prohibited.
+              The Service is provided "as is" without warranties of any kind.
             </p>
 
-            <h2>5. Service Availability</h2>
+            <h2>Intellectual Property</h2>
             <p>
-              The Service is provided "as is" without warranty. We do not
-              guarantee uninterrupted or error-free operation. We may modify,
-              suspend, or discontinue the Service at any time without notice.
+              All content on the Service is protected by intellectual property laws.
             </p>
 
-            <h2>6. Limitation of Liability</h2>
+            <h2>Governing Law</h2>
             <p>
-              To the maximum extent permitted by law, NomadRise shall not be
-              liable for any indirect, incidental, special, or consequential
-              damages arising from your use of the Service.
-            </p>
-
-            <h2>7. Governing Law</h2>
-            <p>
-              These Terms are governed by the laws of Mongolia. Any disputes
-              shall be resolved by the competent courts of Mongolia.
-            </p>
-
-            <h2>8. Changes to Terms</h2>
-            <p>
-              We reserve the right to update these Terms at any time. Continued
-              use of the Service after changes constitutes acceptance of the new
-              Terms.
-            </p>
-
-            <h2>9. Contact</h2>
-            <p>
-              Email: <strong>nomadriseworld@gmail.com</strong>
-              <br />
-              Location: Ulaanbaatar, Mongolia
+              These Terms are governed by the laws of Mongolia.
             </p>
           </>
         ) : (
           <>
             {/* TERMS OF SERVICE - MONGOLIAN */}
-            <h1>Үйлчилгээний Нөхцөл</h1>
-            <p className="last-updated">Сүүлд шинэчлэгдсэн: 2026 оны 1-р сарын 7</p>
+            <h1>Үйлчилгээ ашиглах нөхцөл</h1>
 
             <p>
-              NomadRise ("Үйлчилгээ")-г ашигласнаар та энэхүү Үйлчилгээний
-              Нөхцөл ("Нөхцөл")-ийг хүлээн зөвшөөрч байна. Хэрэв та энэ Нөхцөлтэй
-              санал нийлэхгүй бол Үйлчилгээг ашиглах эрхгүй.
+              Энэхүү нөхцөл нь манай Үйлчилгээг ашиглахтай холбоотой хэрэглэгчийн эрх, үүрэг,
+              болон хариуцлагыг тодорхойлно.
             </p>
 
-            <h2>1. Үйлчилгээний Тодорхойлолт</h2>
+            <h2>Үйлчилгээ ашиглах</h2>
             <p>
-              NomadRise нь мэдээлэл, дижитал контент, тэтгэлгийн жагсаалт,
-              боловсролын материалыг веб сайт болон мобайл аппликейшнээр
-              дамжуулан хүргэдэг.
+              Хэрэглэгч Үйлчилгээг зөвхөн хууль ёсны зорилгоор ашиглана.
             </p>
 
-            <h2>2. Хэрэглэгчийн Үүрэг</h2>
-            <p>Та дараахийг зөвшөөрч байна:</p>
-            <ul>
-              <li>Бүртгэл үүсгэхдээ үнэн зөв мэдээлэл өгөх</li>
-              <li>Нэвтрэх мэдээллийнхээ аюулгүй байдлыг хадгалах</li>
-              <li>Үйлчилгээг зөвхөн хууль ёсны зорилгоор ашиглах</li>
-              <li>Залилан, доромжлол, хортой үйлдэл хийхгүй байх</li>
-              <li>Бусдын эрхийг зөрчихгүй байх</li>
-            </ul>
-
-            <h2>3. Бүртгэл Цуцлах</h2>
+            <h2>Бүртгэл</h2>
             <p>
-              Та энэ Нөхцөлийг зөрчвөл бид таны бүртгэлийг түдгэлзүүлэх эсвэл
-              цуцлах эрхтэй. Та хүссэн үедээ апп дотор Мэдээлэл Устгах
-              боломжоор бүртгэлээ устгаж болно.
+              Хэрэглэгч өөрийн бүртгэлийн аюулгүй байдлыг хариуцна.
             </p>
 
-            <h2>4. Оюуны Өмч</h2>
+            <h2>Хариуцлага</h2>
             <p>
-              Үйлчилгээ дээрх бүх контент, лого, дизайн, програм хангамж нь
-              NomadRise эсвэл манай лицензийн эзэмшигчдийн өмч бөгөөд оюуны
-              өмчийн хуулиар хамгаалагдсан. Зөвшөөрөлгүй ашиглах, хуулбарлах,
-              түгээхийг хориглоно.
+              Үйлчилгээ нь "байгаа чигээрээ" олгогдож байгаа бөгөөд тасалдал, алдаанд бид хариуцлага
+              хүлээхгүй.
             </p>
 
-            <h2>5. Үйлчилгээний Хүртээмж</h2>
+            <h2>Оюуны өмч</h2>
             <p>
-              Үйлчилгээг "байгаа чигээрээ" баталгаагүй хангана. Бид тасралтгүй,
-              алдаагүй ажиллагааг баталгаажуулахгүй. Бид хүссэн үедээ Үйлчилгээг
-              өөрчлөх, түдгэлзүүлэх, зогсоох эрхтэй.
+              Үйлчилгээ дээрх бүх контент нь зохиогчийн эрхээр хамгаалагдсан.
             </p>
 
-            <h2>6. Хариуцлагын Хязгаарлалт</h2>
+            <h2>Хууль, маргаан</h2>
             <p>
-              Хуулиар зөвшөөрөгдсөн хэмжээнд NomadRise таны Үйлчилгээ ашигласнаас
-              үүдэлтэй аливаа шууд бус, санамсаргүй, онцгой, эсвэл үр дагавар
-              бүхий хохиролд хариуцлага хүлээхгүй.
-            </p>
-
-            <h2>7. Хэрэглэх Хууль</h2>
-            <p>
-              Энэхүү Нөхцөлийг Монгол Улсын хуулиар зохицуулна. Аливаа маргааныг
-              Монгол Улсын шүүхээр шийдвэрлэнэ.
-            </p>
-
-            <h2>8. Нөхцөлийн Өөрчлөлт</h2>
-            <p>
-              Бид энэ Нөхцөлийг хүссэн үедээ шинэчлэх эрхтэй. Өөрчлөлтийн дараа
-              Үйлчилгээг үргэлжлүүлэн ашиглах нь шинэ Нөхцөлийг хүлээн зөвшөөрсөн
-              гэж тооцогдоно.
-            </p>
-
-            <h2>9. Холбоо Барих</h2>
-            <p>
-              Имэйл: <strong>nomadriseworld@gmail.com</strong>
-              <br />
-              Байршил: Улаанбаатар хот, Монгол Улс
+              Эдгээр нөхцөл нь Монгол Улсын хууль тогтоомжид захирагдана.
             </p>
           </>
         )}
