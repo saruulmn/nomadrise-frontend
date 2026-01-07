@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getDictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
 
 export default function PolicyPage({ params }: { params: Promise<{ lang: Locale }> }) {
@@ -20,266 +19,186 @@ export default function PolicyPage({ params }: { params: Promise<{ lang: Locale 
       <article className="policy-page-content">
         {isEnglish ? (
           <>
-            <h1>Terms of Service & Privacy Policy</h1>
+            {/* PRIVACY POLICY - ENGLISH */}
+            <h1>Privacy Policy</h1>
+            <p className="last-updated">Last updated: January 7, 2026</p>
 
             <p>
-              This document ("Terms") governs the rights, obligations, and
-              responsibilities of users ("User") when using our website, mobile
-              application, and all related services ("Service"), as well as how
-              personal data is collected, used, and protected. By using the
-              Service, the User is deemed to have read, understood, and agreed
-              to these Terms.
+              This Privacy Policy describes how NomadRise ("we", "us", "our")
+              collects, uses, and protects your personal information when you
+              use our website and mobile application ("Service").
             </p>
 
-            <h2>1. General</h2>
-            <p>
-              The Service provides information, recommendations, digital
-              content, and online features. We reserve the right to update or
-              modify these Terms at any time. Updated versions take effect upon
-              publication.
-            </p>
-
-            <h2>2. Age and Legal Capacity</h2>
-            <p>
-              Users must have legal capacity to enter into agreements under the
-              laws of Mongolia. Users under the age of 16 may use the Service
-              only with parental or legal guardian consent.
-            </p>
-
-            <h2>3. User Rights and Obligations</h2>
-            <p>
-              Users must use the Service lawfully, fairly, and for personal
-              purposes only. Any unlawful, abusive, fraudulent, or
-              rights-infringing activities are strictly prohibited. Users are
-              responsible for maintaining the security of their account
-              credentials.
-            </p>
-
-            <h2>4. Collection and Use of Personal Data</h2>
-            <p>We may collect the following information:</p>
+            <h2>1. Information We Collect</h2>
+            <p>We collect the following types of information:</p>
             <ul>
-              <li>Registration information (name, email address, contact details)</li>
-              <li>
-                Usage data (login history, IP address, cookies, device
-                information)
-              </li>
-              <li>Feedback, inquiries, and requests provided by the User</li>
+              <li><strong>Account Information:</strong> Name, email address, profile picture</li>
+              <li><strong>Authentication Data:</strong> Unique user ID from social login providers (Google, Facebook, Apple)</li>
+              <li><strong>Technical Data:</strong> IP address, browser type, device information, operating system</li>
+              <li><strong>Usage Data:</strong> Login history, pages visited, features used</li>
+              <li><strong>Cookies:</strong> Session cookies, authentication tokens, analytics cookies</li>
             </ul>
-            <p>
-              Personal data is used to operate and improve the Service,
-              communicate with users, and comply with legal obligations. All
-              personal data is protected in accordance with the Law on Personal
-              Data Protection of Mongolia and applicable regulations.
-            </p>
 
-            <h2>5. Cookies and Similar Technologies</h2>
-            <p>
-              We use cookies and similar technologies to enhance user experience
-              and perform analytics. Users may disable or limit cookies through
-              their browser settings.
-            </p>
-
-            <h2>6. Social Authentication (Social Login)</h2>
-            <p>
-              Users may sign in to the Service using third-party platforms such
-              as Google, Facebook, or Apple.
-            </p>
-            <p>When using social login, we may receive the following information:</p>
+            <h2>2. How We Use Your Information</h2>
+            <p>We use your information to:</p>
             <ul>
-              <li>Name</li>
-              <li>Email address</li>
-              <li>Profile picture (if permitted)</li>
-              <li>A unique user identifier</li>
+              <li>Create and manage your account</li>
+              <li>Provide and improve our Service</li>
+              <li>Authenticate your identity via social login</li>
+              <li>Communicate with you about the Service</li>
+              <li>Analyze usage patterns and improve user experience</li>
+              <li>Comply with legal obligations</li>
             </ul>
+
+            <h2>3. Social Login (Google, Facebook, Apple)</h2>
             <p>
-              We do not receive or store social network passwords. Data obtained
-              via social login is used solely for account creation,
-              authentication, and operation of the Service. Users may revoke
-              social login access at any time through the respective platform's
-              settings.
+              You may sign in using Google, Facebook, or Apple. When you do, we
+              receive your name, email address, profile picture, and a unique
+              identifier from the provider. We do not receive or store your
+              social network password.
             </p>
 
-            <h2>7. Third-Party Services</h2>
+            <h2>4. Cookies and Tracking</h2>
             <p>
-              The Service may contain links to third-party websites or services.
-              We are not responsible for the privacy practices or content of
-              such third parties. Users are subject to the terms and policies of
-              those third parties.
+              We use cookies and similar technologies for authentication,
+              session management, and analytics. You can control cookies through
+              your browser settings, but disabling them may affect Service
+              functionality.
             </p>
 
-            <h2>8. Modification or Termination of Service</h2>
+            <h2>5. Third-Party Services</h2>
             <p>
-              We reserve the right to modify, suspend, or discontinue all or
-              part of the Service at any time. We are not liable for any direct
-              or indirect damages resulting from such changes.
+              We use third-party services including Google, Meta (Facebook), and
+              Apple for authentication. These providers have their own privacy
+              policies. We are not responsible for their data practices.
             </p>
 
-            <h2>9. Intellectual Property</h2>
+            <h2>6. Data Retention</h2>
             <p>
-              All content, text, images, logos, designs, and software on the
-              Service are protected by intellectual property laws and owned by
-              us or rightful owners. Unauthorized use, reproduction, or
-              distribution is prohibited.
+              We retain your personal data for as long as your account is active
+              or as needed to provide the Service. After account deletion, data
+              is permanently removed within 30 days.
             </p>
 
-            <h2>10. Limitation of Liability</h2>
+            <h2>7. Your Rights</h2>
+            <p>You have the right to:</p>
+            <ul>
+              <li>Access your personal data</li>
+              <li>Correct inaccurate data</li>
+              <li>Delete your account and all associated data</li>
+              <li>Withdraw consent at any time</li>
+            </ul>
+
+            <h2>8. Data Deletion</h2>
             <p>
-              The Service is provided "as is" without warranties of any kind. We
-              are not liable for damages arising from the use or inability to
-              use the Service, except as required by law.
+              You can delete your account and all personal data directly within
+              the app. While logged in, go to the <strong>Data Deletion</strong>{' '}
+              page and click the "Request Account Deletion" button. No email
+              required. Deletion is processed immediately or within 30 days
+              maximum. This action is permanent and cannot be undone.
             </p>
 
-            <h2>11. Governing Law and Dispute Resolution</h2>
+            <h2>9. Data Security</h2>
             <p>
-              These Terms are governed by the laws of Mongolia. Any disputes
-              shall be resolved by the competent courts of Mongolia.
+              We implement appropriate technical and organizational measures to
+              protect your personal data against unauthorized access, alteration,
+              or destruction.
             </p>
 
-            <h2>12. Contact Information</h2>
+            <h2>10. Contact Us</h2>
             <p>
-              For questions regarding these Terms or personal data, please
-              contact us:
-            </p>
-            <p>
-              Email: <strong>nomadriseworld@gmail.com</strong>
-              <br />
-              Address: Ulaanbaatar, Mongolia
+              For privacy-related questions, contact us at:{' '}
+              <strong>nomadriseworld@gmail.com</strong>
             </p>
           </>
         ) : (
           <>
-            <h1>ҮЙЛЧИЛГЭЭ АШИГЛАХ НӨХЦӨЛ БА ХУВИЙН МЭДЭЭЛЭЛ ХАМГААЛАХ БОДЛОГО</h1>
+            {/* PRIVACY POLICY - MONGOLIAN */}
+            <h1>Нууцлалын Бодлого</h1>
+            <p className="last-updated">Сүүлд шинэчлэгдсэн: 2026 оны 1-р сарын 7</p>
 
             <p>
-              Энэхүү баримт бичиг (цаашид "Нөхцөл") нь манай веб сайт, мобайл
-              апп болон түүнтэй холбогдсон бүх үйлчилгээ (цаашид "Үйлчилгээ")-г
-              ашиглахтай холбоотой хэрэглэгч (цаашид "Хэрэглэгч")-ийн эрх, үүрэг,
-              хариуцлага болон хувийн мэдээлэл цуглуулах, ашиглах, хамгаалах
-              журмыг тодорхойлно. Хэрэглэгч Үйлчилгээг ашигласнаар энэхүү
-              Нөхцөлийг бүрэн уншиж танилцан, хүлээн зөвшөөрсөнд тооцогдоно.
+              Энэхүү Нууцлалын Бодлого нь NomadRise ("бид", "манай") таны хувийн
+              мэдээллийг хэрхэн цуглуулж, ашиглаж, хамгаалж байгааг тодорхойлно.
             </p>
 
-            <h2>1. Ерөнхий нөхцөл</h2>
-            <p>
-              Үйлчилгээ нь мэдээлэл, зөвлөмж, дижитал контент болон онлайн
-              боломжуудыг хэрэглэгчдэд хүргэх зорилготой. Бид эдгээр Нөхцөлийг
-              шаардлагатай тохиолдолд шинэчлэх, өөрчлөх эрхтэй бөгөөд
-              шинэчилсэн хувилбар нийтлэгдсэн өдрөөс эхлэн хүчин төгөлдөр
-              үйлчилнэ.
-            </p>
-
-            <h2>2. Нас болон эрх зүйн чадвар</h2>
-            <p>
-              Хэрэглэгч нь Монгол Улсын хууль тогтоомжийн дагуу гэрээ байгуулах
-              эрх зүйн чадвартай байх ёстой. 16-аас доош насны хэрэглэгч
-              Үйлчилгээг ашиглахдаа эцэг, эх эсвэл хууль ёсны асран
-              хамгаалагчийн зөвшөөрөлтэй байна.
-            </p>
-
-            <h2>3. Хэрэглэгчийн эрх, үүрэг</h2>
-            <p>
-              Хэрэглэгч нь Үйлчилгээг зөвхөн хууль ёсны, шударга, хувийн
-              зорилгоор ашиглана. Бусдын эрх, нэр төр, хууль ёсны ашиг
-              сонирхлыг зөрчих, хууль бус, доромж, залилангийн шинжтэй үйлдэл
-              хийхийг хатуу хориглоно. Хэрэглэгч өөрийн бүртгэлийн мэдээлэл,
-              нууц үгийн аюулгүй байдлыг бүрэн хариуцна.
-            </p>
-
-            <h2>4. Хувийн мэдээлэл цуглуулах, ашиглах</h2>
-            <p>Бид дараах төрлийн мэдээллийг цуглуулж болно:</p>
+            <h2>1. Цуглуулах Мэдээлэл</h2>
+            <p>Бид дараах төрлийн мэдээллийг цуглуулна:</p>
             <ul>
-              <li>Бүртгэлийн мэдээлэл (нэр, и-мэйл хаяг, холбоо барих мэдээлэл)</li>
-              <li>
-                Үйлчилгээ ашиглалтын мэдээлэл (нэвтрэлтийн түүх, IP хаяг,
-                cookie, төхөөрөмжийн мэдээлэл)
-              </li>
-              <li>Хэрэглэгчийн өгсөн санал, асуулга, хүсэлт</li>
+              <li><strong>Бүртгэлийн мэдээлэл:</strong> Нэр, и-мэйл хаяг, профайл зураг</li>
+              <li><strong>Нэвтрэлтийн мэдээлэл:</strong> Нийгмийн сүлжээний (Google, Facebook, Apple) уник таних ID</li>
+              <li><strong>Техникийн мэдээлэл:</strong> IP хаяг, браузер төрөл, төхөөрөмжийн мэдээлэл</li>
+              <li><strong>Ашиглалтын мэдээлэл:</strong> Нэвтрэлтийн түүх, үзсэн хуудас, ашигласан боломжууд</li>
+              <li><strong>Cookie:</strong> Сессийн cookie, нэвтрэлтийн token, аналитик cookie</li>
             </ul>
-            <p>
-              Эдгээр мэдээллийг Үйлчилгээг сайжруулах, хэрэглэгчтэй харилцах,
-              хууль ёсны үүргээ биелүүлэх зорилгоор ашиглана. Хувийн мэдээллийг
-              Монгол Улсын Хувийн мэдээлэл хамгаалах тухай хууль болон
-              холбогдох бусад хууль тогтоомжийн дагуу хамгаална.
-            </p>
 
-            <h2>5. Cookie болон ижил төрлийн технологи</h2>
-            <p>
-              Манай сайт, апп нь хэрэглэгчийн туршлагыг сайжруулах, статистик
-              шинжилгээ хийх зорилгоор cookie болон ижил төстэй технологи
-              ашиглаж болно. Хэрэглэгч өөрийн браузерын тохиргоогоор cookie-г
-              хязгаарлах, идэвхгүй болгох боломжтой.
-            </p>
-
-            <h2>6. Нийгмийн сүлжээ ашиглан нэвтрэх (Social Authentication)</h2>
-            <p>
-              Хэрэглэгч Google, Facebook, Apple зэрэг гуравдагч талын нийгмийн
-              сүлжээний бүртгэлээр дамжуулан Үйлчилгээнд нэвтрэх боломжтой.
-            </p>
-            <p>
-              Энэ тохиолдолд бид тухайн нийгмийн сүлжээнээс дараах мэдээллийг
-              авах боломжтой:
-            </p>
+            <h2>2. Мэдээллийг Хэрхэн Ашиглах</h2>
+            <p>Бид таны мэдээллийг дараах зорилгоор ашиглана:</p>
             <ul>
-              <li>Нэр</li>
-              <li>И-мэйл хаяг</li>
-              <li>Профайл зураг (хэрэв тухайн платформоос зөвшөөрөгдсөн бол)</li>
-              <li>Тухайн хэрэглэгчийг ялгах уник таних ID</li>
+              <li>Бүртгэл үүсгэх, удирдах</li>
+              <li>Үйлчилгээг хангах, сайжруулах</li>
+              <li>Нийгмийн сүлжээгээр таныг таних</li>
+              <li>Тантай холбогдох</li>
+              <li>Ашиглалтын статистик шинжилгээ хийх</li>
+              <li>Хуулийн үүргээ биелүүлэх</li>
             </ul>
+
+            <h2>3. Нийгмийн Сүлжээгээр Нэвтрэх (Google, Facebook, Apple)</h2>
             <p>
-              Бид нийгмийн сүлжээний нууц үг, нэвтрэх мэдээллийг хадгалахгүй.
-              Нийгмийн сүлжээгээр дамжуулан авсан мэдээллийг зөвхөн хэрэглэгчийн
-              бүртгэл үүсгэх, баталгаажуулах болон Үйлчилгээг хэвийн ажиллуулах
-              зорилгоор ашиглана. Хэрэглэгч нийгмийн сүлжээний холболтоо
-              тухайн платформын тохиргооноос хүссэн үедээ цуцлах боломжтой.
+              Та Google, Facebook, Apple-ээр нэвтрэх үед бид таны нэр, и-мэйл
+              хаяг, профайл зураг, уник таних ID авна. Бид нийгмийн сүлжээний
+              нууц үгийг хадгалдаггүй.
             </p>
 
-            <h2>7. Гуравдагч тал</h2>
+            <h2>4. Cookie ба Хянах Технологи</h2>
             <p>
-              Үйлчилгээ нь гуравдагч талын вэб сайт, сервис рүү холбоос агуулж
-              болох бөгөөд бид эдгээр талуудын нууцлал, үйл ажиллагаанд
-              хариуцлага хүлээхгүй. Хэрэглэгч гуравдагч талын үйлчилгээг
-              ашиглахдаа тухайн талын нөхцөлийг дагаж мөрдөнө.
+              Бид cookie болон ижил төстэй технологиудыг нэвтрэлт, сессийн
+              удирдлага, аналитик зорилгоор ашиглана. Та браузерын тохиргоогоор
+              cookie-г удирдах боломжтой.
             </p>
 
-            <h2>8. Үйлчилгээг өөрчлөх, зогсоох</h2>
+            <h2>5. Гуравдагч Талын Үйлчилгээ</h2>
             <p>
-              Бид Үйлчилгээний зарим хэсгийг түр хугацаагаар эсвэл бүрмөсөн
-              өөрчлөх, зогсоох эрхтэй. Ийм өөрчлөлтөөс үүдэн хэрэглэгчид учирч
-              болзошгүй шууд болон шууд бус хохиролд бид хариуцлага хүлээхгүй.
+              Бид Google, Meta (Facebook), Apple-ийн нэвтрэлтийн үйлчилгээг
+              ашигладаг. Эдгээр үйлчилгээ үзүүлэгчид өөрсдийн нууцлалын бодлоготой.
+              Бид тэдний өгөгдлийн практикт хариуцлага хүлээхгүй.
             </p>
 
-            <h2>9. Оюуны өмчийн эрх</h2>
+            <h2>6. Өгөгдөл Хадгалах Хугацаа</h2>
             <p>
-              Үйлчилгээ дээрх бүх контент, текст, зураг, лого, дизайн,
-              програм хангамж нь манай болон хууль ёсны эрх эзэмшигчдийн оюуны
-              өмч бөгөөд зохиогчийн эрхээр хамгаалагдана. Зөвшөөрөлгүйгээр
-              хуулбарлах, түгээх, ашиглахыг хориглоно.
+              Таны бүртгэл идэвхтэй байх хугацаанд бид таны мэдээллийг хадгална.
+              Бүртгэл устгасны дараа өгөгдлийг 30 хоногийн дотор бүрмөсөн устгана.
             </p>
 
-            <h2>10. Хариуцлага хязгаарлах</h2>
+            <h2>7. Таны Эрхүүд</h2>
+            <p>Та дараах эрхтэй:</p>
+            <ul>
+              <li>Өөрийн мэдээлэлд хандах</li>
+              <li>Буруу мэдээллийг засах</li>
+              <li>Бүртгэл болон бүх мэдээллийг устгах</li>
+              <li>Зөвшөөрлөө хүссэн үедээ цуцлах</li>
+            </ul>
+
+            <h2>8. Мэдээлэл Устгах</h2>
             <p>
-              Үйлчилгээ нь "байгаа чигээрээ" (as is) олгогдож байгаа бөгөөд
-              алдаагүй, тасралтгүй байх баталгаа өгөхгүй. Үйлчилгээ ашигласнаас
-              үүдэн гарсан аливаа хохирол, алдагдалд бид хуульд зааснаас бусад
-              тохиолдолд хариуцлага хүлээхгүй.
+              Та өөрийн бүртгэл болон бүх хувийн мэдээллийг апп дотроос шууд
+              устгах боломжтой. Нэвтэрсэн үедээ <strong>Мэдээлэл Устгах</strong>{' '}
+              хуудас руу орж "Бүртгэл Устгах Хүсэлт" товчийг дарна уу. И-мэйл
+              шаардлагагүй. Устгалт шууд эсвэл хамгийн ихдээ 30 хоногийн дотор
+              боловсруулагдана. Энэ үйлдэл бүрмөсөн бөгөөд буцаах боломжгүй.
             </p>
 
-            <h2>11. Маргаан шийдвэрлэх</h2>
+            <h2>9. Өгөгдлийн Аюулгүй Байдал</h2>
             <p>
-              Энэхүү Нөхцөлтэй холбоотой маргааныг Монгол Улсын хууль
-              тогтоомжийн дагуу, шаардлагатай тохиолдолд харьяалах шүүхээр
-              шийдвэрлэнэ.
+              Бид таны хувийн мэдээллийг зөвшөөрөлгүй хандалт, өөрчлөлт, устгалтаас
+              хамгаалах зохих техникийн болон зохион байгуулалтын арга хэмжээг
+              хэрэгжүүлдэг.
             </p>
 
-            <h2>12. Холбоо барих</h2>
+            <h2>10. Холбоо Барих</h2>
             <p>
-              Эдгээр Нөхцөл болон хувийн мэдээлэлтэй холбоотой асуулт, хүсэлт
-              байвал дараах хаягаар холбогдоно уу.
-            </p>
-            <p>
-              Имэйл: <strong>nomadriseworld@gmail.com</strong>
-              <br />
-              Хаяг: Улаанбаатар хот, Монгол Улс
+              Нууцлалтай холбоотой асуултаа дараах хаягаар илгээнэ үү:{' '}
+              <strong>nomadriseworld@gmail.com</strong>
             </p>
           </>
         )}
@@ -299,15 +218,22 @@ export default function PolicyPage({ params }: { params: Promise<{ lang: Locale 
         }
 
         .policy-page-content h1 {
-          font-size: 2.5rem;
-          margin: 0 0 24px 0;
+          font-size: 2rem;
+          margin: 0 0 8px 0;
           color: #1f2937;
           font-weight: 700;
         }
 
+        .last-updated {
+          font-size: 0.9rem;
+          color: #6b7280;
+          margin-bottom: 24px;
+          font-style: italic;
+        }
+
         .policy-page-content h2 {
-          font-size: 1.3rem;
-          margin: 32px 0 16px 0;
+          font-size: 1.2rem;
+          margin: 28px 0 12px 0;
           color: #1f2937;
           font-weight: 600;
         }
@@ -318,7 +244,7 @@ export default function PolicyPage({ params }: { params: Promise<{ lang: Locale 
         }
 
         .policy-page-content ul {
-          margin: 16px 0;
+          margin: 12px 0 16px 0;
           padding-left: 24px;
         }
 
@@ -341,6 +267,10 @@ export default function PolicyPage({ params }: { params: Promise<{ lang: Locale 
           .policy-page-content h2 {
             color: #f3f4f6;
           }
+
+          .last-updated {
+            color: #9ca3af;
+          }
         }
 
         @media (max-width: 640px) {
@@ -349,7 +279,7 @@ export default function PolicyPage({ params }: { params: Promise<{ lang: Locale 
           }
 
           .policy-page-content h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
           }
 
           .policy-page-content h2 {
