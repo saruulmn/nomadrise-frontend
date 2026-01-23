@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import type { Locale } from '@/i18n/config';
+import { DataDeletionSkeleton } from '@/app/components/Skeleton';
 
 type Params = {
   params: Promise<{ lang: Locale }>;
@@ -10,14 +11,16 @@ type Params = {
 
 export default function DataDeletionPage({ params }: Params) {
   const { data: session, status } = useSession();
-  const [lang, setLang] = useState<Locale>('mn');
+  const [lang, setLang] = useState<Locale | null>(null);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   useEffect(() => {
     params.then((p) => {
       setLang(p.lang);
+      setIsPageLoading(false);
     });
   }, [params]);
 
@@ -25,11 +28,9 @@ export default function DataDeletionPage({ params }: Params) {
   const isLoading = status === 'loading';
   const isLoggedIn = status === 'authenticated' && session?.user;
 
-  const getAuthProvider = (): string => {
-    // Note: Provider info should be stored in your session/database
-    // For now, return 'unknown' as default
-    return 'unknown';
-  };
+  if (isPageLoading || !lang) {
+    return <DataDeletionSkeleton />;
+  }
 
   const handleDataDeletionRequest = async () => {
     if (!isLoggedIn) return;
@@ -38,29 +39,20 @@ export default function DataDeletionPage({ params }: Params) {
     setError(null);
 
     try {
-      const response = await fetch('/api/data-deletion', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userEmail: session?.user?.email,
-          userId: session?.user?.id,
-          provider: getAuthProvider(),
-          requestedAt: new Date().toISOString(),
-        }),
+      // Use centralized authApi for account deletion
+      const { deleteAccount } = await import('@/lib/api');
+      await deleteAccount({
+        email: session?.user?.email,
+        provider: session?.user?.provider || 'unknown',
+        provider_account_id: session?.user?.providerAccountId || session?.user?.id || '',
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit data deletion request');
-      }
 
       setSubmitted(true);
     } catch (err) {
       setError(
         isEnglish
-          ? 'Failed to submit request. Please try again or email nomadriseworld@gmail.com'
-          : 'Хүсэлт илгээхэд алдаа гарлаа. Дахин оролдоно уу эсвэл nomadriseworld@gmail.com руу и-мэйл илгээнэ үү'
+          ? 'Failed to delete account. Please try again or email nomadriseworld@gmail.com'
+          : 'Бүртгэл устгахад алдаа гарлаа. Дахин оролдоно уу эсвэл nomadriseworld@gmail.com руу и-мэйл илгээнэ үү'
       );
       console.error('Data deletion error:', err);
     } finally {

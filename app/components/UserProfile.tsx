@@ -22,11 +22,8 @@ export default function UserProfile() {
   if (!dictionary) return null;
 
   if (!session?.user) {
-    return (
-      <a href="/login">
-        <Button type="primary">{dictionary.nav.signIn}</Button>
-      </a>
-    );
+    // Login button is hidden
+    return null;
   }
 
   const items: MenuProps["items"] = [

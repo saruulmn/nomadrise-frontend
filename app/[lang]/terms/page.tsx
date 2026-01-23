@@ -2,15 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import type { Locale } from '@/i18n/config';
+import { TermsSkeleton } from '@/app/components/Skeleton';
 
 export default function TermsPage({ params }: { params: Promise<{ lang: Locale }> }) {
-  const [lang, setLang] = useState<Locale>('mn');
+  const [lang, setLang] = useState<Locale | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     params.then((p) => {
       setLang(p.lang);
+      setIsLoading(false);
     });
   }, [params]);
+
+  if (isLoading || !lang) {
+    return <TermsSkeleton />;
+  }
 
   const isEnglish = lang === 'en';
 

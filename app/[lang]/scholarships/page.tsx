@@ -1,30 +1,13 @@
 "use client";
 
 import React, { useEffect, useState, Suspense } from "react";
-import { scholarshipApi } from "@/lib/api";
+import { scholarshipApi, Scholarship } from "@/lib/api";
 import Link from "next/link";
 import { ScholarshipListSkeleton } from "@/app/components/Skeleton";
 import { useLoading } from "@/app/components/LoadingProvider";
 import { useSearchParams } from "next/navigation";
 import { getDictionary } from "@/i18n/dictionaries";
 import { Locale } from "@/i18n/config";
-
-type Scholarship = {
-  url: string;
-  org: string;
-  org_name: string;
-  title: string;
-  description: string;
-  study_level: string;
-  field_of_study: string;
-  coverage: string;
-  amount: string;
-  currency: string;
-  application_open_at: string;
-  application_close_at: string;
-  application_url: string;
-  is_active: boolean;
-};
 
 type ScholarshipsPageProps = {
   params: Promise<{ lang: string }>;
@@ -48,11 +31,9 @@ function ScholarshipsContent({ params }: ScholarshipsPageProps) {
       try {
         setLocalLoading(true);
         setGlobalLoading(true);
-        const response = await scholarshipApi.getAll();
-        // Handle paginated response with results array
-        const data = response.data || response;
-        const scholarshipsData = data.results || data;
-        setScholarships(Array.isArray(scholarshipsData) ? scholarshipsData : []);
+        // scholarshipApi.getAll() now returns array directly (handles pagination internally)
+        const scholarshipsData = await scholarshipApi.getAll();
+        setScholarships(scholarshipsData);
         setLocalLoading(false);
         setGlobalLoading(false);
       } catch (err) {
@@ -239,7 +220,7 @@ function ScholarshipsContent({ params }: ScholarshipsPageProps) {
                       overflow: "hidden",
                     }}
                   >
-                    {scholarship.description.split('\n')[0]}
+                    {scholarship.description ? scholarship.description.split('\n')[0] : ""}
                   </p>
                 </div>
 

@@ -2,15 +2,22 @@
 
 import { useEffect, useState } from 'react';
 import type { Locale } from '@/i18n/config';
+import { PolicySkeleton } from '@/app/components/Skeleton';
 
 export default function PolicyPage({ params }: { params: Promise<{ lang: Locale }> }) {
-  const [lang, setLang] = useState<Locale>('mn');
+  const [lang, setLang] = useState<Locale | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     params.then((p) => {
       setLang(p.lang);
+      setIsLoading(false);
     });
   }, [params]);
+
+  if (isLoading || !lang) {
+    return <PolicySkeleton />;
+  }
 
   const isEnglish = lang === 'en';
 

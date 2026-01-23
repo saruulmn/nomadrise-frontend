@@ -5,7 +5,6 @@ import Link from "next/link";
 import { Dropdown, Menu, Drawer } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { usePathname } from "next/navigation";
-import LanguageSwitcher from "./LanguageSwitcher";
 import UserProfile from "./UserProfile";
 import ThemeToggle from "./ThemeToggle";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -62,8 +61,17 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
   return (
     <header className="site-header overlay">
       <div className="header-inner">
-        <div className="logo" style={{ marginRight: 8 }}>
-          <Link href={`/${lang}`}>nomadrise.mn</Link>
+        <div className="logo" style={{ marginRight: 8, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Link href={`/${lang}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+            <img 
+              src="/logo.png" 
+              alt="NomadRise Logo" 
+              width={32} 
+              height={32}
+              style={{ borderRadius: '4px', objectFit: 'contain' }}
+            />
+            <span style={{ color: '#c5c75c', fontWeight: 600 }}>nomadrise</span>
+          </Link>
         </div>
 
         <nav className="nav-menu" aria-label="Main navigation">
@@ -100,7 +108,6 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
 
         <div className="header-actions">
           <ThemeToggle />
-          <LanguageSwitcher />
           <UserProfile />
         </div>
 
@@ -110,7 +117,18 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
       </div>
 
       <Drawer
-        title={<Link href={`/${lang}`}>nomadrise.mn</Link>}
+        title={
+          <Link href={`/${lang}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
+            <img 
+              src="/logo.png" 
+              alt="NomadRise Logo" 
+              width={28} 
+              height={28}
+              style={{ borderRadius: '4px', objectFit: 'contain' }}
+            />
+            <span style={{ color: '#c5c75c', fontWeight: 600 }}>nomadrise</span>
+          </Link>
+        }
         placement="right"
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}

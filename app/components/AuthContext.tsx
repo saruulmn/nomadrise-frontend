@@ -37,10 +37,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const verifyToken = async (token: string) => {
     try {
-      await authApi.verify(token);
-      // Token is valid, set a basic user object
-      // In production, you'd fetch actual user details from an endpoint
-      setUser({ id: 1, username: 'user', email: 'user@example.com' });
+      const isValid = await authApi.verifyToken(token);
+      if (isValid) {
+        // Token is valid, set a basic user object
+        // In production, you'd fetch actual user details from an endpoint
+        setUser({ id: 1, username: 'user', email: 'user@example.com' });
+      } else {
+        authApi.clearTokens();
+        setUser(null);
+      }
     } catch (error) {
       console.error('Token verification failed:', error);
       authApi.clearTokens();
@@ -52,10 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await authApi.login(username, password);
-      const { access, refresh } = response.data;
-      
-      authApi.setTokens(access, refresh);
+      // authApi.login now handles token storage internally
+      await authApi.login({ username, password });
       
       // You might want to fetch user details here from a /me endpoint
       setUser({ id: 1, username, email: `${username}@example.com` });

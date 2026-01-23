@@ -149,7 +149,7 @@ export function ScholarshipListSkeleton() {
 
 export function HeroSkeleton() {
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-20">
+    <div className="bg-linear-to-r from-blue-600 to-purple-600 py-20">
       <div className="container mx-auto px-4">
         <div className="text-center">
           <div className="h-12 w-3/4 mx-auto mb-6 animate-pulse" style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '8px' }} />
@@ -175,5 +175,163 @@ export function NavBarSkeleton() {
         </div>
       </div>
     </nav>
+  );
+}
+
+export function PolicySkeleton() {
+  return (
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh' }}>
+      <Skeleton className="h-10 w-64 mb-6" />
+      <Skeleton className="h-4 w-full mb-4" />
+      <Skeleton className="h-4 w-5/6 mb-8" />
+      
+      <Skeleton className="h-7 w-48 mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-4/5 mb-6" />
+      
+      <Skeleton className="h-7 w-56 mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-3/4 mb-6" />
+      
+      <Skeleton className="h-7 w-44 mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-5/6 mb-6" />
+      
+      <Skeleton className="h-7 w-40 mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-4/5 mb-6" />
+      
+      <Skeleton className="h-7 w-36 mb-4" />
+      <Skeleton className="h-4 w-48" />
+    </div>
+  );
+}
+
+export function TermsSkeleton() {
+  return (
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh' }}>
+      <Skeleton className="h-10 w-56 mb-6" />
+      <Skeleton className="h-4 w-full mb-4" />
+      <Skeleton className="h-4 w-4/5 mb-8" />
+      
+      <Skeleton className="h-7 w-44 mb-4" />
+      <Skeleton className="h-4 w-full mb-6" />
+      
+      <Skeleton className="h-7 w-40 mb-4" />
+      <Skeleton className="h-4 w-full mb-6" />
+      
+      <Skeleton className="h-7 w-48 mb-4" />
+      <Skeleton className="h-4 w-full mb-2" />
+      <Skeleton className="h-4 w-5/6 mb-6" />
+      
+      <Skeleton className="h-7 w-44 mb-4" />
+      <Skeleton className="h-4 w-full mb-6" />
+      
+      <Skeleton className="h-7 w-40 mb-4" />
+      <Skeleton className="h-4 w-3/4" />
+    </div>
+  );
+}
+
+export function DataDeletionSkeleton() {
+  return (
+    <div style={{ minHeight: '100vh', padding: '40px 20px' }}>
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <Skeleton className="h-10 w-64 mb-6 mx-auto" />
+        <Skeleton className="h-4 w-full mb-2" />
+        <Skeleton className="h-4 w-5/6 mb-8 mx-auto" />
+        
+        <div style={{ background: 'var(--card-bg)', borderRadius: '12px', padding: '2rem', marginBottom: '2rem' }}>
+          <Skeleton className="h-7 w-48 mb-4" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-4/5 mb-4" />
+          <Skeleton className="h-12 w-48 mt-4" />
+        </div>
+        
+        <div style={{ background: 'var(--card-bg)', borderRadius: '12px', padding: '2rem' }}>
+          <Skeleton className="h-7 w-56 mb-4" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-3/4" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function EventsSkeleton() {
+  return (
+    <div style={{ minHeight: '100vh', padding: '4rem 2rem', background: '#f9fafb' }}>
+      <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <Skeleton className="h-10 w-48 mx-auto mb-4" />
+        </div>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+          {[...Array(3)].map((_, i) => (
+            <div key={i} style={{ background: 'white', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
+              <Skeleton className="h-40 w-full mb-4" />
+              <Skeleton className="h-6 w-3/4 mb-2" />
+              <Skeleton className="h-4 w-full mb-2" />
+              <Skeleton className="h-4 w-5/6 mb-4" />
+              <Skeleton className="h-4 w-32" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function SponsorSkeleton() {
+  return (
+    <div style={{ minHeight: '100vh', padding: '4rem 2rem' }}>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <Skeleton className="h-10 w-56 mb-2 mx-auto" />
+        <Skeleton className="h-5 w-80 mb-8 mx-auto" />
+        
+        <div style={{ background: 'var(--card-bg)', borderRadius: '12px', padding: '2rem' }}>
+          <div className="mb-6">
+            <Skeleton className="h-5 w-24 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div className="mb-6">
+            <Skeleton className="h-5 w-20 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div className="mb-6">
+            <Skeleton className="h-5 w-28 mb-2" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+          <div className="mb-6">
+            <Skeleton className="h-5 w-24 mb-2" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+          <Skeleton className="h-12 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function LoginSkeleton() {
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div style={{ maxWidth: '400px', width: '100%' }}>
+        <Skeleton className="h-12 w-48 mb-2 mx-auto" />
+        <Skeleton className="h-5 w-64 mb-8 mx-auto" />
+        
+        <div style={{ background: 'var(--card-bg)', borderRadius: '12px', padding: '2rem' }}>
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-12 w-full mb-4" />
+          <Skeleton className="h-12 w-full mb-6" />
+          
+          <Skeleton className="h-5 w-full mb-4" />
+        </div>
+      </div>
+    </div>
   );
 }

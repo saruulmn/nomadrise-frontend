@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { scholarshipApi } from "@/lib/api";
+import { scholarshipApi, Scholarship } from "@/lib/api";
 import { Modal, Form, Input, Upload, Button, InputNumber, message, Select } from "antd";
 import { UploadOutlined, FileTextOutlined, ArrowLeftOutlined, CalendarOutlined, DollarOutlined, BookOutlined } from "@ant-design/icons";
 import type { UploadFile } from "antd";
@@ -13,23 +13,6 @@ import { useLoading } from "@/app/components/LoadingProvider";
 
 const { TextArea } = Input;
 const { Option } = Select;
-
-type Scholarship = {
-  url: string;
-  org: string;
-  org_name: string;
-  title: string;
-  description: string;
-  study_level: string;
-  field_of_study: string;
-  coverage: string;
-  amount: string;
-  currency: string;
-  application_open_at: string;
-  application_close_at: string;
-  application_url: string;
-  is_active: boolean;
-};
 
 type ScholarshipDetailPageProps = {
   params: Promise<{ lang: string; id: string }>;
@@ -63,8 +46,9 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
       try {
         setLocalLoading(true);
         setLoading(true);
-        const response = await scholarshipApi.getById(parseInt(scholarshipId));
-        setScholarship(response.data);
+        // scholarshipApi.getById() now returns data directly
+        const data = await scholarshipApi.getById(parseInt(scholarshipId));
+        setScholarship(data);
         setLocalLoading(false);
         setLoading(false);
       } catch (err) {

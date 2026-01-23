@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
+import { EventsSkeleton } from "@/app/components/Skeleton";
 
 type EventsPageProps = {
   params: Promise<{ lang: string }>;
@@ -11,6 +12,7 @@ type EventsPageProps = {
 export default function EventsPage({ params }: EventsPageProps) {
   const [lang, setLang] = useState("en");
   const [dict, setDict] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     Promise.resolve(params).then(async (resolved) => {
@@ -21,8 +23,13 @@ export default function EventsPage({ params }: EventsPageProps) {
       } catch (e) {
         // ignore
       }
+      setIsLoading(false);
     });
   }, [params]);
+
+  if (isLoading) {
+    return <EventsSkeleton />;
+  }
 
   return (
     <div style={{ minHeight: "100vh", padding: "4rem 2rem", background: "#f9fafb" }}>

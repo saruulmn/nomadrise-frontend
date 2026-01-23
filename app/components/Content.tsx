@@ -1,13 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { contentApi } from "@/lib/api";
-
-type ContentItem = {
-  url: string;
-  title: string;
-  description: string;
-};
+import { contentApi, ContentItem } from "@/lib/api";
 
 type ContentProps = {
   dictionary: {
@@ -29,8 +23,9 @@ export default function Content({ dictionary }: ContentProps) {
   useEffect(() => {
     const fetchContents = async () => {
       try {
-        const response = await contentApi.getAll();
-        setContents(response.data);
+        // contentApi.getAll() now returns data directly (no .data wrapper)
+        const data = await contentApi.getAll();
+        setContents(data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching contents:", err);

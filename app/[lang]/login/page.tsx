@@ -6,21 +6,28 @@ import { useEffect, useState } from "react";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import PolicyModal from "@/app/components/PolicyModal";
+import { LoginSkeleton } from "@/app/components/Skeleton";
 
 export default function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const [lang, setLang] = useState<Locale>("mn");
   const [dictionary, setDictionary] = useState<any>(null);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     params.then((p) => {
       setLang(p.lang);
-      getDictionary(p.lang).then(setDictionary);
+      getDictionary(p.lang).then((dict) => {
+        setDictionary(dict);
+        setIsLoading(false);
+      });
     });
   }, [params]);
 
-  if (!dictionary) return null;
+  if (isLoading || !dictionary) {
+    return <LoginSkeleton />;
+  }
 
   const handleGoogleSignIn = async () => {
     if (agreeTerms) {

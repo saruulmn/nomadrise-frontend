@@ -38,7 +38,7 @@ export default function RootLayout({
               {children}
 
               <footer className="site-footer">
-                <div className="footer-inner">© {new Date().getFullYear()} nomadrise.mn — All rights reserved.</div>
+                <div className="footer-inner">© {new Date().getFullYear()} <span style={{ color: '#c5c75c', fontWeight: 600 }}>nomadrise</span> — All rights reserved.</div>
               </footer>
             </LoadingProvider>
           </AuthProvider>
