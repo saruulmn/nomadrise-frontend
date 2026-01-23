@@ -15,18 +15,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.providerAccountId = account.providerAccountId;
         token.accessToken = account.access_token;
         
-        // Sync user to Django backend using centralized API
-        try {
-          const result = await syncOAuthUser({
-            email: user.email,
-            name: user.name,
-            image: user.image,
-            provider: account.provider,
-            provider_account_id: account.providerAccountId || '',
-          });
-          token.backendUserId = result.user_id;
-        } catch (error) {
-          console.error('Failed to sync user to backend:', error);
+        // Only sync if not already synced
+        if (!token.backendUserId) {
+          // Retry up to 3 times with exponential backoff
+          for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+              const result = await syncOAuthUser({
+                email: user.email || '',
+                name: user.name || '',
+                image: user.image || '',
+                provider: account.provider,
+                provider_account_id: account.providerAccountId || '',
+              });
+              token.backendUserId = result.user_id;
+              break; // Success, exit retry loop
+            } catch (error) {
+              if (attempt === 3) {
+                console.error('Failed to sync user after 3 retries:', error);
+              } else {
+                // Wait before retrying: 1s, 2s, 4s exponential backoff
+                await new Promise(resolve => 
+                  setTimeout(resolve, Math.pow(2, attempt - 1) * 1000)
+                );
+              }
+            }
+          }
         }
       }
       return token;
