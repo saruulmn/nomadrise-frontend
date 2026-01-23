@@ -266,17 +266,99 @@ body {
 
 .footer-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; color: #666; text-align:center }
 
+/* Mobile hamburger toggle button */
+.mobile-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: white;
+  font-size: 24px;
+  transition: color 200ms ease;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.mobile-toggle:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.site-header.solid .mobile-toggle {
+  color: var(--foreground);
+}
+
+.site-header.solid .mobile-toggle:hover {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* Desktop: hide mobile menu */
+@media (min-width: 1024px) {
+  .mobile-toggle { display: none !important; }
+  .header-actions { display: flex !important; }
+  .nav-menu { display: flex !important; }
+}
+
+/* Tablet: show mobile menu, adjust layout */
+@media (max-width: 1023px) {
+  .nav-menu { display: none; }
+  .header-actions { display: none; }
+  .mobile-toggle { display: inline-flex; }
+  .header-inner { gap: 12px; }
+  .logo { margin-right: 0; }
+}
+
+/* Mobile styles */
 @media (max-width: 640px) {
   .nav-menu { display: none; }
   .hero-inner { position: static; }
   .hero-content { color: var(--foreground); text-shadow: none; padding: 24px 20px; margin: 0 8px }
   .search-input { width: 100%; }
-  .mobile-toggle { display: inline-flex; align-items:center; justify-content:center; color: white; background: transparent; border: none; font-size: 22px; margin-left: 8px; }
   .header-actions { display: none; }
+  .mobile-toggle { display: inline-flex; }
 }
 
-/* default: hide mobile toggle on larger screens */
-.mobile-toggle { display: none; }
+/* Ant Design Drawer styling for mobile menu */
+.ant-drawer-header {
+  background: var(--background);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ant-drawer-body {
+  background: var(--background);
+  padding: 0 !important;
+}
+
+.ant-drawer-close {
+  color: var(--foreground);
+}
+
+.ant-menu {
+  background: var(--background);
+  border: none;
+  color: var(--foreground);
+}
+
+.ant-menu-item {
+  color: var(--foreground) !important;
+}
+
+.ant-menu-item:hover {
+  color: var(--primary) !important;
+}
+
+.ant-menu-item-selected {
+  background-color: rgba(11, 95, 255, 0.1) !important;
+  color: var(--primary) !important;
+}
+
+.ant-menu .ant-menu-submenu-title {
+  color: var(--foreground) !important;
+}
 
 /* Popular categories / listings card */
 .popular-cats-wrap { padding: 28px 0 40px; background: var(--surface); }

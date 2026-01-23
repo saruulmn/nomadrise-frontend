@@ -87,7 +87,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
             onOpenChange={(next) => setOpen(next)}
           >
             <button
-              className={`dropdown-toggle ${pathname.includes("/programs") ? "nav-active" : ""}`}
+              className={`dropdown-toggle ${pathname.includes("/scholarships") ? "nav-active" : ""}`}
               onFocus={() => setOpen(true)}
               onBlur={() => setOpen(false)}
               aria-haspopup="true"
@@ -111,7 +111,12 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
           <UserProfile />
         </div>
 
-        <button className="mobile-toggle" aria-label="Open menu" onClick={() => setDrawerOpen(true)}>
+        <button 
+          className="mobile-toggle" 
+          aria-label="Open menu" 
+          onClick={() => setDrawerOpen(true)}
+          type="button"
+        >
           <MenuOutlined />
         </button>
       </div>
@@ -133,6 +138,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         styles={{ body: { padding: 0 } }}
+        closeIcon={null}
       >
         <Menu
           mode="inline"
@@ -141,6 +147,10 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
           onClick={() => setDrawerOpen(false)}
           style={{ borderInlineEnd: 0 }}
         />
+        <div style={{ padding: '16px', borderTop: '1px solid var(--border-color)', display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'space-between' }}>
+          <ThemeToggle />
+          <span style={{ fontSize: '12px', color: 'var(--muted)' }}>Theme</span>
+        </div>
       </Drawer>
     </header>
   );
