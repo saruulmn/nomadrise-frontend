@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { locales, Locale } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import NavBar from "@/app/components/NavBar";
+import Footer from "@/app/components/Footer";
 
 export async function generateStaticParams() {
   return locales.map((lang) => ({ lang }));
@@ -21,11 +22,13 @@ export default async function LangLayout({
 }) {
   const { lang } = await params;
   const dictionary = await getDictionary(lang as Locale);
-  
+
   return (
     <>
       <NavBar dictionary={dictionary} />
-      {children}
+      <main className="site-content">{children}</main>
+      <Footer lang={lang as Locale} dictionary={dictionary} />
     </>
   );
+}
 }

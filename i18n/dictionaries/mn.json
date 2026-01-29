@@ -127,5 +127,9 @@
     },
     "contactText": "Асуулт байна уу? Бидэнтэй холбогдох:",
     "contactEmail": "sponsor@nomadrise.mn"
+  },
+  "footer": {
+    "terms": "Үйлчилгээний нөхцөл",
+    "policy": "Нууцлалын бодлого"
   }
 }

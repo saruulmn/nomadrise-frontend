@@ -127,5 +127,9 @@
     },
     "contactText": "Have questions? Contact us at",
     "contactEmail": "sponsor@nomadrise.mn"
+  },
+  "footer": {
+    "terms": "Terms of Service",
+    "policy": "Privacy Policy"
   }
 }
