@@ -26,7 +26,7 @@ export default async function LangLayout({
   return (
     <>
       <NavBar dictionary={dictionary} />
-      <main className="site-content">{children}</main>
+      {children}
       <Footer lang={lang as Locale} dictionary={dictionary} />
     </>
   );
