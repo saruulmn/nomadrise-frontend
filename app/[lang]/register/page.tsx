@@ -259,7 +259,7 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
               type="text"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              placeholder="Өвөг"
+              placeholder="Овог"
               style={{
                 width: "100%",
                 padding: "12px 14px",
