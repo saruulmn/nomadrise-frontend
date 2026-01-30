@@ -135,18 +135,22 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
         <div className="text-center mb-10">
           <div
             style={{
-              width: "64px",
-              height: "64px",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              borderRadius: "16px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
               margin: "0 auto 24px",
-              boxShadow: "0 8px 16px rgba(102, 126, 234, 0.3)",
+              display: "flex",
+              justifyContent: "center",
             }}
           >
-            <span style={{ fontSize: "32px" }}>🚀</span>
+            <img
+              src="/logo.png"
+              alt="NomadRise Logo"
+              width={64}
+              height={64}
+              style={{
+                borderRadius: "16px",
+                objectFit: "contain",
+                boxShadow: "0 8px 16px rgba(102, 126, 234, 0.3)",
+              }}
+            />
           </div>
           <h1
             style={{
@@ -158,10 +162,10 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               marginBottom: "8px",
             }}
           >
-            {dictionary.login.title || "Sign In"}
+            {dictionary.login?.title || "Nomadrise-д нэвтрэх"}
           </h1>
           <p style={{ color: "#6b7280", fontSize: "16px" }}>
-            {dictionary.login.subtitle || "Enter your email and password"}
+            {dictionary.login?.subtitle || "Таны мэйл хаяг болон нууц үгээ оруулна уу"}
           </p>
         </div>
 
@@ -195,7 +199,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                 marginBottom: "8px",
               }}
             >
-              Email Address
+              Мэйл хаяг
             </label>
             <input
               type="email"
@@ -228,7 +232,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                 marginBottom: "8px",
               }}
             >
-              Password
+              Нууц үг
             </label>
             <input
               type="password"
@@ -289,7 +293,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                   fontWeight: "500",
                 }}
               >
-                I agree to the{" "}
+                Би{" "}
                 <button
                   type="button"
                   onClick={() => setShowPolicyModal(true)}
@@ -311,8 +315,33 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                     (e.currentTarget.style.color = "#667eea")
                   }
                 >
-                  Terms of Service
+                  {dictionary.login?.termsLink || "Үйлчилгээний нөхцөл"}
                 </button>
+                {" "}болон{" "}
+                <button
+                  type="button"
+                  onClick={() => setShowPolicyModal(true)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#667eea",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    padding: "0",
+                    fontSize: "inherit",
+                    fontWeight: "inherit",
+                    fontFamily: "inherit",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#764ba2")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color = "#667eea")
+                  }
+                >
+                  {dictionary.login?.privacyLink || "Нууцлалын бодлого"}
+                </button>
+                {" "}сайтай санамсаргүй болсон
               </span>
             </label>
           </div>
@@ -355,7 +384,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               }
             }}
           >
-            {isSubmitting ? "Signing in..." : "Sign In"}
+            {isSubmitting ? "Нэвтэрч байна..." : "Нэвтрэх"}
           </button>
         </form>
       </div>
