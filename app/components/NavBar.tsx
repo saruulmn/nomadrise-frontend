@@ -108,6 +108,31 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
 
         <div className="header-actions">
           <ThemeToggle />
+          <Link 
+            href={`/${lang}/login`} 
+            style={{
+              padding: '8px 16px',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              textDecoration: 'none',
+              transition: 'all 0.3s ease',
+              display: 'inline-block'
+            }}
+            className={isActive(`/${lang}/login`) ? "nav-active" : undefined}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 8px 16px rgba(102, 126, 234, 0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = 'none';
+            }}
+          >
+            {dictionary.nav.signIn || 'Sign In'}
+          </Link>
           <UserProfile />
         </div>
 
