@@ -41,17 +41,19 @@
     "cta": "Ready to join the movement? Explore our programs and become a Nomad Scholar."
   },
   "login": {
-    "title": "Nomadrise нэвтрэх",
-    "subtitle": "Нэвтрэх аргаа сонгоно уу",
+    "title": "Sign In to Nomadrise",
+    "subtitle": "Enter your email and password to sign in",
     "continueGoogle": "Continue with Google",
     "continueFacebook": "Continue with Facebook",
     "continueApple": "Continue with Apple",
     "agreeCheckbox": "I agree to the Terms of Service and Privacy Policy",
-    "termsText": "Үргэлжлүүлснээр та манай",
-    "termsLink": "Үйлчилгээний нөхцөл",
-    "and": "болон",
-    "privacyLink": "Нууцлалын бодлого",
-    "agreeText": "-той зөвшөөрч байна"
+    "termsText": "By continuing, you agree to our",
+    "termsLink": "Terms of Service",
+    "and": "and",
+    "privacyLink": "Privacy Policy",
+    "agreeText": "",
+    "noAccount": "Don't have an account?",
+    "register": "Sign Up"
   },
   "scholarship": {
     "title": "Available Scholarships",

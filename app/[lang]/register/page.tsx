@@ -2,23 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
-import { loginWithEmail } from "@/lib/api/login";
 import { tokenStorage } from "@/lib/api/base";
 
-export default function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
+export default function RegisterPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const [lang, setLang] = useState<Locale>("mn");
   const [dictionary, setDictionary] = useState<any>(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -33,14 +37,24 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!agreeTerms) {
-      setError("Please agree to the terms and conditions");
+      setError("Үйлчилгээний нөхцөл болон нууцлалын бодлогийг зөвшөөрөх ёстой");
       return;
     }
 
-    if (!email || !password) {
-      setError("Email and password are required");
+    if (!firstName || !lastName || !email || !password || !confirmPassword) {
+      setError("Бүх талбарыг нөхөх ёстой");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Нууц үгүүд хүрэлцэхгүй байна");
+      return;
+    }
+
+    if (password.length < 8) {
+      setError("Нууц үг дор хаяж 8 тэмдэгт байх ёстой");
       return;
     }
 
@@ -48,16 +62,39 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
     setError("");
 
     try {
-      const response = await loginWithEmail({ email, password });
-      
-      // Store tokens
-      tokenStorage.setTokens(response.access, response.refresh);
-      
-      // Redirect to dashboard
-      router.push(`/${lang}/dashboard`);
+      // Call registration API endpoint
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          first_name: firstName,
+          last_name: lastName,
+          email,
+          password,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Бүртгүүлэлт амжилтгүй болсон");
+      }
+
+      const data = await response.json();
+
+      // Store tokens if registration returns them
+      if (data.access && data.refresh) {
+        tokenStorage.setTokens(data.access, data.refresh);
+      }
+
+      setSuccess("Бүртгүүлэлт амжилттай! Та сүүлийн хэмжээнд нэвтэрч байна...");
+      setTimeout(() => {
+        router.push(`/${lang}/dashboard`);
+      }, 1500);
     } catch (err: any) {
       setIsSubmitting(false);
-      const errorMessage = err.data?.error || err.message || "Login failed";
+      const errorMessage = err.message || "Бүртгүүлэлт амжилтгүй болсон";
       setError(errorMessage);
     }
   };
@@ -111,7 +148,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
-        .login-form {
+        .register-form {
           animation: slideIn 0.6s ease-out;
         }
       `,
@@ -119,7 +156,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
       ></style>
 
       <div
-        className="login-form"
+        className="register-form"
         style={{
           background: "white",
           padding: "48px",
@@ -162,10 +199,10 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               marginBottom: "8px",
             }}
           >
-            {dictionary.login?.title || "Nomadrise-д нэвтрэх"}
+            {dictionary.register?.title || "Бүртгүүлэх"}
           </h1>
           <p style={{ color: "#6b7280", fontSize: "16px" }}>
-            {dictionary.login?.subtitle || "Нэвтрэх мэйл хаяг болон нууц үгээ оруулна уу"}
+            {dictionary.register?.subtitle || "Шинэ эрхтэй үүсгэх"}
           </p>
         </div>
 
@@ -186,8 +223,91 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           </div>
         )}
 
-        {/* Login Form */}
+        {/* Success Message */}
+        {success && (
+          <div
+            style={{
+              background: "#dcfce7",
+              border: "1px solid #86efac",
+              color: "#166534",
+              padding: "12px",
+              borderRadius: "8px",
+              marginBottom: "16px",
+              fontSize: "14px",
+            }}
+          >
+            {success}
+          </div>
+        )}
+
+        {/* Registration Form */}
         <form onSubmit={handleSubmit}>
+          {/* First Name Input */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#374151",
+                marginBottom: "8px",
+              }}
+            >
+              Өвөг
+            </label>
+            <input
+              type="text"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="Өвөг"
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                border: "2px solid #e5e7eb",
+                borderRadius: "10px",
+                fontSize: "16px",
+                fontFamily: "inherit",
+                boxSizing: "border-box",
+                transition: "border-color 0.3s ease",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
+            />
+          </div>
+
+          {/* Last Name Input */}
+          <div style={{ marginBottom: "16px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#374151",
+                marginBottom: "8px",
+              }}
+            >
+              Нэр
+            </label>
+            <input
+              type="text"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Нэр"
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                border: "2px solid #e5e7eb",
+                borderRadius: "10px",
+                fontSize: "16px",
+                fontFamily: "inherit",
+                boxSizing: "border-box",
+                transition: "border-color 0.3s ease",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
+            />
+          </div>
+
           {/* Email Input */}
           <div style={{ marginBottom: "16px" }}>
             <label
@@ -222,7 +342,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           </div>
 
           {/* Password Input */}
-          <div style={{ marginBottom: "20px" }}>
+          <div style={{ marginBottom: "16px" }}>
             <label
               style={{
                 display: "block",
@@ -238,6 +358,39 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              style={{
+                width: "100%",
+                padding: "12px 14px",
+                border: "2px solid #e5e7eb",
+                borderRadius: "10px",
+                fontSize: "16px",
+                fontFamily: "inherit",
+                boxSizing: "border-box",
+                transition: "border-color 0.3s ease",
+              }}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "#667eea")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
+            />
+          </div>
+
+          {/* Confirm Password Input */}
+          <div style={{ marginBottom: "20px" }}>
+            <label
+              style={{
+                display: "block",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#374151",
+                marginBottom: "8px",
+              }}
+            >
+              Нууц үг баталгаажуулах
+            </label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
               style={{
                 width: "100%",
@@ -315,7 +468,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                     (e.currentTarget.style.color = "#667eea")
                   }
                 >
-                  {dictionary.login?.termsLink || "үйлчилгээний нөхцөл"}
+                  үйлчилгээний нөхцөл
                 </button>
                 {" "}болон{" "}
                 <button
@@ -339,7 +492,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                     (e.currentTarget.style.color = "#667eea")
                   }
                 >
-                  {dictionary.login?.privacyLink || "нууцлалын бодлого"}
+                  нууцлалын бодлого
                 </button>
                 {" "}гийг зөвшөөрч байна
               </span>
@@ -384,16 +537,16 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               }
             }}
           >
-            {isSubmitting ? "Нэвтэрч байна..." : "Нэвтрэх"}
+            {isSubmitting ? "Бүртгүүлж байна..." : "Бүртгүүлэх"}
           </button>
 
-          {/* Register Link */}
+          {/* Login Link */}
           <div style={{ marginTop: "24px", textAlign: "center" }}>
             <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "8px" }}>
-              {dictionary.login?.noAccount || "Эрхтэй байхгүй үү?"}
+              Аль хэдийн эрхтэй юу?
             </p>
             <Link
-              href={`/${lang}/register`}
+              href={`/${lang}/login`}
               style={{
                 color: "#667eea",
                 textDecoration: "none",
@@ -405,7 +558,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
               onMouseEnter={(e) => (e.currentTarget.style.color = "#764ba2")}
               onMouseLeave={(e) => (e.currentTarget.style.color = "#667eea")}
             >
-              {dictionary.login?.register || "Бүртгүүлэх"}
+              Нэвтрэх
             </Link>
           </div>
         </form>
