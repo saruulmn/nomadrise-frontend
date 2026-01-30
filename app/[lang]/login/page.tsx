@@ -390,9 +390,6 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
 
           {/* Register Link */}
           <div style={{ marginTop: "24px", textAlign: "center" }}>
-            <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "8px" }}>
-              {dictionary.login?.noAccount || "Эрхтэй байхгүй үү?"}
-            </p>
             <Link
               href={`/${lang}/register`}
               style={{

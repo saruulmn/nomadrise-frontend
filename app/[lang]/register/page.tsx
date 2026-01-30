@@ -202,7 +202,7 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
             {dictionary.register?.title || "Бүртгүүлэх"}
           </h1>
           <p style={{ color: "#6b7280", fontSize: "16px" }}>
-            {dictionary.register?.subtitle || "Шинэ эрхтэй үүсгэх"}
+            {dictionary.register?.subtitle || "Шинэ бүртгэл үүсгэх"}
           </p>
         </div>
 
@@ -253,7 +253,7 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
                 marginBottom: "8px",
               }}
             >
-              Өвөг
+              Овог
             </label>
             <input
               type="text"
@@ -319,7 +319,7 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
                 marginBottom: "8px",
               }}
             >
-              Мэйл хаяг
+              И-Мэйл хаяг
             </label>
             <input
               type="email"
@@ -542,9 +542,6 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
 
           {/* Login Link */}
           <div style={{ marginTop: "24px", textAlign: "center" }}>
-            <p style={{ color: "#6b7280", fontSize: "14px", marginBottom: "8px" }}>
-              Аль хэдийн эрхтэй юу?
-            </p>
             <Link
               href={`/${lang}/login`}
               style={{
