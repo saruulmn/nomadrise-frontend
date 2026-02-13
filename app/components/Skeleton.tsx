@@ -336,3 +336,66 @@ export function PolicySkeleton() {
     </div>
   );
 }
+
+export function ContentSkeleton() {
+  return (
+    <section className="team-wrap">
+      <div className="team-header">
+        <Skeleton className="h-8 w-64" />
+      </div>
+
+      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "0 2rem" }}>
+        {/* Section 1: Vision */}
+        <div style={{ marginBottom: "3rem" }}>
+          <Skeleton className="h-6 w-48 mb-4" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-5/6" />
+        </div>
+
+        {/* Section 2: Challenge */}
+        <div style={{ marginBottom: "3rem" }}>
+          <Skeleton className="h-6 w-48 mb-4" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-5/6" />
+        </div>
+
+        {/* Section 3: Solution */}
+        <div style={{ marginBottom: "3rem" }}>
+          <Skeleton className="h-6 w-48 mb-4" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-full mb-2" />
+          <Skeleton className="h-4 w-5/6" />
+        </div>
+
+        {/* Latest Updates Cards */}
+        <div style={{ marginTop: "3rem" }}>
+          <Skeleton className="h-6 w-48 mb-6" />
+          <div style={{ display: "grid", gap: "1.5rem" }}>
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                style={{
+                  padding: "1.5rem",
+                  background: "#ffffff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "0.5rem"
+                }}
+              >
+                <Skeleton className="h-5 w-64 mb-3" />
+                <Skeleton className="h-4 w-full mb-2" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA Section */}
+        <div style={{ textAlign: "center", padding: "2rem", background: "#f9fafb", borderRadius: "0.5rem", marginTop: "3rem" }}>
+          <Skeleton className="h-6 w-96 mx-auto" />
+        </div>
+      </div>
+    </section>
+  );
+}

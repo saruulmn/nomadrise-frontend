@@ -61,13 +61,7 @@ export default function DataDeletionPage({ params }: Params) {
   };
 
   if (isLoading) {
-    return (
-      <main className="data-deletion-container">
-        <section className="data-deletion-section">
-          <p>{isEnglish ? 'Loading...' : 'Ачаалаж байна...'}</p>
-        </section>
-      </main>
-    );
+    return <DataDeletionSkeleton />;
   }
 
   return (

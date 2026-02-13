@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { contentApi, ContentItem } from "@/lib/api";
+import { ContentSkeleton } from "./Skeleton";
 
 type ContentProps = {
   dictionary: {
@@ -38,16 +39,7 @@ export default function Content({ dictionary }: ContentProps) {
   }, []);
 
   if (loading) {
-    return (
-      <section className="team-wrap">
-        <div className="team-header">
-          <h2 className="team-title">{dictionary.about.title}</h2>
-        </div>
-        <div style={{ textAlign: "center", padding: "2rem" }}>
-          <p>Loading...</p>
-        </div>
-      </section>
-    );
+    return <ContentSkeleton />;
   }
 
   if (error) {
