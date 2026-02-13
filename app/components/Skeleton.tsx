@@ -178,37 +178,6 @@ export function NavBarSkeleton() {
   );
 }
 
-export function PolicySkeleton() {
-  return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh' }}>
-      <Skeleton className="h-10 w-64 mb-6" />
-      <Skeleton className="h-4 w-full mb-4" />
-      <Skeleton className="h-4 w-5/6 mb-8" />
-      
-      <Skeleton className="h-7 w-48 mb-4" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-4/5 mb-6" />
-      
-      <Skeleton className="h-7 w-56 mb-4" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-3/4 mb-6" />
-      
-      <Skeleton className="h-7 w-44 mb-4" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-5/6 mb-6" />
-      
-      <Skeleton className="h-7 w-40 mb-4" />
-      <Skeleton className="h-4 w-full mb-2" />
-      <Skeleton className="h-4 w-4/5 mb-6" />
-      
-      <Skeleton className="h-7 w-36 mb-4" />
-      <Skeleton className="h-4 w-48" />
-    </div>
-  );
-}
-
 export function TermsSkeleton() {
   return (
     <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px', minHeight: '100vh' }}>
@@ -331,6 +300,38 @@ export function LoginSkeleton() {
           
           <Skeleton className="h-5 w-full mb-4" />
         </div>
+      </div>
+    </div>
+  );
+}
+
+export function PolicySkeleton() {
+  return (
+    <div style={{ minHeight: '100vh' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '20px 40px', borderBottom: '1px solid #e5e7eb', gap: '12px' }}>
+        <Skeleton className="h-10 w-28" />
+      </div>
+      
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '40px 20px' }}>
+        {/* Title */}
+        <Skeleton className="h-10 w-56 mb-2" />
+        <Skeleton className="h-4 w-40 mb-8" />
+        
+        {/* Sections */}
+        {[...Array(12)].map((_, i) => (
+          <div key={i} style={{ marginBottom: '32px' }}>
+            {/* Section heading */}
+            <Skeleton className="h-7 w-48 mb-4" />
+            {/* Paragraph lines */}
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-full mb-2" />
+            <Skeleton className="h-4 w-5/6 mb-4" />
+            {/* Optional list */}
+            <Skeleton className="h-4 w-72 mb-2" />
+            <Skeleton className="h-4 w-80 mb-2" />
+            <Skeleton className="h-4 w-64 mb-6" />
+          </div>
+        ))}
       </div>
     </div>
   );

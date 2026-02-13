@@ -1,14 +1,30 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import type { Locale } from '@/i18n/config';
 import LanguageSwitcher from '@/app/components/LanguageSwitcher';
+import { PolicySkeleton } from '@/app/components/Skeleton';
 
 interface PrivacyPolicyContentProps {
   lang: Locale;
 }
 
 export default function PrivacyPolicyContent({ lang }: PrivacyPolicyContentProps) {
+  const [isLoading, setIsLoading] = useState(true);
   const isEnglish = lang === 'en';
+
+  useEffect(() => {
+    // Simulate loading
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 300);
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading) {
+    return <PolicySkeleton />;
+  }
 
   return (
     <div className="policy-page-wrapper">
