@@ -122,7 +122,7 @@ export default function PrivacyPolicyContent({ lang }: PrivacyPolicyContentProps
 
             <p>
               To exercise any of these rights or if you have questions about your data, contact us at{' '}
-              <strong>privacy@nomadrise.mn</strong>
+              <strong>nomadriseworld@gmail.com</strong>
             </p>
 
             <h2>7. Security</h2>
@@ -182,7 +182,7 @@ export default function PrivacyPolicyContent({ lang }: PrivacyPolicyContentProps
             <h2>12. Contact Us</h2>
             <p>If you have any questions about this Privacy Policy, please contact us:</p>
             <ul>
-              <li><strong>Email:</strong> <a href="mailto:privacy@nomadrise.mn">privacy@nomadrise.mn</a></li>
+              <li><strong>Email:</strong> <a href="mailto:nomadriseworld@gmail.com">nomadriseworld@gmail.com</a></li>
               <li><strong>Support Email:</strong> <a href="mailto:nomadriseworld@gmail.com">nomadriseworld@gmail.com</a></li>
               <li><strong>Website:</strong> https://nomadrise.mn</li>
               <li><strong>Address:</strong> Ulaanbaatar, Mongolia</li>
@@ -296,7 +296,7 @@ export default function PrivacyPolicyContent({ lang }: PrivacyPolicyContentProps
 
             <p>
               Эдгээр эрхүүдийг хэвлэх эсвэл таны өгөгдлийн талаар асуулт байвал{' '}
-              <strong>privacy@nomadrise.mn</strong> руу холбоо барина уу.
+              <strong>nomadriseworld@gmail.com</strong> руу холбоо барина уу.
             </p>
 
             <h2>7. Аюулгүй байдал</h2>
@@ -358,7 +358,7 @@ export default function PrivacyPolicyContent({ lang }: PrivacyPolicyContentProps
             <h2>12. Бидэнтэй холбоо барих</h2>
             <p>Хэрэв та энэ нууцлалын бодлогын талаар асуулт байвал бидэнтэй холбоо барина уу:</p>
             <ul>
-              <li><strong>И-мэйл:</strong> <a href="mailto:privacy@nomadrise.mn">privacy@nomadrise.mn</a></li>
+              <li><strong>И-мэйл:</strong> <a href="mailto:nomadriseworld@gmail.com">nomadriseworld@gmail.com</a></li>
               <li><strong>Дэмжлэгийн И-мэйл:</strong> <a href="mailto:nomadriseworld@gmail.com">nomadriseworld@gmail.com</a></li>
               <li><strong>Вебсайт:</strong> https://nomadrise.mn</li>
               <li><strong>Хаяг:</strong> Улаанбаатар, Монгол Улс</li>
