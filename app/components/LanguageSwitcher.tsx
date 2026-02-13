@@ -2,29 +2,62 @@
 
 import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import Link from "next/link";
+import type { Locale } from "@/i18n/config";
 
-export default function LanguageSwitcher() {
+interface LanguageSwitcherProps {
+  currentLang?: Locale;
+}
+
+export default function LanguageSwitcher({ currentLang }: LanguageSwitcherProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
-  const currentLang = pathname.startsWith("/en") ? "en" : "mn";
+  // Determine current language - use prop if provided, otherwise detect from pathname
+  const detectedLang = pathname.startsWith("/en") ? "en" : "mn";
+  const lang = (currentLang || detectedLang) as Locale;
+  
   const languages = [
     { code: "en", label: "English" },
     { code: "mn", label: "Монгол хэл" },
   ];
 
-  const switchLanguage = (langCode: string) => {
-    // Check if pathname already has a locale
-    if (pathname.startsWith("/en") || pathname.startsWith("/mn")) {
-      const newPathname = pathname.replace(/^\/(en|mn)/, `/${langCode}`);
-      router.push(newPathname);
-    } else {
-      // If no locale in pathname, add it
-      router.push(`/${langCode}${pathname}`);
-    }
-    setIsOpen(false);
-  };
+  // For policy page, use Link for navigation
+  if (currentLang) {
+    const otherLang = currentLang === "en" ? "mn" : "en";
+    const otherLangLabel = otherLang === "en" ? "English" : "Монгол хэл";
+
+    return (
+      <Link href={`/${otherLang}/policy`} style={{ display: "inline-block" }}>
+        <button
+          style={{
+            background: "none",
+            border: "2px solid #667eea",
+            color: "#667eea",
+            cursor: "pointer",
+            padding: "8px 16px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: "500",
+            transition: "all 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#667eea";
+            e.currentTarget.style.color = "white";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.color = "#667eea";
+          }}
+        >
+          {otherLangLabel}
+        </button>
+      </Link>
+    );
+  }
+
+  // Default navbar behavior
 
   return (
     <div style={{ position: "relative", display: "inline-block" }}>
@@ -43,7 +76,7 @@ export default function LanguageSwitcher() {
           color: "white",
         }}
       >
-        {currentLang === "en" ? "English" : "Монгол хэл"}
+        {lang === "en" ? "English" : "Монгол хэл"}
         <span style={{ fontSize: "0.75rem" }}>▼</span>
       </button>
 
@@ -74,16 +107,26 @@ export default function LanguageSwitcher() {
               zIndex: 1000,
             }}
           >
-            {languages.map((lang) => (
+            {languages.map((langOption) => (
               <button
-                key={lang.code}
-                onClick={() => switchLanguage(lang.code)}
+                key={langOption.code}
+                onClick={() => {
+                  // Check if pathname already has a locale
+                  if (pathname.startsWith("/en") || pathname.startsWith("/mn")) {
+                    const newPathname = pathname.replace(/^\/(en|mn)/, `/${langOption.code}`);
+                    router.push(newPathname);
+                  } else {
+                    // If no locale in pathname, add it
+                    router.push(`/${langOption.code}${pathname}`);
+                  }
+                  setIsOpen(false);
+                }}
                 style={{
                   width: "100%",
                   padding: "0.75rem 1rem",
                   textAlign: "left",
                   border: "none",
-                  background: currentLang === lang.code ? "#f3f4f6" : "white",
+                  background: lang === langOption.code ? "#f3f4f6" : "white",
                   cursor: "pointer",
                   fontSize: "0.875rem",
                   color: "#1f2937",
@@ -91,10 +134,10 @@ export default function LanguageSwitcher() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = "#f3f4f6")}
                 onMouseLeave={(e) =>
                   (e.currentTarget.style.background =
-                    currentLang === lang.code ? "#f3f4f6" : "white")
+                    lang === langOption.code ? "#f3f4f6" : "white")
                 }
               >
-                {lang.label}
+                {langOption.label}
               </button>
             ))}
           </div>

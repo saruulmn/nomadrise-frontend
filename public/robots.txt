@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/
+Disallow: /*.json$
+Disallow: /*?*
+
+# Allow crawling of privacy policy
+Allow: /*/policy
+Allow: /privacy-policy
+
+# Sitemap
+Sitemap: https://nomadrise.mn/sitemap.xml

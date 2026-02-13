@@ -12,7 +12,11 @@ export default function Footer({ lang, dictionary }: FooterProps) {
       <div className="footer-inner">
         <div className="footer-links">
           <Link href={`/${lang}/terms`}>{dictionary.footer.terms}</Link>
-          <a href="https://nomadrise.mn/en/policy" target="_blank" rel="noopener noreferrer">
+          <Link href={`/${lang}/policy`}>{dictionary.footer.policy}</Link>
+          <a href="https://nomadrise.mn/en/policy" target="_blank" rel="noopener noreferrer" title="Privacy Policy">
+            Privacy Policy
+          </a>
+          <a href="https://nomadrise.mn/mn/policy" target="_blank" rel="noopener noreferrer" title="Нууцлалын бодлого">
             Нууцлалын бодлого
           </a>
         </div>
