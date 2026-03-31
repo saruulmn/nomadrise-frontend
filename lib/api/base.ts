@@ -202,8 +202,17 @@ async function request<T>(
 // ============================================================================
 
 export const api = {
+  /** GET — JWT token attached if available (default behaviour). */
   get: <T>(endpoint: string, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
     request<T>(endpoint, { ...options, method: 'GET' }),
+
+  /** GET — always sends Authorization header; throws if no token exists. */
+  getAuth: <T>(endpoint: string, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
+    request<T>(endpoint, { ...options, method: 'GET', skipAuth: false }),
+
+  /** GET — never sends Authorization header; for fully public endpoints. */
+  getPublic: <T>(endpoint: string, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
+    request<T>(endpoint, { ...options, method: 'GET', skipAuth: true }),
 
   post: <T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
     request<T>(endpoint, { ...options, method: 'POST', body }),
@@ -217,6 +226,35 @@ export const api = {
   delete: <T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
     request<T>(endpoint, { ...options, method: 'DELETE', body }),
 };
+
+// ============================================================================
+// Standalone GET helpers (named exports for cleaner imports)
+// ============================================================================
+
+/**
+ * GET endpoint that always attaches the JWT Authorization header.
+ *
+ * Usage:
+ *   import { getWithAuth } from '@/lib/api/base';
+ *   const { data } = await getWithAuth<Profile[]>('/profiles/me/');
+ */
+export const getWithAuth = <T>(
+  endpoint: string,
+  options?: Omit<ApiRequestOptions, 'method' | 'body'>
+) => request<T>(endpoint, { ...options, method: 'GET', skipAuth: false });
+
+/**
+ * GET endpoint that never attaches an Authorization header.
+ * Use for fully public endpoints (mentors, assets, scholarships, etc.)
+ *
+ * Usage:
+ *   import { getWithoutAuth } from '@/lib/api/base';
+ *   const { data } = await getWithoutAuth<MentorProfile[]>('/mentors/profiles/');
+ */
+export const getWithoutAuth = <T>(
+  endpoint: string,
+  options?: Omit<ApiRequestOptions, 'method' | 'body'>
+) => request<T>(endpoint, { ...options, method: 'GET', skipAuth: true });
 
 // ============================================================================
 // Token Management Exports (for auth module)

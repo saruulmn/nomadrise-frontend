@@ -15,7 +15,7 @@
  */
 
 // Base API layer
-export { default as api, ApiError, tokenStorage } from './base';
+export { default as api, ApiError, tokenStorage, getWithAuth, getWithoutAuth } from './base';
 export type { HttpMethod, ApiRequestOptions, ApiResponse } from './base';
 
 // Auth module
