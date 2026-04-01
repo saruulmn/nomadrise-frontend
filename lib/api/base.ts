@@ -3,10 +3,16 @@
  * 
  * Centralized HTTP client with:
  * - Configurable base URL
- * - JWT Authorization header injection
+ * - JWT Authorization header injection (client-side)
+ * - X-API-Key header injection (server-side only)
  * - Token refresh on 401
  * - Standardized error handling
  * - Type-safe request/response handling
+ * 
+ * SECURITY NOTE:
+ * - NEXTJS_API_KEY environment variable is NEVER exposed to client
+ * - X-API-Key header is only injected from server-side (Next.js App Router)
+ * - Client components must use internal API routes for secure backend communication
  */
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
@@ -22,6 +28,7 @@ export interface ApiRequestOptions {
   body?: unknown;
   headers?: Record<string, string>;
   skipAuth?: boolean; // For public endpoints that don't need JWT
+  useApiKey?: boolean; // For server-side requests using X-API-Key (server-only)
 }
 
 export interface ApiResponse<T> {
@@ -39,6 +46,37 @@ export class ApiError extends Error {
     super(`API Error: ${status} ${statusText}`);
     this.name = 'ApiError';
   }
+}
+
+// ============================================================================
+// Server-Side API Key Configuration (NEVER exposed to client)
+// ============================================================================
+
+/**
+ * Get the X-API-Key for server-side requests.
+ * 
+ * This function should ONLY be called from:
+ * - Next.js App Router Server Components
+ * - Next.js API Routes
+ * - Server-side utilities and middleware
+ * 
+ * NEVER call this from client components or browser context.
+ * 
+ * @returns The X-API-Key value or null if not configured
+ */
+function getApiKeyForServerRequest(): string | null {
+  // Only available in server environment
+  if (typeof window !== 'undefined') {
+    // Client-side context - should never reach here
+    console.error(
+      'SECURITY ERROR: Attempted to access NEXTJS_API_KEY from client-side. ' +
+      'Use internal API routes (/api/...) instead of direct backend calls.'
+    );
+    return null;
+  }
+  
+  // Server-side: safe to access environment variable
+  return process.env.NEXTJS_API_KEY || null;
 }
 
 // ============================================================================
@@ -120,7 +158,7 @@ async function request<T>(
   endpoint: string,
   options: ApiRequestOptions = {}
 ): Promise<ApiResponse<T>> {
-  const { method = 'GET', body, headers = {}, skipAuth = false } = options;
+  const { method = 'GET', body, headers = {}, skipAuth = false, useApiKey = false } = options;
 
   // Build headers
   const requestHeaders: Record<string, string> = {
@@ -128,8 +166,22 @@ async function request<T>(
     ...headers,
   };
 
-  // Add JWT Authorization header if not skipped
-  if (!skipAuth) {
+  // Add X-API-Key header if requested (server-side only)
+  if (useApiKey) {
+    const apiKey = getApiKeyForServerRequest();
+    if (apiKey) {
+      requestHeaders['X-API-Key'] = apiKey;
+    } else if (typeof window === 'undefined') {
+      // Server-side but key not configured
+      console.warn(
+        'NEXTJS_API_KEY is not configured. ' +
+        'Set the environment variable NEXTJS_API_KEY for secure Next.js to Django communication.'
+      );
+    }
+  }
+
+  // Add JWT Authorization header if not skipped and not using API key
+  if (!skipAuth && !useApiKey) {
     const token = TokenStorage.getAccessToken();
     if (token) {
       requestHeaders['Authorization'] = `Bearer ${token}`;
@@ -228,6 +280,59 @@ export const api = {
 };
 
 // ============================================================================
+// Server-Side API Key Helpers (for Next.js App Router)
+// ============================================================================
+
+/**
+ * Server-side API helpers using X-API-Key authentication.
+ * 
+ * Usage (Server Component):
+ *   import { serverApi } from '@/lib/api/base';
+ *   const { data } = await serverApi.get<StatsData>('/nextjs/stats/');
+ * 
+ * Usage (API Route):
+ *   import { serverApi } from '@/lib/api/base';
+ *   const response = await serverApi.post('/nextjs/sync/', { event: 'page_view' });
+ * 
+ * SECURITY: Only use from server-side code (server components, API routes, utilities with 'use server')
+ */
+export const serverApi = {
+  /**
+   * GET request with X-API-Key authentication (server-side only).
+   * 
+   * @param endpoint API endpoint path
+   * @param options Request options
+   * @returns Promise resolving to API response
+   */
+  get: <T>(endpoint: string, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
+    request<T>(endpoint, { ...options, method: 'GET', useApiKey: true, skipAuth: true }),
+
+  /**
+   * POST request with X-API-Key authentication (server-side only).
+   */
+  post: <T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
+    request<T>(endpoint, { ...options, method: 'POST', body, useApiKey: true, skipAuth: true }),
+
+  /**
+   * PUT request with X-API-Key authentication (server-side only).
+   */
+  put: <T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
+    request<T>(endpoint, { ...options, method: 'PUT', body, useApiKey: true, skipAuth: true }),
+
+  /**
+   * PATCH request with X-API-Key authentication (server-side only).
+   */
+  patch: <T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
+    request<T>(endpoint, { ...options, method: 'PATCH', body, useApiKey: true, skipAuth: true }),
+
+  /**
+   * DELETE request with X-API-Key authentication (server-side only).
+   */
+  delete: <T>(endpoint: string, body?: unknown, options?: Omit<ApiRequestOptions, 'method' | 'body'>) =>
+    request<T>(endpoint, { ...options, method: 'DELETE', body, useApiKey: true, skipAuth: true }),
+};
+
+// ============================================================================
 // Standalone GET helpers (named exports for cleaner imports)
 // ============================================================================
 
@@ -255,6 +360,19 @@ export const getWithoutAuth = <T>(
   endpoint: string,
   options?: Omit<ApiRequestOptions, 'method' | 'body'>
 ) => request<T>(endpoint, { ...options, method: 'GET', skipAuth: true });
+
+/**
+ * GET endpoint with X-API-Key authentication (server-side only).
+ * Use for secure server-to-server communication.
+ *
+ * Usage (Server Component):
+ *   import { getWithApiKey } from '@/lib/api/base';
+ *   const { data } = await getWithApiKey<HealthStatus>('/nextjs/health-check/');
+ */
+export const getWithApiKey = <T>(
+  endpoint: string,
+  options?: Omit<ApiRequestOptions, 'method' | 'body'>
+) => request<T>(endpoint, { ...options, method: 'GET', useApiKey: true, skipAuth: true });
 
 // ============================================================================
 // Token Management Exports (for auth module)
