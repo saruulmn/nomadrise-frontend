@@ -37,7 +37,7 @@ type TeamProps = {
   lang?: Locale;
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function mapProfileToMember(profile: MentorProfile, lang: Locale): Member {
   const location = [profile.city, profile.country].filter(Boolean).join(", ");
