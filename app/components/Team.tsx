@@ -1,7 +1,23 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
+import { Locale } from "@/i18n/config";
+
+type MentorProfile = {
+  user_id: number;
+  username: string;
+  first_name: string;
+  last_name: string;
+  avatar_url: string | null;
+  country: string | null;
+  city: string | null;
+  highest_education: string | null;
+  current_status: string | null;
+  preferred_language: string | null;
+  bio_en: string | null;
+  bio_mn: string | null;
+};
 
 type Member = {
   name: string;
@@ -9,48 +25,7 @@ type Member = {
   location: string;
   photo?: string;
   bio?: string;
-  email?: string;
-  phone?: string;
-  linkedin?: string;
 };
-
-const members: Member[] = [
-  { 
-    name: "Д. Янжиндулам", 
-    position: "Chief Executive Officer",
-    location: "Eindhoven, Netherlands", 
-    photo: "/images/members/1.png",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium.",
-  },
-  { 
-    name: "Даваа", 
-    position: "Chief Operating Officer",
-    location: "Eindhoven, Netherlands", 
-    photo: "/images/members/2.png",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi. Aenean fermentum, elit eget tincidunt condimentum.",
-  },
-  { 
-    name: "Эрдэнэбилэг", 
-    position: "Board Member",
-    location: "Helsinki, Finland", 
-    photo: "/images/members/3.png",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla quis lorem ut libero malesuada feugiat. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Donec sollicitudin molestie malesuada. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Pellentesque in ipsum id orci porta dapibus. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem.",
-  },
-  { 
-    name: "Ананд", 
-    position: "Chief Technology Officer",
-    location: "Eindhoven, Netherlands", 
-    photo: "/images/members/4.png",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin eget tortor risus. Curabitur aliquet quam id dui posuere blandit. Quisque velit nisi, pretium ut lacinia in, elementum id enim. Vivamus suscipit tortor eget felis porttitor volutpat. Nulla porttitor accumsan tincidunt. Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Cras ultricies ligula sed magna dictum porta. Sed porttitor lectus nibh. Donec rutrum congue leo eget malesuada. Vestibulum ante ipsum primis in faucibus orci luctus.",
-  },
-  { 
-    name: "Саруул", 
-    position: "Chief Marketing Officer",
-    location: "Ulaanbaatar, Mongolia", 
-    photo: "/images/members/5.png",
-    bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Donec rutrum congue leo eget malesuada. Nulla quis lorem ut libero malesuada feugiat. Vivamus suscipit tortor eget felis porttitor volutpat. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Curabitur aliquet quam id dui posuere blandit. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.",
-  },
-];
 
 type TeamProps = {
   dictionary: {
@@ -59,11 +34,44 @@ type TeamProps = {
       subtitle: string;
     };
   };
+  lang?: Locale;
 };
 
-export default function Team({ dictionary }: TeamProps) {
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+function mapProfileToMember(profile: MentorProfile, lang: Locale): Member {
+  const location = [profile.city, profile.country].filter(Boolean).join(", ");
+  const bio = lang === "mn" ? (profile.bio_mn || profile.bio_en) : (profile.bio_en || profile.bio_mn);
+  return {
+    name: `${profile.first_name} ${profile.last_name}`.trim() || profile.username,
+    position: profile.current_status || "",
+    location: location || "",
+    photo: profile.avatar_url || undefined,
+    bio: bio || undefined,
+  };
+}
+
+export default function Team({ dictionary, lang = "mn" }: TeamProps) {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    async function fetchMembers() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/mentors/profiles/`);
+        if (!res.ok) throw new Error("Failed to fetch mentors");
+        const data: MentorProfile[] = await res.json();
+        setMembers(data.map((p) => mapProfileToMember(p, lang)));
+      } catch (err) {
+        console.error("Error fetching team members:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchMembers();
+  }, [lang]);
 
   const handleMemberClick = (member: Member) => {
     setSelectedMember(member);
@@ -84,10 +92,27 @@ export default function Team({ dictionary }: TeamProps) {
         </div>
 
         <div className="team-grid">
-          {members.map((member) => (
+          {loading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <article className="team-card" key={i}>
+                <div className="team-photo-wrapper">
+                  <div className="team-photo-placeholder" style={{ background: "#e0e0e0" }} />
+                </div>
+                <div className="team-meta">
+                  <div className="team-name" style={{ background: "#e0e0e0", height: "1rem", width: "60%", borderRadius: 4 }} />
+                  <div className="team-position" style={{ background: "#e0e0e0", height: "0.8rem", width: "40%", borderRadius: 4, marginTop: 6 }} />
+                </div>
+              </article>
+            ))
+          ) : members.length === 0 ? (
+            <p style={{ gridColumn: "1 / -1", textAlign: "center", color: "var(--muted)" }}>
+              No team members found.
+            </p>
+          ) : (
+            members.map((member, idx) => (
             <article 
               className="team-card" 
-              key={member.name}
+              key={idx}
               onClick={() => handleMemberClick(member)}
               style={{ cursor: "pointer" }}
             >
@@ -105,7 +130,8 @@ export default function Team({ dictionary }: TeamProps) {
                 <div className="team-position">{member.position}</div>
               </div>
             </article>
-          ))}
+          ))
+          )}
         </div>
       </section>
 
@@ -168,7 +194,7 @@ export default function Team({ dictionary }: TeamProps) {
             </div>
 
             {selectedMember.bio && (
-              <div style={{ marginBottom: "1.5rem" }}>
+              <div>
                 <h4 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "var(--foreground)" }}>
                   About
                 </h4>
@@ -177,40 +203,6 @@ export default function Team({ dictionary }: TeamProps) {
                 </p>
               </div>
             )}
-
-            <div style={{ borderTop: "1px solid var(--border-color)", paddingTop: "1rem" }}>
-              {selectedMember.email && (
-                <div style={{ marginBottom: "0.75rem", display: "flex", alignItems: "center" }}>
-                  <span style={{ fontWeight: "600", color: "var(--foreground)", marginRight: "0.5rem", minWidth: "70px" }}>
-                    Email:
-                  </span>
-                  <span style={{ color: "var(--muted)" }}>{selectedMember.email}</span>
-                </div>
-              )}
-              {selectedMember.phone && (
-                <div style={{ marginBottom: "0.75rem", display: "flex", alignItems: "center" }}>
-                  <span style={{ fontWeight: "600", color: "var(--foreground)", marginRight: "0.5rem", minWidth: "70px" }}>
-                    Phone:
-                  </span>
-                  <span style={{ color: "var(--muted)" }}>{selectedMember.phone}</span>
-                </div>
-              )}
-              {selectedMember.linkedin && (
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <span style={{ fontWeight: "600", color: "var(--foreground)", marginRight: "0.5rem", minWidth: "70px" }}>
-                    LinkedIn:
-                  </span>
-                  <a 
-                    href={selectedMember.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ color: "var(--primary)", textDecoration: "none" }}
-                  >
-                    View Profile
-                  </a>
-                </div>
-              )}
-            </div>
           </div>
         )}
       </Modal>

@@ -30,7 +30,7 @@ export default async function Page({ params }: { params: Promise<{ lang: Locale 
       
       <Hero />
       <Content dictionary={dictionary} />
-      <Team dictionary={dictionary} />
+      <Team dictionary={dictionary} lang={lang} />
       <PopularCategories dictionary={dictionary} />
     </main>
   );
