@@ -67,11 +67,12 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
         const res = await fetch(`${API_BASE_URL}/mentors/profiles/`);
         if (!res.ok) throw new Error("Failed to fetch mentors");
         const json = await res.json();
+        const data = Array.isArray(json) ? json : json.results;
         
-        if (!Array.isArray(json)) throw new Error("Invalid format");
+        if (!Array.isArray(data)) throw new Error("Invalid format");
         
         if (isMounted) {
-          setMembers(json.map((p: MentorProfile) => mapProfileToMember(p, lang)));
+          setMembers(data.map((p: MentorProfile) => mapProfileToMember(p, lang)));
         }
       } catch (err) {
         console.error("Error fetching team members:", err);
