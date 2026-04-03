@@ -36,6 +36,7 @@ type TeamProps = {
   };
   lang?: Locale;
 };
+const [error, setError] = useState<string | null>(null);
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -56,17 +57,22 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  if (loading) return <p>Ачааллаж байна...</p>;
+  if (error) return <p>{error}</p>;
 
   useEffect(() => {
     async function fetchMembers() {
       try {
         const res = await fetch(`${API_BASE_URL}/mentors/profiles/`);
         if (!res.ok) throw new Error("Failed to fetch mentors");
-        const data: MentorProfile[] = await res.json();
+        const json = await res.json();
+        if (!Array.isArray(json)) throw new Error("Буруу формат");
+        const data = json as MentorProfile[];
         setMembers(data.map((p) => mapProfileToMember(p, lang)));
       } catch (err) {
-        console.error("Error fetching team members:", err);
-      } finally {
+    console.error("Error fetching team members:", err);
+    setError("Мэдээлэл ачааллахад алдаа гарлаа")  // ерөнхий текст
+    } finally {
         setLoading(false);
       }
     }
@@ -203,6 +209,7 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
                 </p>
               </div>
             )}
+            </div>
           </div>
         )}
       </Modal>
