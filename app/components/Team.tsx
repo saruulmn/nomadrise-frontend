@@ -36,9 +36,8 @@ type TeamProps = {
   };
   lang?: Locale;
 };
-const [error, setError] = useState<string | null>(null);
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 function mapProfileToMember(profile: MentorProfile, lang: Locale): Member {
   const location = [profile.city, profile.country].filter(Boolean).join(", ");
@@ -56,28 +55,35 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  if (loading) return <p>Ачааллаж байна...</p>;
-  if (error) return <p>{error}</p>;
 
   useEffect(() => {
+    let isMounted = true;
+
     async function fetchMembers() {
       try {
+        setLoading(true);
         const res = await fetch(`${API_BASE_URL}/mentors/profiles/`);
         if (!res.ok) throw new Error("Failed to fetch mentors");
         const json = await res.json();
-        if (!Array.isArray(json)) throw new Error("Буруу формат");
-        const data = json as MentorProfile[];
-        setMembers(data.map((p) => mapProfileToMember(p, lang)));
+        
+        if (!Array.isArray(json)) throw new Error("Invalid format");
+        
+        if (isMounted) {
+          setMembers(json.map((p: MentorProfile) => mapProfileToMember(p, lang)));
+        }
       } catch (err) {
-    console.error("Error fetching team members:", err);
-    setError("Мэдээлэл ачааллахад алдаа гарлаа")  // ерөнхий текст
-    } finally {
-        setLoading(false);
+        console.error("Error fetching team members:", err);
+        setError("Мэдээлэл ачааллахад алдаа гарлаа");
+      } finally {
+        if (isMounted) setLoading(false);
       }
     }
+
     fetchMembers();
-  }, [lang]);
+    return () => { isMounted = false; };
+  }, [lang]); // API_BASE_URL is constant, so lang is the primary dependency
 
   const handleMemberClick = (member: Member) => {
     setSelectedMember(member);
@@ -86,7 +92,8 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setTimeout(() => setSelectedMember(null), 300);
+    // Use a slight delay to clear the member so the modal animation finishes smoothly
+    setTimeout(() => setSelectedMember(null), 200);
   };
 
   return (
@@ -97,10 +104,12 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
           <p className="team-sub">{dictionary.team.subtitle}</p>
         </div>
 
+        {error && <p style={{ textAlign: 'center', color: 'red' }}>{error}</p>}
+
         <div className="team-grid">
           {loading ? (
             Array.from({ length: 4 }).map((_, i) => (
-              <article className="team-card" key={i}>
+              <article className="team-card" key={`skeleton-${i}`}>
                 <div className="team-photo-wrapper">
                   <div className="team-photo-placeholder" style={{ background: "#e0e0e0" }} />
                 </div>
@@ -116,27 +125,27 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
             </p>
           ) : (
             members.map((member, idx) => (
-            <article 
-              className="team-card" 
-              key={idx}
-              onClick={() => handleMemberClick(member)}
-              style={{ cursor: "pointer" }}
-            >
-              <div className="team-photo-wrapper">
-                {member.photo ? (
-                  <img className="team-photo" src={member.photo} alt={member.name} />
-                ) : (
-                  <div className="team-photo-placeholder">
-                    {member.name.charAt(0)}
-                  </div>
-                )}
-              </div>
-              <div className="team-meta">
-                <div className="team-name">{member.name}</div>
-                <div className="team-position">{member.position}</div>
-              </div>
-            </article>
-          ))
+              <article 
+                className="team-card" 
+                key={`${member.name}-${idx}`}
+                onClick={() => handleMemberClick(member)}
+                style={{ cursor: "pointer" }}
+              >
+                <div className="team-photo-wrapper">
+                  {member.photo ? (
+                    <img className="team-photo" src={member.photo} alt={member.name} />
+                  ) : (
+                    <div className="team-photo-placeholder">
+                      {member.name.charAt(0)}
+                    </div>
+                  )}
+                </div>
+                <div className="team-meta">
+                  <div className="team-name">{member.name}</div>
+                  <div className="team-position">{member.position}</div>
+                </div>
+              </article>
+            ))
           )}
         </div>
       </section>
@@ -209,7 +218,6 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
                 </p>
               </div>
             )}
-            </div>
           </div>
         )}
       </Modal>
