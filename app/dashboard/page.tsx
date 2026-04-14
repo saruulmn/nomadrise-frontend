@@ -1,12 +1,13 @@
 'use client';
 
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import AuthGuard from "@/app/components/AuthGuard";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
+  const user = session?.user as (typeof session.user & { username?: string }) | undefined;
+  const username = user?.username || user?.name || "Guest";
+  const email = user?.email || "No email available";
 
   return (
     <AuthGuard>
@@ -16,22 +17,20 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-6">Dashboard</h1>
           
           <div className="border-t border-gray-200 pt-6">
-            <h2 className="text-xl font-semibold mb-4">Welcome back!</h2>
+            <h2 className="text-xl font-semibold mb-4">Hello, {username}!</h2>
             
             <div className="bg-gray-50 rounded-lg p-6">
               <div className="flex items-center space-x-4">
-                {session?.user?.image && (
+                {user?.image && (
                   <img
-                    src={session.user.image}
-                    alt={session.user.name || "User"}
+                    src={user.image}
+                    alt={username}
                     className="w-20 h-20 rounded-full"
                   />
                 )}
                 <div>
-                  <p className="text-lg font-medium text-gray-900">
-                    {session?.user?.name}
-                  </p>
-                  <p className="text-gray-600">{session?.user?.email}</p>
+                  <p className="text-lg font-medium text-gray-900">Username: {username}</p>
+                  <p className="text-gray-600">Email: {email}</p>
                 </div>
               </div>
             </div>
