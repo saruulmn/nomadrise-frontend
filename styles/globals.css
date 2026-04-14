@@ -43,7 +43,7 @@ html {
   position: absolute;
   inset: 0 0 auto 0;
   background: transparent;
-  z-index: 60;
+  z-index: 1000;
   transition: background-color 200ms ease, box-shadow 200ms ease;
 }
 

@@ -34,6 +34,8 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
   const isActive = (href: string) =>
     pathname === href || pathname.startsWith(href + "/");
 
+  const isHomePage = pathname === `/${lang}` || pathname === `/${lang}/`;
+
   if (!dictionary) return null;
 
   const items = [
@@ -63,7 +65,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
   ];
 
   return (
-    <header className="site-header overlay">
+    <header className={`site-header ${isHomePage ? "overlay" : "solid"}`}>
       <div className="header-inner">
         <div className="logo" style={{ marginRight: 8, display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Link href={`/${lang}`} style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
