@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Dropdown, Menu, Drawer } from "antd";
 import { MenuOutlined } from "@ant-design/icons";
 import { usePathname } from "next/navigation";
+import { useSession } from "next-auth/react";
 import UserProfile from "./UserProfile";
 import ThemeToggle from "./ThemeToggle";
 import { getDictionary } from "@/i18n/dictionaries";
@@ -16,6 +17,7 @@ interface NavBarProps {
 
 export default function NavBar({ dictionary: propDictionary }: NavBarProps = {}) {
   const pathname = usePathname();
+  const { data: session } = useSession();
   const lang = (pathname.startsWith("/en") ? "en" : "mn") as Locale;
   const [dictionary, setDictionary] = useState<any>(propDictionary);
   const [open, setOpen] = useState(false);
@@ -55,7 +57,9 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
     { key: "sponsor", label: <Link href={`/${lang}/sponsor`}>{dictionary.nav.sponsor}</Link> },
     { key: "events", label: <Link href={`/${lang}/events`}>{dictionary.nav.events}</Link> },
     { key: "about", label: <Link href={`/${lang}#team`}>{dictionary.nav.ourTeam}</Link> },
-    { key: "signin", label: <Link href={`/${lang}/signin`}>{dictionary.nav.signIn}</Link> },
+    ...(!session?.user
+      ? [{ key: "signin", label: <Link href={`/${lang}/login`}>{dictionary.nav.signIn}</Link> }]
+      : []),
   ];
 
   return (
@@ -108,31 +112,33 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
 
         <div className="header-actions">
           <ThemeToggle />
-          <Link 
-            href={`/${lang}/login`} 
-            style={{
-              padding: '8px 16px',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: 'white',
-              borderRadius: '8px',
-              fontSize: '14px',
-              fontWeight: '600',
-              textDecoration: 'none',
-              transition: 'all 0.3s ease',
-              display: 'inline-block'
-            }}
-            className={isActive(`/${lang}/login`) ? "nav-active" : undefined}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 16px rgba(102, 126, 234, 0.3)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
-          >
-            {dictionary.nav.signIn || 'Sign In'}
-          </Link>
+          {!session?.user && (
+            <Link 
+              href={`/${lang}/login`} 
+              style={{
+                padding: '8px 16px',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                borderRadius: '8px',
+                fontSize: '14px',
+                fontWeight: '600',
+                textDecoration: 'none',
+                transition: 'all 0.3s ease',
+                display: 'inline-block'
+              }}
+              className={isActive(`/${lang}/login`) ? "nav-active" : undefined}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 8px 16px rgba(102, 126, 234, 0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              {dictionary.nav.signIn || 'Sign In'}
+            </Link>
+          )}
           <UserProfile />
         </div>
 

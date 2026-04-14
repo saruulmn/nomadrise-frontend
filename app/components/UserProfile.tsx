@@ -29,7 +29,7 @@ export default function UserProfile() {
   const items: MenuProps["items"] = [
     {
       key: "dashboard",
-      label: <a href="/dashboard">Dashboard</a>,
+      label: <a href={`/${lang}/dashboard`}>Dashboard</a>,
       icon: <UserOutlined />,
     },
     {
@@ -39,7 +39,7 @@ export default function UserProfile() {
       key: "logout",
       label: dictionary.nav.signOut || "Sign Out",
       icon: <LogoutOutlined />,
-      onClick: () => signOut({ callbackUrl: "/" }),
+      onClick: () => signOut({ callbackUrl: `/${lang}` }),
       danger: true,
     },
   ];
