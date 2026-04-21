@@ -24,7 +24,11 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   }
 
   if (!session) {
-    return null;
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center px-4 text-center">
+        <p className="text-lg font-medium text-gray-700">Нэвтрэх шаардлагатай</p>
+      </div>
+    );
   }
 
   return <>{children}</>;

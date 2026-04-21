@@ -13,12 +13,12 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: Loc
 
   const metadata = {
     en: {
-      title: "NomadRise - Global Scholarship Platform",
-      description: "Discover scholarships from around the world and apply for funding opportunities to pursue your education abroad.",
+      title: "NomadRise - Learn beyond borders",
+      description: "Connecting Talent to the World Stage.",
     },
     mn: {
-      title: "NomadRise - Дэлхийн Стипендийн Платформ",
-      description: "Дэлхийн үзэгдэх стипендийн боломжуудыг олоорой байгаа та өргөдөл илгээнэ үү.",
+      title: "NomadRise - Хил хязгааргүй суралцах ертөнц",
+      description: "Авьяас Билгийг Дэлхийн Тавцанд Холбоно.",
     },
   };
 
