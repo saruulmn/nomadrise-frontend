@@ -64,8 +64,8 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
     async function fetchMembers() {
       try {
         setLoading(true);
-        const res = await fetch(`${API_BASE_URL}/mentors/profiles/`);
-        if (!res.ok) throw new Error("Failed to fetch mentors");
+        const res = await fetch(`${API_BASE_URL}/team/`);
+        if (!res.ok) throw new Error("Failed to fetch team members");
         const json = await res.json();
         const data = Array.isArray(json) ? json : json.results;
         
