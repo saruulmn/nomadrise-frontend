@@ -212,7 +212,7 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
             {selectedMember.bio && (
               <div>
                 <h4 style={{ fontSize: "1rem", fontWeight: "600", marginBottom: "0.5rem", color: "var(--foreground)" }}>
-                  About
+                  {lang === "mn" ? "Тухай" : "About"}
                 </h4>
                 <p style={{ fontSize: "0.95rem", color: "var(--muted)", lineHeight: "1.6" }}>
                   {selectedMember.bio}
