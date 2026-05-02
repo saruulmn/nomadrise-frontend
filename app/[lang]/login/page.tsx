@@ -31,6 +31,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
     }
   }, [status, lang, router]);
 
+  useEffect(() => {
     params.then((p) => {
       setLang(p.lang);
       getDictionary(p.lang).then((dict) => {
