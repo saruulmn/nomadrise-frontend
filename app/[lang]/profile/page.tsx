@@ -68,7 +68,10 @@ export default function ProfilePage() {
   }, [lang]);
 
   useEffect(() => {
-    if (!session?._at) return;
+    if (!session?._at) {
+      setLoading(false);
+      return;
+    }
 
     fetch(`${apiBase}/auth/me/profile/`, {
       headers: { Authorization: `Bearer ${session._at}` },
