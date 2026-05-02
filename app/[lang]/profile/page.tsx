@@ -49,7 +49,7 @@ const EMPTY_PROFILE: ProfileData = {
 };
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const pathname = usePathname();
   const router = useRouter();
   const lang = (pathname.startsWith('/en') ? 'en' : 'mn') as Locale;
@@ -68,6 +68,7 @@ export default function ProfilePage() {
   }, [lang]);
 
   useEffect(() => {
+    if (status === 'loading') return; // wait for session
     if (!session?._at) {
       setLoading(false);
       return;
@@ -105,7 +106,10 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session?._at) return;
+    if (!session?._at) {
+      setErrorMsg('Your session has expired. Please sign in again.');
+      return;
+    }
 
     setSaving(true);
     setSuccessMsg('');
@@ -121,10 +125,14 @@ export default function ProfilePage() {
         body: JSON.stringify(form),
       });
 
-      if (!res.ok) throw new Error('Failed');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(JSON.stringify(errData) || 'Failed');
+      }
       setSuccessMsg(dictionary?.profile?.successMessage || 'Profile updated successfully!');
-    } catch {
-      setErrorMsg(dictionary?.profile?.errorMessage || 'Failed to update profile.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : '';
+      setErrorMsg(msg || dictionary?.profile?.errorMessage || 'Failed to update profile.');
     } finally {
       setSaving(false);
     }
