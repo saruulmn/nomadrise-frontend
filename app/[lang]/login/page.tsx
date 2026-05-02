@@ -9,7 +9,7 @@ import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
 import { loginWithEmail } from "@/lib/api/login";
 import { tokenStorage } from "@/lib/api/base";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 
 export default function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const [lang, setLang] = useState<Locale>("mn");
@@ -22,8 +22,15 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const { status } = useSession();
 
+  // Redirect to dashboard if already logged in
   useEffect(() => {
+    if (status === "authenticated") {
+      router.replace(`/${lang}/dashboard`);
+    }
+  }, [status, lang, router]);
+
     params.then((p) => {
       setLang(p.lang);
       getDictionary(p.lang).then((dict) => {
