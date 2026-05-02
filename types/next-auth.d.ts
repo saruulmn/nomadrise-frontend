@@ -3,8 +3,8 @@ import { JWT, DefaultJWT } from "next-auth/jwt";
 
 declare module "next-auth" {
   interface Session {
-    djangoAccess: string;
-    djangoRefresh: string;
+    _at: string;
+    _rt: string;
     user: {
       id: string;
       pk?: number;
@@ -23,8 +23,8 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT extends DefaultJWT {
-    djangoAccess?: string;
-    djangoRefresh?: string;
+    _at?: string;
+    _rt?: string;
     djangoUser?: unknown;
     provider?: string;
     providerAccountId?: string;

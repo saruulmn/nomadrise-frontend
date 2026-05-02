@@ -68,10 +68,10 @@ export default function ProfilePage() {
   }, [lang]);
 
   useEffect(() => {
-    if (!session?.djangoAccess) return;
+    if (!session?._at) return;
 
     fetch(`${apiBase}/auth/me/profile/`, {
-      headers: { Authorization: `Bearer ${session.djangoAccess}` },
+      headers: { Authorization: `Bearer ${session._at}` },
     })
       .then((res) => res.json())
       .then((data) => {
@@ -92,7 +92,7 @@ export default function ProfilePage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [session?.djangoAccess, apiBase]);
+  }, [session?._at, apiBase]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -102,7 +102,7 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session?.djangoAccess) return;
+    if (!session?._at) return;
 
     setSaving(true);
     setSuccessMsg('');
@@ -113,7 +113,7 @@ export default function ProfilePage() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session.djangoAccess}`,
+          Authorization: `Bearer ${session._at}`,
         },
         body: JSON.stringify(form),
       });

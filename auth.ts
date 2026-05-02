@@ -35,8 +35,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               throw new Error("Django auth failed");
             }
             const data = await res.json();
-            token.djangoAccess = data.access;
-            token.djangoRefresh = data.refresh;
+            token._at = data.access;
+            token._rt = data.refresh;
             if (data.user) {
               token.djangoUser = data.user;
             }
@@ -48,8 +48,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      session.djangoAccess = (token.djangoAccess as string) || "";
-      session.djangoRefresh = (token.djangoRefresh as string) || "";
+      session._at = (token._at as string) || "";
+      session._rt = (token._rt as string) || "";
       if (token.djangoUser) {
         session.user = {
           ...session.user,
