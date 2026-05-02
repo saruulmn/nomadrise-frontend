@@ -4,6 +4,24 @@ html {
   scroll-behavior: smooth;
 }
 
+.input-field {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #111827;
+  background-color: #fff;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.input-field:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+
 :root {
   --background: #ffffff;
   --foreground: #000000;

@@ -10,7 +10,39 @@
     "master": "Master's Program",
     "phd": "PhD Program",
     "exchange": "Student Exchange",
-    "internship": "Internship Program"
+    "internship": "Internship Program",
+    "dashboard": "Dashboard",
+    "profile": "Profile"
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone",
+    "birthDate": "Date of Birth",
+    "country": "Country",
+    "city": "City",
+    "education": "Highest Education",
+    "currentStatus": "Current Status",
+    "preferredLanguage": "Preferred Language",
+    "bioEn": "Bio (English)",
+    "bioMn": "Bio (Mongolian)",
+    "saveChanges": "Save Changes",
+    "saving": "Saving...",
+    "successMessage": "Profile updated successfully!",
+    "errorMessage": "Failed to update profile. Please try again.",
+    "educationOptions": {
+      "secondary_student": "High School Student",
+      "high_school_graduate": "High School Graduate",
+      "bachelor_student": "Bachelor Student",
+      "bachelor_graduate": "Bachelor Graduate",
+      "master_student": "Master Student",
+      "master_graduate": "Master Graduate",
+      "phd_student": "PhD Student",
+      "phd_graduate": "PhD Graduate"
+    }
   },
   "team": {
     "title": "Our Team",

@@ -10,7 +10,39 @@
     "master": "Магистрын хөтөлбөр",
     "phd": "Докторын хөтөлбөр",
     "exchange": "Оюутан солилцоо",
-    "internship": "Дадлагын хөтөлбөр"
+    "internship": "Дадлагын хөтөлбөр",
+    "dashboard": "Хяналтын самбар",
+    "profile": "Профайл"
+  },
+  "profile": {
+    "title": "Миний профайл",
+    "personalInfo": "Хувийн мэдээлэл",
+    "firstName": "Нэр",
+    "lastName": "Овог",
+    "email": "И-мэйл",
+    "phone": "Утас",
+    "birthDate": "Төрсөн огноо",
+    "country": "Улс",
+    "city": "Хот",
+    "education": "Боловсролын зэрэг",
+    "currentStatus": "Одоогийн байдал",
+    "preferredLanguage": "Илүүд үздэг хэл",
+    "bioEn": "Танилцуулга (Англиар)",
+    "bioMn": "Танилцуулга (Монголоор)",
+    "saveChanges": "Хадгалах",
+    "saving": "Хадгалж байна...",
+    "successMessage": "Профайл амжилттай шинэчлэгдлээ!",
+    "errorMessage": "Профайл шинэчлэхэд алдаа гарлаа. Дахин оролдоно уу.",
+    "educationOptions": {
+      "secondary_student": "Арван жилийн сурагч",
+      "high_school_graduate": "Арван жил төгссөн",
+      "bachelor_student": "Бакалаврын оюутан",
+      "bachelor_graduate": "Бакалавр төгссөн",
+      "master_student": "Магистрын оюутан",
+      "master_graduate": "Магистр төгссөн",
+      "phd_student": "Докторын оюутан (PhD)",
+      "phd_graduate": "Доктор (PhD)"
+    }
   },
   "team": {
     "title": "Манай баг",
