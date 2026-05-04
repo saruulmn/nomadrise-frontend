@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
 import { getDictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
@@ -18,6 +18,15 @@ const EDUCATION_KEYS = [
   'phd_graduate',
 ] as const;
 
+type UserRole = 'student' | 'teacher' | 'mentor' | 'teamMember';
+
+function detectRole(groups: string[]): UserRole {
+  if (groups.includes('teacher')) return 'teacher';
+  if (groups.includes('mentor')) return 'mentor';
+  if (groups.includes('teamMember')) return 'teamMember';
+  return 'student';
+}
+
 interface ProfileData {
   first_name: string;
   last_name: string;
@@ -27,6 +36,10 @@ interface ProfileData {
   country: string;
   city: string;
   highest_education: string;
+  avatar_url: string | null;
+  groups: string[];
+  // role-specific fields
+  subject: string;
   current_status: string;
   preferred_language: string;
   bio_en: string;
@@ -42,6 +55,9 @@ const EMPTY_PROFILE: ProfileData = {
   country: '',
   city: '',
   highest_education: '',
+  avatar_url: null,
+  groups: [],
+  subject: '',
   current_status: '',
   preferred_language: '',
   bio_en: '',
@@ -51,7 +67,6 @@ const EMPTY_PROFILE: ProfileData = {
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
-  const router = useRouter();
   const lang = (pathname.startsWith('/en') ? 'en' : 'mn') as Locale;
 
   const [dictionary, setDictionary] = useState<any>(null);
@@ -68,7 +83,7 @@ export default function ProfilePage() {
   }, [lang]);
 
   useEffect(() => {
-    if (status === 'loading') return; // wait for session
+    if (status === 'loading') return;
     if (!session?._at) {
       setLoading(false);
       return;
@@ -79,15 +94,23 @@ export default function ProfilePage() {
     })
       .then((res) => res.json())
       .then((data) => {
+        // Pre-fill names/avatar from social session if backend has none yet
+        const socialName = session?.user?.name || '';
+        const [socialFirst, ...socialRestParts] = socialName.split(' ');
+        const socialLast = socialRestParts.join(' ');
+
         setForm({
-          first_name: data.first_name || '',
-          last_name: data.last_name || '',
-          email: data.email || '',
+          first_name: data.first_name || socialFirst || '',
+          last_name: data.last_name || socialLast || '',
+          email: data.email || session?.user?.email || '',
           phone: data.phone || '',
           birth_date: data.birth_date || '',
           country: data.country || '',
           city: data.city || '',
           highest_education: data.highest_education || '',
+          avatar_url: data.avatar_url || session?.user?.image || null,
+          groups: data.groups || [],
+          subject: data.subject || '',
           current_status: data.current_status || '',
           preferred_language: data.preferred_language || '',
           bio_en: data.bio_en || '',
@@ -141,180 +164,214 @@ export default function ProfilePage() {
   if (!dictionary) return null;
 
   const t = dictionary.profile;
+  const role = detectRole(form.groups);
+  const hasRoleSection = role !== 'student';
+  const avatarSrc = form.avatar_url || session?.user?.image;
+  const displayName =
+    [form.first_name, form.last_name].filter(Boolean).join(' ') ||
+    session?.user?.name ||
+    'User';
 
   return (
     <AuthGuard>
       <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-lg shadow-md p-8">
-            {/* Header */}
-            <div className="flex items-center gap-4 mb-8">
-              {session?.user?.image ? (
-                <img
-                  src={session.user.image}
-                  alt={session.user.name || 'User'}
-                  className="w-16 h-16 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
-                  {(session?.user?.name || 'U').charAt(0).toUpperCase()}
-                </div>
-              )}
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">{t.title}</h1>
-                <p className="text-gray-500 text-sm">{session?.user?.email}</p>
-              </div>
-            </div>
-
-            {loading ? (
-              <div className="flex justify-center py-12">
-                <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              </div>
+        <div className="max-w-2xl mx-auto space-y-6">
+          {/* ── Header card ─────────────────────────────────────────────── */}
+          <div className="bg-white rounded-lg shadow-md p-6 flex items-center gap-4">
+            {avatarSrc ? (
+              <img
+                src={avatarSrc}
+                alt={displayName}
+                className="w-16 h-16 rounded-full object-cover"
+              />
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <h2 className="text-lg font-semibold text-gray-700 border-b pb-2">
+              <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+                {displayName.charAt(0).toUpperCase()}
+              </div>
+            )}
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">{t.title}</h1>
+              <p className="text-gray-500 text-sm">{form.email || session?.user?.email}</p>
+              {role !== 'student' && (
+                <span className="inline-block mt-1 text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium capitalize">
+                  {t.roles?.[role] || role}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-12">
+              <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* ── Block 1: Personal Information ─────────────────────────── */}
+              <div className="bg-white rounded-lg shadow-md p-8">
+                <h2 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-6">
                   {t.personalInfo}
                 </h2>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label={t.firstName}>
+                      <input
+                        name="first_name"
+                        value={form.first_name}
+                        onChange={handleChange}
+                        className="input-field"
+                      />
+                    </Field>
+                    <Field label={t.lastName}>
+                      <input
+                        name="last_name"
+                        value={form.last_name}
+                        onChange={handleChange}
+                        className="input-field"
+                      />
+                    </Field>
+                  </div>
 
-                {/* Name row */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label={t.firstName}>
+                  <Field label={t.email}>
                     <input
-                      name="first_name"
-                      value={form.first_name}
+                      name="email"
+                      type="email"
+                      value={form.email}
                       onChange={handleChange}
                       className="input-field"
                     />
                   </Field>
-                  <Field label={t.lastName}>
-                    <input
-                      name="last_name"
-                      value={form.last_name}
-                      onChange={handleChange}
-                      className="input-field"
-                    />
-                  </Field>
-                </div>
 
-                {/* Email */}
-                <Field label={t.email}>
-                  <input
-                    name="email"
-                    type="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    className="input-field"
-                  />
-                </Field>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label={t.phone}>
+                      <input
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        className="input-field"
+                      />
+                    </Field>
+                    <Field label={t.birthDate}>
+                      <input
+                        name="birth_date"
+                        type="date"
+                        value={form.birth_date}
+                        onChange={handleChange}
+                        className="input-field"
+                      />
+                    </Field>
+                  </div>
 
-                {/* Phone & Birth date */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label={t.phone}>
-                    <input
-                      name="phone"
-                      value={form.phone}
-                      onChange={handleChange}
-                      className="input-field"
-                    />
-                  </Field>
-                  <Field label={t.birthDate}>
-                    <input
-                      name="birth_date"
-                      type="date"
-                      value={form.birth_date}
-                      onChange={handleChange}
-                      className="input-field"
-                    />
-                  </Field>
-                </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Field label={t.country}>
+                      <input
+                        name="country"
+                        value={form.country}
+                        onChange={handleChange}
+                        className="input-field"
+                      />
+                    </Field>
+                    <Field label={t.city}>
+                      <input
+                        name="city"
+                        value={form.city}
+                        onChange={handleChange}
+                        className="input-field"
+                      />
+                    </Field>
+                  </div>
 
-                {/* Country & City */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label={t.country}>
-                    <input
-                      name="country"
-                      value={form.country}
+                  <Field label={t.education}>
+                    <select
+                      name="highest_education"
+                      value={form.highest_education}
                       onChange={handleChange}
                       className="input-field"
-                    />
-                  </Field>
-                  <Field label={t.city}>
-                    <input
-                      name="city"
-                      value={form.city}
-                      onChange={handleChange}
-                      className="input-field"
-                    />
-                  </Field>
-                </div>
-
-                {/* Education */}
-                <Field label={t.education}>
-                  <select
-                    name="highest_education"
-                    value={form.highest_education}
-                    onChange={handleChange}
-                    className="input-field"
-                  >
-                    <option value="">—</option>
-                    {EDUCATION_KEYS.map((key) => (
-                      <option key={key} value={key}>
-                        {t.educationOptions?.[key] || key}
-                      </option>
-                    ))}
-                  </select>
-                </Field>
-
-                {/* Current status & Preferred language */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Field label={t.currentStatus}>
-                    <input
-                      name="current_status"
-                      value={form.current_status}
-                      onChange={handleChange}
-                      className="input-field"
-                    />
-                  </Field>
-                  <Field label={t.preferredLanguage}>
-                    <input
-                      name="preferred_language"
-                      value={form.preferred_language}
-                      onChange={handleChange}
-                      className="input-field"
-                    />
+                    >
+                      <option value="">—</option>
+                      {EDUCATION_KEYS.map((key) => (
+                        <option key={key} value={key}>
+                          {t.educationOptions?.[key] || key}
+                        </option>
+                      ))}
+                    </select>
                   </Field>
                 </div>
+              </div>
 
-                {/* Bio EN */}
-                <Field label={t.bioEn}>
-                  <textarea
-                    name="bio_en"
-                    value={form.bio_en}
-                    onChange={handleChange}
-                    rows={3}
-                    className="input-field resize-none"
-                  />
-                </Field>
+              {/* ── Block 2: Role-specific Information ─────────────────────── */}
+              {hasRoleSection && (
+                <div className="bg-white rounded-lg shadow-md p-8">
+                  <h2 className="text-lg font-semibold text-gray-700 border-b pb-2 mb-6">
+                    {t.roleInfo?.[role] || t.roleInfo?.title || 'Role Information'}
+                  </h2>
+                  <div className="space-y-4">
+                    {/* Teacher only: subject */}
+                    {role === 'teacher' && (
+                      <Field label={t.subject || 'Subject'}>
+                        <input
+                          name="subject"
+                          value={form.subject}
+                          onChange={handleChange}
+                          className="input-field"
+                        />
+                      </Field>
+                    )}
 
-                {/* Bio MN */}
-                <Field label={t.bioMn}>
-                  <textarea
-                    name="bio_mn"
-                    value={form.bio_mn}
-                    onChange={handleChange}
-                    rows={3}
-                    className="input-field resize-none"
-                  />
-                </Field>
+                    {/* Teacher + TeamMember: current_status */}
+                    {(role === 'teacher' || role === 'teamMember') && (
+                      <Field label={t.currentStatus}>
+                        <input
+                          name="current_status"
+                          value={form.current_status}
+                          onChange={handleChange}
+                          className="input-field"
+                        />
+                      </Field>
+                    )}
 
-                {/* Messages */}
+                    {/* All non-student roles: preferred_language */}
+                    <Field label={t.preferredLanguage}>
+                      <input
+                        name="preferred_language"
+                        value={form.preferred_language}
+                        onChange={handleChange}
+                        className="input-field"
+                      />
+                    </Field>
+
+                    {/* Bio EN */}
+                    <Field label={t.bioEn}>
+                      <textarea
+                        name="bio_en"
+                        value={form.bio_en}
+                        onChange={handleChange}
+                        rows={3}
+                        className="input-field resize-none"
+                      />
+                    </Field>
+
+                    {/* Bio MN */}
+                    <Field label={t.bioMn}>
+                      <textarea
+                        name="bio_mn"
+                        value={form.bio_mn}
+                        onChange={handleChange}
+                        rows={3}
+                        className="input-field resize-none"
+                      />
+                    </Field>
+                  </div>
+                </div>
+              )}
+
+              {/* ── Save button ──────────────────────────────────────────────── */}
+              <div className="bg-white rounded-lg shadow-md p-6">
                 {successMsg && (
-                  <p className="text-green-600 text-sm font-medium">{successMsg}</p>
+                  <p className="text-green-600 text-sm font-medium mb-4">{successMsg}</p>
                 )}
                 {errorMsg && (
-                  <p className="text-red-500 text-sm font-medium">{errorMsg}</p>
+                  <p className="text-red-500 text-sm font-medium mb-4">{errorMsg}</p>
                 )}
-
                 <button
                   type="submit"
                   disabled={saving}
@@ -322,9 +379,9 @@ export default function ProfilePage() {
                 >
                   {saving ? t.saving : t.saveChanges}
                 </button>
-              </form>
-            )}
-          </div>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </AuthGuard>

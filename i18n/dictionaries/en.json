@@ -29,7 +29,20 @@
     "preferredLanguage": "Preferred Language",
     "bioEn": "Bio (English)",
     "bioMn": "Bio (Mongolian)",
-    "saveChanges": "Save Changes",
+    "subject": "Subject / Field",
+    "roles": {
+      "student": "Student",
+      "teacher": "Teacher",
+      "mentor": "Mentor",
+      "teamMember": "Team Member"
+    },
+    "roleInfo": {
+      "title": "Role Information",
+      "teacher": "Teacher Information",
+      "mentor": "Mentor Information",
+      "teamMember": "Team Information"
+    },
+    "saveChanges": "Save Profile",
     "saving": "Saving...",
     "successMessage": "Profile updated successfully!",
     "errorMessage": "Failed to update profile. Please try again.",
