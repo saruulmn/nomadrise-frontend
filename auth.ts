@@ -1,7 +1,37 @@
 import NextAuth from "next-auth";
+import { jwtDecode } from "jwt-decode";
 import authConfig from "./auth.config";
 
 const DJANGO_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+
+/** Returns true if the Django access token expires within the next 60 seconds. */
+function isExpiringSoon(accessToken: string): boolean {
+  try {
+    const { exp } = jwtDecode<{ exp: number }>(accessToken);
+    return Date.now() / 1000 >= exp - 60;
+  } catch {
+    return true;
+  }
+}
+
+/** Exchange the refresh token for a new access token from Django. */
+async function refreshDjangoToken(refreshToken: string): Promise<{ access: string; refresh?: string } | null> {
+  try {
+    const res = await fetch(`${DJANGO_API_URL}/token/refresh/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh: refreshToken }),
+    });
+    if (!res.ok) {
+      console.error("Token refresh failed:", res.status, await res.text());
+      return null;
+    }
+    return await res.json();
+  } catch (error) {
+    console.error("Token refresh error:", error);
+    return null;
+  }
+}
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -31,8 +61,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           if (res) {
             if (!res.ok) {
-              console.error("Django social auth failed:", res.status, await res.text());
-              throw new Error("Django auth failed");
+              const errText = await res.text();
+              console.error("Django social auth failed:", res.status, errText);
+              token.authError = `Django auth failed: ${res.status}`;
+              return token;
             }
             const data = await res.json();
             token._at = data.access;
@@ -43,13 +75,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         } catch (error) {
           console.error("Error exchanging token with Django:", error);
+          token.authError = String(error);
         }
       }
+      // Token refresh: if access token is expiring soon, refresh it
+      if (token._at && token._rt && isExpiringSoon(token._at as string)) {
+        const refreshed = await refreshDjangoToken(token._rt as string);
+        if (refreshed) {
+          token._at = refreshed.access;
+          if (refreshed.refresh) token._rt = refreshed.refresh;
+          delete token.authError;
+        } else {
+          token.authError = "Session expired. Please sign in again.";
+        }
+      }
+
       return token;
     },
     async session({ session, token }) {
       session._at = (token._at as string) || "";
       session._rt = (token._rt as string) || "";
+      if (token.authError) {
+        session.authError = token.authError as string;
+      }
       if (token.djangoUser) {
         session.user = {
           ...session.user,

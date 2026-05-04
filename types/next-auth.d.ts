@@ -5,6 +5,7 @@ declare module "next-auth" {
   interface Session {
     _at: string;
     _rt: string;
+    authError?: string;
     user: {
       id: string;
       pk?: number;
@@ -30,5 +31,6 @@ declare module "next-auth/jwt" {
     providerAccountId?: string;
     accessToken?: string;
     backendUserId?: number;
+    authError?: string;
   }
 }
