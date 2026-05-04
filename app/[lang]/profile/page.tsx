@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
 import { getDictionary } from '@/i18n/dictionaries';
@@ -85,9 +85,9 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    // If authenticated but no Django access token, the OAuth exchange failed — redirect to login
+    // If authenticated but no Django access token, the OAuth exchange failed — sign out and redirect
     if (status === 'authenticated' && !session?._at) {
-      router.push(`/${lang}/login`);
+      signOut({ callbackUrl: `/${lang}/login` });
       return;
     }
     if (!session?._at) {
@@ -100,7 +100,7 @@ export default function ProfilePage() {
     })
       .then(async (res) => {
         if (res.status === 401) {
-          router.push(`/${lang}/login`);
+          signOut({ callbackUrl: `/${lang}/login` });
           return;
         }
         return res.json();
@@ -143,7 +143,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session?._at) {
-      router.push(`/${lang}/login`);
+      signOut({ callbackUrl: `/${lang}/login` });
       return;
     }
 
@@ -162,8 +162,8 @@ export default function ProfilePage() {
       });
 
       if (res.status === 401) {
-        // Token rejected — redirect to login
-        router.push(`/${lang}/login`);
+        // Token rejected — sign out and redirect
+        signOut({ callbackUrl: `/${lang}/login` });
         return;
       }
 
