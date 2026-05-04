@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession, signIn } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
 import { getDictionary } from '@/i18n/dictionaries';
@@ -85,9 +85,9 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    // If authenticated but no Django access token, the OAuth exchange failed — re-auth
+    // If authenticated but no Django access token, the OAuth exchange failed — redirect to login
     if (status === 'authenticated' && !session?._at) {
-      signIn();
+      router.push(`/${lang}/login`);
       return;
     }
     if (!session?._at) {
@@ -100,8 +100,7 @@ export default function ProfilePage() {
     })
       .then(async (res) => {
         if (res.status === 401) {
-          // Access token rejected — force re-auth
-          signIn();
+          router.push(`/${lang}/login`);
           return;
         }
         return res.json();
@@ -144,8 +143,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session?._at) {
-      // No access token — re-trigger sign in
-      signIn();
+      router.push(`/${lang}/login`);
       return;
     }
 
@@ -164,8 +162,8 @@ export default function ProfilePage() {
       });
 
       if (res.status === 401) {
-        // Token rejected — force re-auth and bring user back after
-        signIn(undefined, { callbackUrl: `/${lang}/profile` });
+        // Token rejected — redirect to login
+        router.push(`/${lang}/login`);
         return;
       }
 

@@ -7,8 +7,6 @@ import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
-import { loginWithEmail } from "@/lib/api/login";
-import { tokenStorage } from "@/lib/api/base";
 import { signIn, useSession } from "next-auth/react";
 
 export default function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
@@ -58,12 +56,19 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
     setError("");
 
     try {
-      const response = await loginWithEmail({ email, password });
-      
-      // Store tokens
-      tokenStorage.setTokens(response.access, response.refresh);
-      
-      // Redirect to dashboard
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setIsSubmitting(false);
+        setError("Invalid email or password. Please try again.");
+        return;
+      }
+
+      // Redirect to dashboard on success
       router.push(`/${lang}/dashboard`);
     } catch (err: any) {
       setIsSubmitting(false);

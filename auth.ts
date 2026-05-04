@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 import authConfig from "./auth.config";
 
@@ -35,12 +36,53 @@ async function refreshDjangoToken(refreshToken: string): Promise<{ access: strin
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  providers: [
+    ...authConfig.providers,
+    Credentials({
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+        try {
+          const res = await fetch(`${DJANGO_API_URL}/auth/login/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
+          if (!res.ok) return null;
+          const data = await res.json();
+          return {
+            id: String(data.user?.id ?? ""),
+            email: data.user?.email ?? "",
+            name: [data.user?.first_name, data.user?.last_name].filter(Boolean).join(" ") || data.user?.username || "",
+            _at: data.access,
+            _rt: data.refresh,
+          };
+        } catch {
+          return null;
+        }
+      },
+    }),
+  ],
   session: {
     strategy: "jwt",
   },
   callbacks: {
-    async jwt({ token, account }) {
-      // On initial sign in, exchange provider token for Django JWT
+    async jwt({ token, account, user }) {
+      // Credentials sign in: tokens come directly from the authorize return value
+      if (account?.type === "credentials" && user) {
+        const u = user as { _at?: string; _rt?: string };
+        token._at = u._at;
+        token._rt = u._rt;
+        return token;
+      }
+
+      // On initial social sign in, exchange provider token for Django JWT
       if (account) {
         try {
           let res: Response | null = null;
