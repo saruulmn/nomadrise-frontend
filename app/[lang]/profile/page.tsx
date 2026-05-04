@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { usePathname } from 'next/navigation';
+import { useSession, signIn } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
 import { getDictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
@@ -67,6 +67,7 @@ const EMPTY_PROFILE: ProfileData = {
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
+  const router = useRouter();
   const lang = (pathname.startsWith('/en') ? 'en' : 'mn') as Locale;
 
   const [dictionary, setDictionary] = useState<any>(null);
@@ -84,6 +85,11 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (status === 'loading') return;
+    // If authenticated but no Django access token, the OAuth exchange failed — re-auth
+    if (status === 'authenticated' && !session?._at) {
+      signIn();
+      return;
+    }
     if (!session?._at) {
       setLoading(false);
       return;
@@ -92,8 +98,16 @@ export default function ProfilePage() {
     fetch(`${apiBase}/auth/me/profile/`, {
       headers: { Authorization: `Bearer ${session._at}` },
     })
-      .then((res) => res.json())
+      .then(async (res) => {
+        if (res.status === 401) {
+          // Access token rejected — force re-auth
+          signIn();
+          return;
+        }
+        return res.json();
+      })
       .then((data) => {
+        if (!data) return;
         // Pre-fill names/avatar from social session if backend has none yet
         const socialName = session?.user?.name || '';
         const [socialFirst, ...socialRestParts] = socialName.split(' ');
@@ -119,7 +133,7 @@ export default function ProfilePage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [session?._at, apiBase]);
+  }, [status, session?._at, apiBase]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -130,7 +144,8 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session?._at) {
-      setErrorMsg('Your session has expired. Please sign in again.');
+      // No access token — re-trigger sign in
+      signIn();
       return;
     }
 
@@ -148,9 +163,19 @@ export default function ProfilePage() {
         body: JSON.stringify(form),
       });
 
+      if (res.status === 401) {
+        // Token rejected — force re-auth and bring user back after
+        signIn(undefined, { callbackUrl: `/${lang}/profile` });
+        return;
+      }
+
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        throw new Error(JSON.stringify(errData) || 'Failed');
+        const detail =
+          errData?.detail ||
+          Object.values(errData).flat().join(' ') ||
+          'Failed to update profile.';
+        throw new Error(String(detail));
       }
       setSuccessMsg(dictionary?.profile?.successMessage || 'Profile updated successfully!');
     } catch (err: unknown) {
