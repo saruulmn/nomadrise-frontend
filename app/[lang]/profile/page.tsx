@@ -89,8 +89,10 @@ export default function ProfilePage() {
       router.push(`/${lang}/login`);
       return;
     }
+    // _at not yet hydrated — wait for the next render cycle
+    if (!session?._at) return;
 
-    const token = session?._at || '';
+    const token = session._at;
     fetch(`${apiBase}/auth/me/profile/`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -139,7 +141,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session?._at) {
-      router.push(`/${lang}/login`);
+      setErrorMsg(dictionary?.profile?.errorMessage || 'Session unavailable. Please reload the page.');
       return;
     }
 
