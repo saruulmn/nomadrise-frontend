@@ -93,10 +93,13 @@ export default function ProfilePage() {
       return;
     }
 
-    // FIX: session._at may not be hydrated yet even when status === 'authenticated'.
-    // Return early and wait for the next render when the token becomes available.
+    // session._at may be empty if the Django token exchange hasn't completed yet.
+    // Stop the spinner so the page is usable; the effect re-runs once _at arrives.
     const token = session?._at;
-    if (!token) return;
+    if (!token) {
+      setLoading(false);
+      return;
+    }
 
     fetch(`${apiBase}/auth/me/profile/`, {
       headers: { Authorization: `Bearer ${token}` },
