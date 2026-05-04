@@ -85,18 +85,14 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    // If authenticated but no Django access token, the OAuth exchange failed — sign out and redirect
-    if (status === 'authenticated' && !session?._at) {
-      signOut({ callbackUrl: `/${lang}/login` });
-      return;
-    }
-    if (!session?._at) {
-      setLoading(false);
+    if (status === 'unauthenticated') {
+      router.push(`/${lang}/login`);
       return;
     }
 
+    const token = session?._at || '';
     fetch(`${apiBase}/auth/me/profile/`, {
-      headers: { Authorization: `Bearer ${session._at}` },
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then(async (res) => {
         if (res.status === 401) {
@@ -143,7 +139,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!session?._at) {
-      signOut({ callbackUrl: `/${lang}/login` });
+      router.push(`/${lang}/login`);
       return;
     }
 
