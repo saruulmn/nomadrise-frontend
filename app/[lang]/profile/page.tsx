@@ -84,15 +84,20 @@ export default function ProfilePage() {
   }, [lang]);
 
   useEffect(() => {
+    // Wait until NextAuth has finished initialising
     if (status === 'loading') return;
+
+    // Only redirect if definitively unauthenticated
     if (status === 'unauthenticated') {
       router.push(`/${lang}/login`);
       return;
     }
-    // _at not yet hydrated — wait for the next render cycle
-    if (!session?._at) return;
 
-    const token = session._at;
+    // FIX: session._at may not be hydrated yet even when status === 'authenticated'.
+    // Return early and wait for the next render when the token becomes available.
+    const token = session?._at;
+    if (!token) return;
+
     fetch(`${apiBase}/auth/me/profile/`, {
       headers: { Authorization: `Bearer ${token}` },
     })
@@ -130,7 +135,8 @@ export default function ProfilePage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [status, session?._at, apiBase]);
+  // FIX: depend on session?._at so the effect re-runs once the token arrives
+  }, [status, session?._at, apiBase, lang]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -140,8 +146,14 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!session?._at) {
-      setErrorMsg(dictionary?.profile?.errorMessage || 'Session unavailable. Please reload the page.');
+
+    // FIX: guard against missing token without immediately redirecting —
+    // the token may still be hydrating. Only redirect if truly unauthenticated.
+    const token = session?._at;
+    if (!token) {
+      if (status === 'unauthenticated') {
+        router.push(`/${lang}/login`);
+      }
       return;
     }
 
@@ -154,13 +166,12 @@ export default function ProfilePage() {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session._at}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(form),
       });
 
       if (res.status === 401) {
-        // Token rejected — sign out and redirect
         signOut({ callbackUrl: `/${lang}/login` });
         return;
       }
