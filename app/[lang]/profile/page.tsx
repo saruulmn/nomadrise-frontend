@@ -150,12 +150,12 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // FIX: guard against missing token without immediately redirecting —
-    // the token may still be hydrating. Only redirect if truly unauthenticated.
     const token = session?._at;
     if (!token) {
       if (status === 'unauthenticated') {
         router.push(`/${lang}/login`);
+      } else {
+        setErrorMsg('Session not ready. Please try again.');
       }
       return;
     }
