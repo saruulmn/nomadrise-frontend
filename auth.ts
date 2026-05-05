@@ -93,11 +93,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           let requestBody: Record<string, string> = {};
 
           if (account.provider === "google") {
-            if (account.id_token) {
-              requestBody = { id_token: account.id_token };
-            } else if (account.access_token) {
-              // id_token байхгүй бол access_token ашиглана
+            if (account.access_token) {
               requestBody = { access_token: account.access_token };
+            } else if (account.id_token) {
+              requestBody = { id_token: account.id_token };
             }
 
             console.log("=== DJANGO REQUEST ===");

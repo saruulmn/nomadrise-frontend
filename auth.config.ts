@@ -7,10 +7,10 @@ export default {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      // FIX: openid scope заавал байх ёстой — энгүйгээр id_token ирэхгүй
       authorization: {
         params: {
           scope: "openid email profile",
+          access_type: "offline",
         },
       },
     }),
