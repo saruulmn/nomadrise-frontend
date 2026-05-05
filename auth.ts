@@ -46,6 +46,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
         try {
+          console.log("[auth] authorize() calling:", `${DJANGO_API_URL}/auth/login/`);
           const res = await fetch(`${DJANGO_API_URL}/auth/login/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -54,8 +55,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               password: credentials.password,
             }),
           });
-          if (!res.ok) return null;
+          if (!res.ok) {
+            console.error("[auth] Django login failed:", res.status, await res.text());
+            return null;
+          }
           const data = await res.json();
+          console.log("[auth] Django login response:", JSON.stringify(data));
           return {
             id: String(data.user?.id ?? ""),
             email: data.user?.email ?? "",
