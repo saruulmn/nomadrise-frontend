@@ -7,6 +7,12 @@ export default {
     Google({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
+      // FIX: openid scope заавал байх ёстой — энгүйгээр id_token ирэхгүй
+      authorization: {
+        params: {
+          scope: "openid email profile",
+        },
+      },
     }),
     Facebook({
       clientId: process.env.AUTH_FACEBOOK_ID,
@@ -20,10 +26,10 @@ export default {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-      
+
       if (isOnDashboard) {
         if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
+        return false;
       } else if (isLoggedIn) {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
