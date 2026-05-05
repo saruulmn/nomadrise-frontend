@@ -149,8 +149,11 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const token = session?._at;
+    
+    console.log('session:', session);
+    console.log('_at:', session?._at);
+    
     if (!token) {
       if (status === 'unauthenticated') {
         router.push(`/${lang}/login`);
