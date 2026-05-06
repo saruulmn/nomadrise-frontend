@@ -142,6 +142,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }) {
+      console.log("SESSION TOKEN PAYLOAD:", JSON.stringify({
+        _at: token._at ? `${String(token._at).slice(0, 20)}...` : "(empty)",
+        _rt: token._rt ? "(present)" : "(missing)",
+        authError: token.authError || null,
+        sub: token.sub,
+      }));
       session._at = (token._at as string) || "";
       if (token.authError) {
         session.authError = token.authError as string;
