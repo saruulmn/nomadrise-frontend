@@ -26,29 +26,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in on mount
-    const token = authApi.getAccessToken();
-    if (token) {
-      verifyToken(token);
-    } else {
-      setLoading(false);
-    }
+    // Auth is managed by NextAuth — no manual token check needed
+    setLoading(false);
   }, []);
 
   const verifyToken = async (token: string) => {
     try {
       const isValid = await authApi.verifyToken(token);
       if (isValid) {
-        // Token is valid, set a basic user object
-        // In production, you'd fetch actual user details from an endpoint
         setUser({ id: 1, username: 'user', email: 'user@example.com' });
       } else {
-        authApi.clearTokens();
         setUser(null);
       }
     } catch (error) {
       console.error('Token verification failed:', error);
-      authApi.clearTokens();
       setUser(null);
     } finally {
       setLoading(false);
@@ -69,7 +60,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    authApi.clearTokens();
     setUser(null);
   };
 
