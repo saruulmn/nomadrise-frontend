@@ -7,7 +7,6 @@ import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
-import { tokenStorage } from "@/lib/api/base";
 
 export default function RegisterPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const [lang, setLang] = useState<Locale>("mn");
@@ -83,14 +82,9 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
 
       const data = await response.json();
 
-      // Store tokens if registration returns them
-      if (data.access && data.refresh) {
-        tokenStorage.setTokens(data.access, data.refresh);
-      }
-
-      setSuccess("Бүртгүүлэлт амжилттай! Та сүүлийн хэмжээнд нэвтэрч байна...");
+      setSuccess("Бүртгүүлэлт амжилттай! Та нэвтрэх хуудас руу шилжиж байна...");
       setTimeout(() => {
-        router.push(`/${lang}/dashboard`);
+        router.push(`/${lang}/login`);
       }, 1500);
     } catch (err: any) {
       setIsSubmitting(false);
