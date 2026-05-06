@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 import authConfig from "./auth.config";
 
-const DJANGO_API_URL = process.env.DJANGO_API_URL || "http://localhost:8000/api";
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000/api";
 
 function isExpiringSoon(accessToken: string): boolean {
   try {
@@ -16,7 +16,7 @@ function isExpiringSoon(accessToken: string): boolean {
 
 async function refreshAccessToken(refreshToken: string): Promise<{ access: string; refresh?: string } | null> {
   try {
-    const res = await fetch(`${DJANGO_API_URL}/token/refresh/`, {
+    const res = await fetch(`${API_BASE_URL}/token/refresh/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh: refreshToken }),
@@ -44,7 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
         try {
-          const res = await fetch(`${DJANGO_API_URL}/auth/login/`, {
+          const res = await fetch(`${API_BASE_URL}/auth/login/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -91,14 +91,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               requestBody = { id_token: account.id_token };
             }
 
-            res = await fetch(`${DJANGO_API_URL}/auth/social/google/`, {
+            res = await fetch(`${API_BASE_URL}/auth/social/google/`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(requestBody),
             });
           } else if (account.provider === "facebook" && account.access_token) {
             requestBody = { access_token: account.access_token };
-            res = await fetch(`${DJANGO_API_URL}/auth/social/facebook/`, {
+            res = await fetch(`${API_BASE_URL}/auth/social/facebook/`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(requestBody),
@@ -122,7 +122,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
           }
         } catch (error) {
-          console.error("Error exchanging token with Django:", error);
+          console.error("Error exchanging token with backend:", error);
           token.authError = "Authentication failed. Please try again.";
         }
       }
