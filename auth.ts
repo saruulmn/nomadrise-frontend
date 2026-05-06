@@ -3,7 +3,7 @@ import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 import authConfig from "./auth.config";
 
-const DJANGO_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+const DJANGO_API_URL = process.env.DJANGO_API_URL || "http://localhost:8000/api";
 
 function isExpiringSoon(accessToken: string): boolean {
   try {
@@ -14,7 +14,7 @@ function isExpiringSoon(accessToken: string): boolean {
   }
 }
 
-async function refreshDjangoToken(refreshToken: string): Promise<{ access: string; refresh?: string } | null> {
+async function refreshAccessToken(refreshToken: string): Promise<{ access: string; refresh?: string } | null> {
   try {
     const res = await fetch(`${DJANGO_API_URL}/token/refresh/`, {
       method: "POST",
@@ -80,14 +80,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       }
 
       if (account) {
-        // ── DEBUG: account бүрэн харах ──────────────────────────────
-        console.log("=== ACCOUNT OBJECT ===");
-        console.log("provider:", account.provider);
-        console.log("id_token:", account.id_token);
-        console.log("access_token:", account.access_token);
-        console.log("token_type:", account.token_type);
-        console.log("======================");
-
         try {
           let res: Response | null = null;
           let requestBody: Record<string, string> = {};
@@ -98,11 +90,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             } else if (account.id_token) {
               requestBody = { id_token: account.id_token };
             }
-
-            console.log("=== DJANGO REQUEST ===");
-            console.log("URL:", `${DJANGO_API_URL}/auth/social/google/`);
-            console.log("Body:", JSON.stringify(requestBody));
-            console.log("======================");
 
             res = await fetch(`${DJANGO_API_URL}/auth/social/google/`, {
               method: "POST",
@@ -121,14 +108,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (res) {
             const responseText = await res.text();
 
-            // ── DEBUG: Django response харах ─────────────────────────
-            console.log("=== DJANGO RESPONSE ===");
-            console.log("status:", res.status);
-            console.log("body:", responseText);
-            console.log("=======================");
-
             if (!res.ok) {
-              token.authError = `Django auth failed: ${res.status} — ${responseText}`;
+              console.error("Django social auth failed:", res.status);
+              token.authError = "Authentication failed. Please try again.";
               return token;
             }
 
@@ -141,12 +123,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
         } catch (error) {
           console.error("Error exchanging token with Django:", error);
-          token.authError = String(error);
+          token.authError = "Authentication failed. Please try again.";
         }
       }
 
       if (token._at && token._rt && isExpiringSoon(token._at as string)) {
-        const refreshed = await refreshDjangoToken(token._rt as string);
+        const refreshed = await refreshAccessToken(token._rt as string);
         if (refreshed) {
           token._at = refreshed.access;
           if (refreshed.refresh) token._rt = refreshed.refresh;
@@ -161,7 +143,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     async session({ session, token }) {
       session._at = (token._at as string) || "";
-      session._rt = (token._rt as string) || "";
       if (token.authError) {
         session.authError = token.authError as string;
       }

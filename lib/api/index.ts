@@ -15,7 +15,7 @@
  */
 
 // Base API layer
-export { default as api, ApiError, tokenStorage, getWithAuth, getWithoutAuth } from './base';
+export { default as api, ApiError, getWithAuth, getWithoutAuth } from './base';
 export type { HttpMethod, ApiRequestOptions, ApiResponse } from './base';
 
 // Auth module
@@ -24,10 +24,6 @@ export {
   login,
   refreshToken,
   verifyToken,
-  setTokens,
-  clearTokens,
-  getAccessToken,
-  getRefreshToken,
   syncOAuthUser,
   deleteAccount,
   getUserByProvider,

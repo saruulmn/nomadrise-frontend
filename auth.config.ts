@@ -26,11 +26,12 @@ export default {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
       const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
+      const isOnRoot = nextUrl.pathname === "/";
 
       if (isOnDashboard) {
         if (isLoggedIn) return true;
         return false;
-      } else if (isLoggedIn) {
+      } else if (isLoggedIn && isOnRoot) {
         return Response.redirect(new URL("/dashboard", nextUrl));
       }
       return true;

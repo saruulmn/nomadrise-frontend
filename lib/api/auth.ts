@@ -8,7 +8,7 @@
  * - Token storage management
  */
 
-import api, { tokenStorage, ApiError } from './base';
+import api, { ApiError } from './base';
 
 // ============================================================================
 // Types
@@ -53,10 +53,6 @@ export interface DeleteAccountPayload {
  */
 export async function login(credentials: LoginCredentials): Promise<TokenPair> {
   const response = await api.post<TokenPair>('/token/', credentials, { skipAuth: true });
-  
-  // Store tokens after successful login
-  tokenStorage.setTokens(response.data.access, response.data.refresh);
-  
   return response.data;
 }
 
@@ -85,38 +81,6 @@ export async function verifyToken(token: string): Promise<boolean> {
     }
     throw error;
   }
-}
-
-// ============================================================================
-// Token Storage Operations
-// ============================================================================
-
-/**
- * Store JWT tokens in localStorage
- */
-export function setTokens(access: string, refresh: string): void {
-  tokenStorage.setTokens(access, refresh);
-}
-
-/**
- * Clear stored JWT tokens
- */
-export function clearTokens(): void {
-  tokenStorage.clearTokens();
-}
-
-/**
- * Get stored access token
- */
-export function getAccessToken(): string | null {
-  return tokenStorage.getAccessToken();
-}
-
-/**
- * Get stored refresh token
- */
-export function getRefreshToken(): string | null {
-  return tokenStorage.getRefreshToken();
 }
 
 // ============================================================================
@@ -171,12 +135,6 @@ export const authApi = {
   login,
   refreshToken,
   verifyToken,
-  
-  // Token storage
-  setTokens,
-  clearTokens,
-  getAccessToken,
-  getRefreshToken,
   
   // OAuth operations
   syncOAuthUser,
