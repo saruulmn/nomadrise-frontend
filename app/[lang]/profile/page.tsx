@@ -93,8 +93,6 @@ export default function ProfilePage() {
       return;
     }
 
-    // session._at may be empty if the Django token exchange hasn't completed yet.
-    // Stop the spinner so the page is usable; the effect re-runs once _at arrives.
     const token = session?._at;
     if (!token) {
       setLoading(false);
