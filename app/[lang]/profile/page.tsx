@@ -95,9 +95,15 @@ export default function ProfilePage() {
       return;
     }
 
+    // NextAuth auth error (e.g. social token exchange failed) → back to login
+    if (session?.authError) {
+      router.push(`/${lang}/login`);
+      return;
+    }
+
     const token = session?._at;
     if (!token) {
-      setLoading(false);
+      // Authenticated but _at not yet propagated — keep spinner and wait for re-run
       return;
     }
 
@@ -136,10 +142,11 @@ export default function ProfilePage() {
           bio_mn: data.bio_mn || '',
         });
       })
-      .catch(() => {})
+      .catch(() => {
+        setErrorMsg(dictionary?.profile?.errorMessage || 'Failed to load profile.');
+      })
       .finally(() => setLoading(false));
-  // FIX: depend on session?._at so the effect re-runs once the token arrives
-  }, [status, session?._at, apiBase, lang]);
+  }, [status, session?._at, session?.authError, apiBase, lang]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
