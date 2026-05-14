@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { Button, Dropdown } from "antd";
-import { UserOutlined, LogoutOutlined, DashboardOutlined } from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, DashboardOutlined, SettingOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -36,6 +36,11 @@ export default function UserProfile() {
       key: "profile",
       label: <a href={`/${lang}/profile`}>{dictionary.nav.profile || "Profile"}</a>,
       icon: <UserOutlined />,
+    },
+    {
+      key: "settings",
+      label: <a href={`/${lang}/settings`}>{dictionary.nav.settings || "Settings"}</a>,
+      icon: <SettingOutlined />,
     },
     {
       type: "divider",

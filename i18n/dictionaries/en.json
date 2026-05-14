@@ -12,7 +12,8 @@
     "exchange": "Student Exchange",
     "internship": "Internship Program",
     "dashboard": "Dashboard",
-    "profile": "Profile"
+    "profile": "Profile",
+    "settings": "Settings"
   },
   "profile": {
     "title": "My Profile",
@@ -58,6 +59,34 @@
       "phd_student": "PhD Student",
       "phd_graduate": "PhD Graduate"
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account security and connected services.",
+    "tabSecurity": "Security",
+    "tabConnected": "Connected Accounts",
+    "profileCard": "Profile & Avatar",
+    "profileCardDesc": "Update your personal information and photo.",
+    "changePassword": "Change Password",
+    "createPassword": "Create Password",
+    "changePasswordDesc": "Enter your current password to set a new one.",
+    "createPasswordDesc": "You signed in with a social account. Set a password to also sign in with email.",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm New Password",
+    "saving": "Saving…",
+    "passwordSuccess": "Password updated successfully.",
+    "passwordError": "Failed to update password. Please try again.",
+    "passwordMismatch": "Passwords do not match.",
+    "connectedTitle": "Connected Accounts",
+    "connectedDesc": "Manage the social accounts linked to your profile.",
+    "noConnected": "No connected social accounts.",
+    "unlink": "Unlink",
+    "unlinking": "Unlinking…",
+    "unlinkError": "Failed to unlink account.",
+    "unlinkDisabledTooltip": "Set a password before unlinking your last social account.",
+    "unlinkWarning": "To unlink your last social account, first set a password on the Security tab.",
+    "loadError": "Failed to load connected accounts."
   },
   "team": {
     "title": "Our Team",
