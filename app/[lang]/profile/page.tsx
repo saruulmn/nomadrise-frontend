@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
@@ -74,8 +74,10 @@ export default function ProfilePage() {
   const [form, setForm] = useState<ProfileData>(EMPTY_PROFILE);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const avatarInputRef = useRef<HTMLInputElement>(null);
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
@@ -143,6 +145,35 @@ export default function ProfilePage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const token = session?._at;
+    if (!token) return;
+
+    setUploadingAvatar(true);
+    setSuccessMsg('');
+    setErrorMsg('');
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      const res = await fetch(`${apiBase}/auth/me/profile/`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const data = await res.json();
+      setForm((prev) => ({ ...prev, avatar_url: data.avatar_url || prev.avatar_url }));
+    } catch {
+      setErrorMsg('Failed to upload avatar.');
+    } finally {
+      setUploadingAvatar(false);
+      // Reset so the same file can be re-selected
+      if (avatarInputRef.current) avatarInputRef.current.value = '';
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -214,17 +245,35 @@ export default function ProfilePage() {
         <div className="max-w-2xl mx-auto space-y-6">
           {/* ── Header card ─────────────────────────────────────────────── */}
           <div className="bg-white rounded-lg shadow-md p-6 flex items-center gap-4">
-            {avatarSrc ? (
-              <img
-                src={avatarSrc}
-                alt={displayName}
-                className="w-16 h-16 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
-                {displayName.charAt(0).toUpperCase()}
-              </div>
-            )}
+            <button
+              type="button"
+              onClick={() => avatarInputRef.current?.click()}
+              disabled={uploadingAvatar}
+              className="relative group shrink-0 focus:outline-none"
+              title={t.changeAvatar}
+            >
+              {avatarSrc ? (
+                <img
+                  src={avatarSrc}
+                  alt={displayName}
+                  className="w-16 h-16 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-full bg-blue-500 flex items-center justify-center text-white text-2xl font-bold">
+                  {displayName.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <span className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white text-xs font-medium">
+                {uploadingAvatar ? t.uploadingAvatar : t.changeAvatar}
+              </span>
+            </button>
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarChange}
+            />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">{t.title}</h1>
               <p className="text-gray-500 text-sm">{form.email || session?.user?.email}</p>

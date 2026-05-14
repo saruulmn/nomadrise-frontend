@@ -42,6 +42,8 @@
       "mentor": "Mentor Information",
       "teamMember": "Team Information"
     },
+    "changeAvatar": "Change photo",
+    "uploadingAvatar": "Uploading...",
     "saveChanges": "Save Profile",
     "saving": "Saving...",
     "successMessage": "Profile updated successfully!",
