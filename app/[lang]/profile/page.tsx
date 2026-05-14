@@ -78,6 +78,8 @@ export default function ProfilePage() {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  // Prevents sending a second request when the session re-renders after fetch
+  const hasFetched = useRef(false);
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
@@ -85,67 +87,93 @@ export default function ProfilePage() {
     getDictionary(lang).then(setDictionary);
   }, [lang]);
 
+  // ── Effect 1: pre-fill from NextAuth session immediately ─────────────────
+  // Fires as soon as status === 'authenticated', BEFORE the API responds.
+  // This ensures the header and form inputs are in sync from the start.
+  // The API fetch (Effect 2) will overwrite with authoritative DB values.
   useEffect(() => {
-    // Wait until NextAuth has finished initialising
+    if (status !== 'authenticated' || !session?.user) return;
+
+    const [socialFirst = '', ...rest] = (session.user.name || '').split(' ');
+    const socialLast = rest.join(' ');
+
+    setForm(prev => ({
+      ...prev,
+      first_name: prev.first_name || socialFirst,
+      last_name: prev.last_name || socialLast,
+      email: prev.email || session.user?.email || '',
+      avatar_url: prev.avatar_url || session.user?.image || null,
+    }));
+  }, [status, session?.user?.name, session?.user?.email, session?.user?.image]);
+
+  // ── Effect 2: fetch authoritative profile data from Django ────────────────
+  useEffect(() => {
     if (status === 'loading') return;
 
-    // Only redirect if definitively unauthenticated
-    if (status === 'unauthenticated') {
-      router.push(`/${lang}/login`);
-      return;
-    }
-
-    // NextAuth auth error (e.g. social token exchange failed) → back to login
-    if (session?.authError) {
+    if (status === 'unauthenticated' || session?.authError) {
       router.push(`/${lang}/login`);
       return;
     }
 
     const token = session?._at;
+
     if (!token) {
-      // Authenticated but _at not yet propagated — keep spinner and wait for re-run
+      // Authenticated by NextAuth but backend token not yet available.
+      // Stop the spinner so the form pre-filled by Effect 1 is visible.
+      setLoading(false);
       return;
     }
 
+    // Don't re-fetch if we already have data (prevents double-fetch in
+    // React StrictMode and on shallow session updates).
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    const controller = new AbortController();
+
     fetch(`${apiBase}/auth/me/profile/`, {
       headers: { Authorization: `Bearer ${token}` },
+      signal: controller.signal,
     })
       .then(async (res) => {
         if (res.status === 401) {
           signOut({ callbackUrl: `/${lang}/login` });
-          return;
+          return null;
         }
+        if (!res.ok) throw new Error(`Profile fetch failed: HTTP ${res.status}`);
         return res.json();
       })
-      .then((data) => {
+      .then((data: Record<string, any> | null) => {
         if (!data) return;
-        // Pre-fill names/avatar from social session if backend has none yet
-        const socialName = session?.user?.name || '';
-        const [socialFirst, ...socialRestParts] = socialName.split(' ');
-        const socialLast = socialRestParts.join(' ');
+
+        const [sf = '', ...sr] = (session?.user?.name || '').split(' ');
+        const sl = sr.join(' ');
 
         setForm({
-          first_name: data.first_name || socialFirst || '',
-          last_name: data.last_name || socialLast || '',
-          email: data.email || session?.user?.email || '',
-          phone: data.phone || '',
-          birth_date: data.birth_date || '',
-          country: data.country || '',
-          city: data.city || '',
-          highest_education: data.highest_education || '',
-          avatar_url: data.avatar_url || session?.user?.image || null,
-          groups: data.groups || [],
-          subject: data.subject || '',
-          current_status: data.current_status || '',
+          first_name:         data.first_name         || sf || '',
+          last_name:          data.last_name          || sl || '',
+          email:              data.email              || session?.user?.email || '',
+          phone:              data.phone              || '',
+          birth_date:         data.birth_date         || '',
+          country:            data.country            || '',
+          city:               data.city               || '',
+          highest_education:  data.highest_education  || '',
+          avatar_url:         data.avatar_url         || session?.user?.image || null,
+          groups:             data.groups             || [],
+          subject:            data.subject            || '',
+          current_status:     data.current_status     || '',
           preferred_language: data.preferred_language || '',
-          bio_en: data.bio_en || '',
-          bio_mn: data.bio_mn || '',
+          bio_en:             data.bio_en             || '',
+          bio_mn:             data.bio_mn             || '',
         });
       })
-      .catch(() => {
-        setErrorMsg(dictionary?.profile?.errorMessage || 'Failed to load profile.');
+      .catch((err: Error) => {
+        if (err.name === 'AbortError') return;
+        setErrorMsg(dictionary?.profile?.errorMessage || 'Failed to load profile data.');
       })
       .finally(() => setLoading(false));
+
+    return () => controller.abort();
   }, [status, session?._at, session?.authError, apiBase, lang]);
 
   const handleChange = (
