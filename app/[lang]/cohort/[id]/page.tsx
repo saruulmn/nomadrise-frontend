@@ -138,7 +138,7 @@ export default function CohortDetailPage({ params }: Props) {
             {cohort.status === 'Upcoming'
               ? (lang === 'mn' ? 'Бүртгүүлэх' : 'Apply now')
               : cohort.status === 'Active'
-              ? (lang === 'mn' ? 'Нэгдэх' : 'Join cohort')
+              ? (lang === 'mn' ? 'Элсэх' : 'Join cohort')
               : (lang === 'mn' ? 'Дууссан' : 'Cohort ended')}
           </button>
         </div>
