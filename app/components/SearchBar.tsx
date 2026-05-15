@@ -55,9 +55,9 @@ export default function SearchBar({
         <div className="max-w-6xl mx-auto">
           {title && <h1 className="text-2xl font-bold text-gray-900 mb-0.5">{title}</h1>}
           {subtitle && <p className="text-gray-400 text-sm mb-4">{subtitle}</p>}
-          <div className="flex gap-2 items-center">
-            {filters && <div className="shrink-0">{filters}</div>}
-            <div className="flex flex-1 items-center border border-gray-200 rounded-lg bg-white overflow-hidden focus-within:border-gray-400 transition-all">
+          <div className="flex gap-[10%] items-center">
+            {filters && <div className="w-[20%] [&>select]:w-full">{filters}</div>}
+            <div className="flex w-[70%] items-center border border-gray-200 rounded-lg bg-white overflow-hidden focus-within:border-gray-400 transition-all">
               <span className="pl-3.5 text-gray-400 shrink-0 pointer-events-none">
                 <SearchOutlined />
               </span>
@@ -67,13 +67,13 @@ export default function SearchBar({
                 onChange={(e) => handleChange(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
-                className="flex-1 px-3 py-2.5 bg-transparent text-gray-800 placeholder-gray-400 outline-none text-sm"
+                className="flex-1 px-3 py-2.5 bg-transparent text-gray-800 placeholder-[#7d838c] outline-none text-sm"
               />
               <button
                 onClick={handleSearchClick}
-                className="px-4 py-2.5 bg-gray-900 text-white text-sm font-medium hover:bg-gray-700 transition-colors shrink-0 border-l border-gray-200"
+                className="px-3 py-2.5 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
               >
-                {placeholder.toLowerCase().includes('хайх') ? 'Хайх' : 'Search'}
+                <SearchOutlined />
               </button>
             </div>
           </div>
