@@ -64,6 +64,12 @@ const EMPTY_PROFILE: ProfileData = {
   bio_mn: '',
 };
 
+// Extracts year string from either "YYYY" or "YYYY-MM-DD"
+function toYearString(value: string): string {
+  if (!value) return '';
+  return value.split('-')[0];
+}
+
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -78,19 +84,17 @@ export default function ProfilePage() {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const avatarInputRef = useRef<HTMLInputElement>(null);
-  // Prevents sending a second request when the session re-renders after fetch
   const hasFetched = useRef(false);
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+
+  const currentYear = new Date().getFullYear();
+  const yearOptions = Array.from({ length: 80 }, (_, i) => currentYear - 10 - i);
 
   useEffect(() => {
     getDictionary(lang).then(setDictionary);
   }, [lang]);
 
-  // ── Effect 1: pre-fill from NextAuth session immediately ─────────────────
-  // Fires as soon as status === 'authenticated', BEFORE the API responds.
-  // This ensures the header and form inputs are in sync from the start.
-  // The API fetch (Effect 2) will overwrite with authoritative DB values.
   useEffect(() => {
     if (status !== 'authenticated' || !session?.user) return;
 
@@ -106,7 +110,6 @@ export default function ProfilePage() {
     }));
   }, [status, session?.user?.name, session?.user?.email, session?.user?.image]);
 
-  // ── Effect 2: fetch authoritative profile data from Django ────────────────
   useEffect(() => {
     if (status === 'loading') return;
 
@@ -118,14 +121,10 @@ export default function ProfilePage() {
     const token = session?._at;
 
     if (!token) {
-      // Authenticated by NextAuth but backend token not yet available.
-      // Stop the spinner so the form pre-filled by Effect 1 is visible.
       setLoading(false);
       return;
     }
 
-    // Don't re-fetch if we already have data (prevents double-fetch in
-    // React StrictMode and on shallow session updates).
     if (hasFetched.current) return;
     hasFetched.current = true;
 
@@ -154,7 +153,8 @@ export default function ProfilePage() {
           last_name:          data.last_name          || sl || '',
           email:              data.email              || session?.user?.email || '',
           phone:              data.phone              || '',
-          birth_date:         data.birth_date         || '',
+          // Normalize to year-only string regardless of what backend returns
+          birth_date:         toYearString(data.birth_date || ''),
           country:            data.country            || '',
           city:               data.city               || '',
           highest_education:  data.highest_education  || '',
@@ -206,7 +206,6 @@ export default function ProfilePage() {
       setErrorMsg('Failed to upload avatar.');
     } finally {
       setUploadingAvatar(false);
-      // Reset so the same file can be re-selected
       if (avatarInputRef.current) avatarInputRef.current.value = '';
     }
   };
@@ -214,10 +213,10 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const token = session?._at;
-    
+
     console.log('session:', session);
     console.log('_at:', session?._at);
-    
+
     if (!token) {
       if (status === 'unauthenticated') {
         router.push(`/${lang}/login`);
@@ -380,13 +379,19 @@ export default function ProfilePage() {
                       />
                     </Field>
                     <Field label={t.birthDate}>
-                      <input
+                      <select
                         name="birth_date"
-                        type="date"
                         value={form.birth_date}
                         onChange={handleChange}
                         className="input-field"
-                      />
+                      >
+                        <option value="">—</option>
+                        {yearOptions.map((year) => (
+                          <option key={year} value={String(year)}>
+                            {year}
+                          </option>
+                        ))}
+                      </select>
                     </Field>
                   </div>
 
@@ -434,7 +439,6 @@ export default function ProfilePage() {
                     {t.roleInfo?.[role] || t.roleInfo?.title || 'Role Information'}
                   </h2>
                   <div className="space-y-4">
-                    {/* Teacher only: subject */}
                     {role === 'teacher' && (
                       <Field label={t.subject || 'Subject'}>
                         <input
@@ -446,7 +450,6 @@ export default function ProfilePage() {
                       </Field>
                     )}
 
-                    {/* Teacher + TeamMember: current_status */}
                     {(role === 'teacher' || role === 'teamMember') && (
                       <Field label={t.currentStatus}>
                         <input
@@ -458,7 +461,6 @@ export default function ProfilePage() {
                       </Field>
                     )}
 
-                    {/* All non-student roles: preferred_language */}
                     <Field label={t.preferredLanguage}>
                       <input
                         name="preferred_language"
@@ -468,7 +470,6 @@ export default function ProfilePage() {
                       />
                     </Field>
 
-                    {/* Bio EN */}
                     <Field label={t.bioEn}>
                       <textarea
                         name="bio_en"
@@ -479,7 +480,6 @@ export default function ProfilePage() {
                       />
                     </Field>
 
-                    {/* Bio MN */}
                     <Field label={t.bioMn}>
                       <textarea
                         name="bio_mn"
@@ -496,17 +496,24 @@ export default function ProfilePage() {
               {/* ── Save button ──────────────────────────────────────────────── */}
               <div className="bg-white rounded-lg shadow-md p-6">
                 {successMsg && (
-                  <p className="text-green-600 text-sm font-medium mb-4">{successMsg}</p>
+                  <p className="text-green-600 text-sm font-medium mb-4">
+                    {lang === 'mn' ? 'Амжилттай хадгалагдлаа!' : 'Profile updated successfully!'}
+                  </p>
                 )}
                 {errorMsg && (
-                  <p className="text-red-500 text-sm font-medium mb-4">{errorMsg}</p>
+                  <p className="text-red-500 text-sm font-medium mb-4">
+                    {lang === 'mn' ? 'Алдаа гарлаа. Дахин оролдоно уу.' : 'Something went wrong. Please try again.'}
+                  </p>
                 )}
                 <button
                   type="submit"
                   disabled={saving}
                   className="w-full py-2.5 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-lg transition-colors"
                 >
-                  {saving ? t.saving : t.saveChanges}
+                  {saving
+                    ? (lang === 'mn' ? 'Хадгалж байна...' : 'Saving...')
+                    : (lang === 'mn' ? 'Хадгалах' : 'Save Changes')
+                  }
                 </button>
               </div>
             </form>
