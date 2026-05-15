@@ -14,7 +14,10 @@
     "dashboard": "Хяналтын самбар",
     "profile": "Профайл",
     "settings": "Тохиргоо",
-    "explore": "Тухай"
+    "explore": "Тухай",
+    "cohort": "Элсэлт",
+    "mentorProgram": "Ментор хөтөлбөр",
+    "masterclass": "Мастер класс"
   },
   "profile": {
     "title": "Миний профайл",

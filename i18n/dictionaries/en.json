@@ -14,7 +14,10 @@
     "dashboard": "Dashboard",
     "profile": "Profile",
     "settings": "Settings",
-    "explore": "Explore"
+    "explore": "Explore",
+    "cohort": "Enrollment",
+    "mentorProgram": "Mentor Program",
+    "masterclass": "Master Class"
   },
   "profile": {
     "title": "My Profile",
