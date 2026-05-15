@@ -2,8 +2,8 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { Locale } from "@/i18n/config";
 import Hero from "@/app/components/Hero";
 import Team from "@/app/components/Team";
-import PopularCategories from "@/app/components/PopularCategories";
 import Content from "@/app/components/Content";
+import HomeContentSections from "@/app/components/HomeContentSections";
 import Link from "next/link";
 
 export default async function Page({ params }: { params: Promise<{ lang: Locale }> }) {
@@ -30,8 +30,8 @@ export default async function Page({ params }: { params: Promise<{ lang: Locale 
       
       <Hero />
       <Content dictionary={dictionary} />
+      <HomeContentSections lang={lang} />
       <Team dictionary={dictionary} lang={lang} />
-      <PopularCategories dictionary={dictionary} />
     </main>
   );
 }
