@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Dropdown, Menu, Drawer } from "antd";
-import { MenuOutlined } from "@ant-design/icons";
+import { MenuOutlined, DownOutlined } from "@ant-design/icons";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import UserProfile from "./UserProfile";
@@ -70,24 +70,47 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
     },
   ];
 
-  const mobileMenuItems = [
-    {
-      key: "programs",
-      label: dictionary.nav.programs,
-      children: [
-        { key: "m1", label: <Link href={`/${lang}/scholarships?category=postgraduate`}>{dictionary.nav.master}</Link> },
-        { key: "m2", label: <Link href={`/${lang}/scholarships?category=doctorate`}>{dictionary.nav.phd}</Link> },
-        { key: "m3", label: <Link href={`/${lang}/scholarships?category=exchange`}>{dictionary.nav.exchange}</Link> },
-        { key: "m4", label: <Link href={`/${lang}/scholarships?category=internship`}>{dictionary.nav.internship}</Link> },
-      ],
-    },
-    { key: "sponsor", label: <Link href={`/${lang}/sponsor`}>{dictionary.nav.sponsor}</Link> },
-    { key: "events", label: <Link href={`/${lang}/events`}>{dictionary.nav.events}</Link> },
-    { key: "about", label: <Link href={`/${lang}#team`}>{dictionary.nav.ourTeam}</Link> },
-    ...(!session?.user
-      ? [{ key: "signin", label: <Link href={`/${lang}/login`}>{dictionary.nav.signIn}</Link> }]
-      : []),
-  ];
+  const mobileMenuItems = session?.user
+    ? [
+        {
+          key: "explore",
+          label: dictionary.nav.explore,
+          children: [
+            { key: "sponsor", label: <Link href={`/${lang}/sponsor`}>{dictionary.nav.sponsor}</Link> },
+            {
+              key: "programs",
+              label: dictionary.nav.programs,
+              children: [
+                { key: "m1", label: <Link href={`/${lang}/scholarships?category=postgraduate`}>{dictionary.nav.master}</Link> },
+                { key: "m2", label: <Link href={`/${lang}/scholarships?category=doctorate`}>{dictionary.nav.phd}</Link> },
+                { key: "m3", label: <Link href={`/${lang}/scholarships?category=exchange`}>{dictionary.nav.exchange}</Link> },
+                { key: "m4", label: <Link href={`/${lang}/scholarships?category=internship`}>{dictionary.nav.internship}</Link> },
+              ],
+            },
+            { key: "events", label: <Link href={`/${lang}/events`}>{dictionary.nav.events}</Link> },
+            { key: "team", label: <Link href={`/${lang}#team`}>{dictionary.nav.ourTeam}</Link> },
+          ],
+        },
+        { key: "cohort", label: <Link href={`/${lang}/cohort`}>{dictionary.nav.cohort}</Link> },
+        { key: "mentor", label: <Link href={`/${lang}/mentor`}>{dictionary.nav.mentorProgram}</Link> },
+        { key: "masterclass", label: <Link href={`/${lang}/masterclass`}>{dictionary.nav.masterclass}</Link> },
+      ]
+    : [
+        {
+          key: "programs",
+          label: dictionary.nav.programs,
+          children: [
+            { key: "m1", label: <Link href={`/${lang}/scholarships?category=postgraduate`}>{dictionary.nav.master}</Link> },
+            { key: "m2", label: <Link href={`/${lang}/scholarships?category=doctorate`}>{dictionary.nav.phd}</Link> },
+            { key: "m3", label: <Link href={`/${lang}/scholarships?category=exchange`}>{dictionary.nav.exchange}</Link> },
+            { key: "m4", label: <Link href={`/${lang}/scholarships?category=internship`}>{dictionary.nav.internship}</Link> },
+          ],
+        },
+        { key: "sponsor", label: <Link href={`/${lang}/sponsor`}>{dictionary.nav.sponsor}</Link> },
+        { key: "events", label: <Link href={`/${lang}/events`}>{dictionary.nav.events}</Link> },
+        { key: "about", label: <Link href={`/${lang}#team`}>{dictionary.nav.ourTeam}</Link> },
+        { key: "signin", label: <Link href={`/${lang}/login`}>{dictionary.nav.signIn}</Link> },
+      ];
 
   return (
     <header className={`site-header ${isHomePage ? "overlay" : "solid"}`}>
@@ -107,14 +130,26 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
 
         <nav className="nav-menu" aria-label="Main navigation">
           {session?.user ? (
-            <Dropdown menu={{ items: exploreItems }} trigger={['hover']} placement="bottomLeft">
-              <button className={`dropdown-toggle ${
-                isActive(`/${lang}/sponsor`) || pathname.includes('/scholarships') ||
-                isActive(`/${lang}/events`) ? 'nav-active' : ''
-              }`}>
-                {dictionary.nav.explore}
-              </button>
-            </Dropdown>
+            <>
+              <Dropdown menu={{ items: exploreItems }} trigger={['hover']} placement="bottomLeft">
+                <button className={`dropdown-toggle ${
+                  isActive(`/${lang}/sponsor`) || pathname.includes('/scholarships') ||
+                  isActive(`/${lang}/events`) ? 'nav-active' : ''
+                }`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                  {dictionary.nav.explore}
+                  <DownOutlined style={{ fontSize: "11px" }} />
+                </button>
+              </Dropdown>
+              <Link href={`/${lang}/cohort`} className={isActive(`/${lang}/cohort`) ? 'nav-active' : undefined}>
+                {dictionary.nav.cohort}
+              </Link>
+              <Link href={`/${lang}/mentor`} className={isActive(`/${lang}/mentor`) ? 'nav-active' : undefined}>
+                {dictionary.nav.mentorProgram}
+              </Link>
+              <Link href={`/${lang}/masterclass`} className={isActive(`/${lang}/masterclass`) ? 'nav-active' : undefined}>
+                {dictionary.nav.masterclass}
+              </Link>
+            </>
           ) : (
             <>
               <Link href={`/${lang}/sponsor`} className={isActive(`/${lang}/sponsor`) ? 'nav-active' : undefined}>
@@ -134,8 +169,10 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
                   onBlur={() => setOpen(false)}
                   aria-haspopup="true"
                   aria-expanded={open}
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                 >
                   {dictionary.nav.programs}
+                  <DownOutlined style={{ fontSize: "11px" }} />
                 </button>
               </Dropdown>
 
