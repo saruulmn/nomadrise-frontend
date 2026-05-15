@@ -454,8 +454,10 @@ export default function ProfilePage() {
                     <Button
                       type="primary"
                       htmlType="submit"
-                      loading={saving}
                       size="large"
+                      loading={loading}
+                      block
+                      className="custom-submit-btn"
                     >
                       {saving
                         ? (lang === 'mn' ? 'Хадгалж байна...' : 'Saving...')

@@ -53,7 +53,7 @@ export default function SearchBar({
     return (
       <div className="bg-white border-b border-gray-100 px-4 pt-8 pb-5">
         <div className="max-w-6xl mx-auto">
-          {title && <h1 className="text-2xl font-bold text-gray-900 mb-0.5">{title}</h1>}
+          {title && <h1 className="text-2xl font-bold mb-0.5" style={{ color: 'oklch(54.6% 0.245 262.881)' }}>{title}</h1>}
           {subtitle && <p className="text-gray-400 text-sm mb-4">{subtitle}</p>}
           <div className="flex gap-[10%] items-center">
             {filters && <div className="w-[20%] [&>select]:w-full">{filters}</div>}

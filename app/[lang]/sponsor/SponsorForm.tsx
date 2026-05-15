@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { Form, Input, Select, Button, message, Card } from "antd";
-import { UserOutlined, MailOutlined, PhoneOutlined, MessageOutlined } from "@ant-design/icons";
+import {
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  MessageOutlined,
+} from "@ant-design/icons";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -29,10 +34,10 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
     try {
       // TODO: Replace with actual API call
       console.log("Form values:", values);
-      
+
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1500));
-      
+
       message.success(dict.successMessage);
       form.resetFields();
     } catch (error) {
@@ -116,11 +121,13 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
           >
             {/* Full Name / Company Name */}
             <Form.Item
-              label={<span style={{ fontSize: "1rem", fontWeight: "500" }}>{dict.fullName}</span>}
+              label={
+                <span style={{ fontSize: "1rem", fontWeight: "500" }}>
+                  {dict.fullName}
+                </span>
+              }
               name="fullName"
-              rules={[
-                { required: true, message: dict.enterFullName },
-              ]}
+              rules={[{ required: true, message: dict.enterFullName }]}
             >
               <Input
                 prefix={<UserOutlined style={{ color: "#9ca3af" }} />}
@@ -132,7 +139,11 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
 
             {/* Email */}
             <Form.Item
-              label={<span style={{ fontSize: "1rem", fontWeight: "500" }}>{dict.email}</span>}
+              label={
+                <span style={{ fontSize: "1rem", fontWeight: "500" }}>
+                  {dict.email}
+                </span>
+              }
               name="email"
               rules={[
                 { required: true, message: dict.enterEmail },
@@ -149,7 +160,11 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
 
             {/* Phone (Optional) */}
             <Form.Item
-              label={<span style={{ fontSize: "1rem", fontWeight: "500" }}>{dict.phone}</span>}
+              label={
+                <span style={{ fontSize: "1rem", fontWeight: "500" }}>
+                  {dict.phone}
+                </span>
+              }
               name="phone"
             >
               <Input
@@ -162,7 +177,11 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
 
             {/* Type of Sponsorship */}
             <Form.Item
-              label={<span style={{ fontSize: "1rem", fontWeight: "500" }}>{dict.sponsorshipType}</span>}
+              label={
+                <span style={{ fontSize: "1rem", fontWeight: "500" }}>
+                  {dict.sponsorshipType}
+                </span>
+              }
               name="sponsorshipType"
               rules={[{ required: true, message: dict.selectType }]}
             >
@@ -181,7 +200,11 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
 
             {/* Message */}
             <Form.Item
-              label={<span style={{ fontSize: "1rem", fontWeight: "500" }}>{dict.message}</span>}
+              label={
+                <span style={{ fontSize: "1rem", fontWeight: "500" }}>
+                  {dict.message}
+                </span>
+              }
               name="message"
               rules={[
                 { required: true, message: dict.enterMessage },
@@ -198,15 +221,15 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
             {/* Submit Button */}
             <Form.Item style={{ marginBottom: 0, marginTop: "2rem" }}>
               <Button
-  type="primary"
-  htmlType="submit"
-  size="large"
-  loading={loading}
-  block
-  className="custom-submit-btn"
->
-  {dict.submit}
-</Button>
+                type="primary"
+                htmlType="submit"
+                size="large"
+                loading={loading}
+                block
+                className="custom-submit-btn"
+              >
+                {dict.submit}
+              </Button>
             </Form.Item>
           </Form>
         </Card>

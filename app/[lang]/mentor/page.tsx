@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { StarFilled, FireOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import SearchBar from '@/app/components/SearchBar';
+import CorpDropdown from '@/app/components/CorpDropdown';
 import GridContainer from '@/app/components/GridContainer';
 import ThumbnailCard from '@/app/components/ThumbnailCard';
 import { Skeleton } from '@/app/components/Skeleton';
@@ -45,16 +46,14 @@ export default function MentorPage() {
         title={lang === 'mn' ? 'Ментор хөтөлбөр' : 'Mentor Program'}
         subtitle={lang === 'mn' ? 'Туршлагатай мэргэжилтнүүдтэй хамт хөгжи' : 'Grow with experienced professionals'}
         filters={
-          <select
+          <CorpDropdown
             value={activeSkill}
-            onChange={(e) => { setActiveSkill(e.target.value); setVisibleCount(PAGE_SIZE); }}
-            className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white focus:outline-none focus:border-gray-400 transition-all"
-          >
-            <option value="">{lang === 'mn' ? 'Бүх ур чадвар' : 'All skills'}</option>
-            {MENTOR_SKILLS.map((skill) => (
-              <option key={skill} value={skill}>{skill}</option>
-            ))}
-          </select>
+            onChange={(v) => { setActiveSkill(v); setVisibleCount(PAGE_SIZE); }}
+            options={[
+              { value: '', label: lang === 'mn' ? 'Бүх ур чадвар' : 'All skills' },
+              ...MENTOR_SKILLS.map((skill) => ({ value: skill, label: skill })),
+            ]}
+          />
         }
       />
 

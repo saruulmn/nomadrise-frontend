@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { TeamOutlined, FireOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import SearchBar from '@/app/components/SearchBar';
+import CorpDropdown from '@/app/components/CorpDropdown';
 import GridContainer from '@/app/components/GridContainer';
 import ThumbnailCard from '@/app/components/ThumbnailCard';
 import { Skeleton } from '@/app/components/Skeleton';
@@ -55,18 +56,16 @@ export default function CohortPage() {
         placeholder={lang === 'mn' ? 'Элсэлт хайх...' : 'Search cohorts...'}
         colored
         title={lang === 'mn' ? 'Элсэлт' : 'Cohorts'}
-        subtitle={lang === 'mn' ? 'Хамт суралцаж, хамтдаа өс' : 'Learn together, grow together'}
+        subtitle={lang === 'mn' ? 'Хамт суралцаж, хамтдаа хөгжицгөөе' : 'Learn together, grow together'}
         filters={
-          <select
+          <CorpDropdown
             value={activeCategory}
-            onChange={(e) => { setActiveCategory(e.target.value); setVisibleCount(PAGE_SIZE); }}
-            className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white focus:outline-none focus:border-gray-400 transition-all"
-          >
-            <option value="">{lang === 'mn' ? 'Бүх ангилал' : 'All categories'}</option>
-            {COHORT_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+            onChange={(v) => { setActiveCategory(v); setVisibleCount(PAGE_SIZE); }}
+            options={[
+              { value: '', label: lang === 'mn' ? 'Бүх ангилал' : 'All categories' },
+              ...COHORT_CATEGORIES.map((cat) => ({ value: cat, label: cat })),
+            ]}
+          />
         }
       />
 

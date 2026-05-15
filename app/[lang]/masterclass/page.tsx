@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { PlayCircleOutlined, FireOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import SearchBar from '@/app/components/SearchBar';
+import CorpDropdown from '@/app/components/CorpDropdown';
 import GridContainer from '@/app/components/GridContainer';
 import ThumbnailCard from '@/app/components/ThumbnailCard';
 import { Skeleton } from '@/app/components/Skeleton';
@@ -45,16 +46,14 @@ export default function MasterClassPage() {
         title={lang === 'mn' ? 'Мастер Класс' : 'Master Classes'}
         subtitle={lang === 'mn' ? 'Мэргэжилтнүүдээс суралц' : 'Learn from the best in the field'}
         filters={
-          <select
+          <CorpDropdown
             value={activeCategory}
-            onChange={(e) => { setActiveCategory(e.target.value); setVisibleCount(PAGE_SIZE); }}
-            className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white focus:outline-none focus:border-gray-400 transition-all"
-          >
-            <option value="">{lang === 'mn' ? 'Бүх ангилал' : 'All categories'}</option>
-            {MASTERCLASS_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
-          </select>
+            onChange={(v) => { setActiveCategory(v); setVisibleCount(PAGE_SIZE); }}
+            options={[
+              { value: '', label: lang === 'mn' ? 'Бүх ангилал' : 'All categories' },
+              ...MASTERCLASS_CATEGORIES.map((cat) => ({ value: cat, label: cat })),
+            ]}
+          />
         }
       />
 
