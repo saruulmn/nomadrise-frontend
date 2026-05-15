@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
 import { getDictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
-import { DatePicker } from 'antd';
+import { DatePicker, Button } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 
 const EDUCATION_KEYS = [
@@ -450,21 +450,17 @@ export default function ProfilePage() {
                         </p>
                       )}
                     </div>
-                    <button
-                      type="submit"
-                      disabled={saving}
-                      className="shrink-0 py-2.5 px-8 font-semibold rounded-lg transition-colors text-white"
-                      style={{
-                        backgroundColor: saving ? '#93c5fd' : '#2563eb',
-                      }}
-                      onMouseEnter={(e) => { if (!saving) e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
-                      onMouseLeave={(e) => { if (!saving) e.currentTarget.style.backgroundColor = '#2563eb'; }}
+                    <Button
+                      type="primary"
+                      htmlType="submit"
+                      loading={saving}
+                      size="large"
                     >
                       {saving
                         ? (lang === 'mn' ? 'Хадгалж байна...' : 'Saving...')
                         : (lang === 'mn' ? 'Хадгалах' : 'Save Changes')
                       }
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}
