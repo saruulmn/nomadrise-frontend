@@ -151,35 +151,30 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
         </nav>
 
         <div className="header-actions">
-          <ThemeToggle />
           {!session?.user && (
-            <Link 
-              href={`/${lang}/login`} 
+            <Link
+              href={`/${lang}/login`}
               style={{
-                padding: '8px 16px',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                color: 'white',
-                borderRadius: '8px',
                 fontSize: '14px',
-                fontWeight: '600',
+                fontWeight: '500',
                 textDecoration: 'none',
-                transition: 'all 0.3s ease',
-                display: 'inline-block'
+                color: 'inherit',
+                transition: 'text-decoration 0.2s ease',
+                display: 'inline-block',
               }}
-              className={isActive(`/${lang}/login`) ? "nav-active" : undefined}
+              className={isActive(`/${lang}/login`) ? 'nav-active' : undefined}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = '0 8px 16px rgba(102, 126, 234, 0.3)';
+                e.currentTarget.style.textDecoration = 'underline';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = 'none';
+                e.currentTarget.style.textDecoration = 'none';
               }}
             >
               {dictionary.nav.signIn || 'Sign In'}
             </Link>
           )}
           <UserProfile />
+          <ThemeToggle />
         </div>
 
         <button 
