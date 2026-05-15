@@ -66,12 +66,6 @@ const EMPTY_PROFILE: ProfileData = {
   bio_mn: '',
 };
 
-// Extracts year string from either "YYYY" or "YYYY-MM-DD"
-function toYearString(value: string): string {
-  if (!value) return '';
-  return value.split('-')[0];
-}
-
 export default function ProfilePage() {
   const { data: session, status } = useSession();
   const pathname = usePathname();
@@ -152,8 +146,8 @@ export default function ProfilePage() {
           last_name:          data.last_name          || sl || '',
           email:              data.email              || session?.user?.email || '',
           phone:              data.phone              || '',
-          // Normalize to year-only string regardless of what backend returns
-          birth_date:         toYearString(data.birth_date || ''),
+          // Keep full date string for DatePicker
+          birth_date:         data.birth_date         || '',
           country:            data.country            || '',
           city:               data.city               || '',
           highest_education:  data.highest_education  || '',
@@ -380,7 +374,7 @@ export default function ProfilePage() {
                         <Field label={t.birthDate}>
                           <DatePicker
                             format={{ format: 'YYYY-MM-DD', type: 'mask' }}
-                            value={form.birth_date ? dayjs(form.birth_date, 'YYYY-MM-DD') : null}
+                            value={form.birth_date ? (dayjs(form.birth_date, 'YYYY-MM-DD').isValid() ? dayjs(form.birth_date, 'YYYY-MM-DD') : null) : null}
                             onChange={(date: Dayjs | null) => {
                               setForm(prev => ({
                                 ...prev,
