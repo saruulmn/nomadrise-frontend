@@ -372,22 +372,16 @@ export default function ProfilePage() {
                         </Field>
                         <Field label={t.birthDate}>
                           <DatePicker
-                            picker="year"
-                            value={form.birth_date ? dayjs(form.birth_date, 'YYYY') : null}
+                            format={{ format: 'YYYY-MM-DD', type: 'mask' }}
+                            value={form.birth_date ? dayjs(form.birth_date, 'YYYY-MM-DD') : null}
                             onChange={(date: Dayjs | null) => {
                               setForm(prev => ({
                                 ...prev,
-                                birth_date: date ? date.format('YYYY') : '',
+                                birth_date: date ? date.format('YYYY-MM-DD') : '',
                               }));
                             }}
-                            disabledDate={(current) =>
-                              current && (
-                                current.year() > dayjs().year() - 10 ||
-                                current.year() < dayjs().year() - 90
-                              )
-                            }
                             style={{ width: '100%' }}
-                            placeholder={lang === 'mn' ? 'Жил сонгох' : 'Select year'}
+                            placeholder={lang === 'mn' ? 'Төрсөн өдөр' : 'Birth Date'}
                           />
                         </Field>
                       </div>
@@ -459,7 +453,12 @@ export default function ProfilePage() {
                     <button
                       type="submit"
                       disabled={saving}
-                      className="shrink-0 py-2.5 px-8 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white font-semibold rounded-lg transition-colors"
+                      className="shrink-0 py-2.5 px-8 font-semibold rounded-lg transition-colors text-white"
+                      style={{
+                        backgroundColor: saving ? '#93c5fd' : '#2563eb',
+                      }}
+                      onMouseEnter={(e) => { if (!saving) e.currentTarget.style.backgroundColor = '#1d4ed8'; }}
+                      onMouseLeave={(e) => { if (!saving) e.currentTarget.style.backgroundColor = '#2563eb'; }}
                     >
                       {saving
                         ? (lang === 'mn' ? 'Хадгалж байна...' : 'Saving...')
