@@ -27,7 +27,7 @@ export default function HomeContentSections({ lang }: Props) {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold text-gray-900">
-                  {isMn ? 'Удахгүй эхлэх кохортууд' : 'Coming Soon Cohorts'}
+                  {isMn ? 'Удахгүй эхлэх курс' : 'Coming Soon Cohorts'}
                 </h2>
                 <p className="text-sm text-gray-500 mt-1">
                   {isMn ? 'Бүртгэлийн эхлэхийг хүлээж байна' : 'Registration opening soon'}
