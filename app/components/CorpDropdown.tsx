@@ -33,7 +33,7 @@ export default function CorpDropdown({ value, onChange, options }: CorpDropdownP
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2.5 border border-gray-300 bg-white text-sm text-gray-700 focus:outline-none focus:border-gray-500 transition-colors"
+        className="w-full flex items-center justify-between gap-2 px-3 py-2.5 border border-gray-500 bg-white text-sm text-gray-500 focus:outline-none focus:border-gray-600 transition-colors"
       >
         <span className="truncate">{selected?.label}</span>
         <DownOutlined
@@ -42,7 +42,7 @@ export default function CorpDropdown({ value, onChange, options }: CorpDropdownP
         />
       </button>
       {open && (
-        <div className="absolute left-0 top-full w-full bg-white border border-gray-300 border-t-0 z-50">
+        <div className="absolute left-0 top-full w-full bg-white border border-gray-500 border-t-0 z-50">
           {options.map((opt) => (
             <div
               key={opt.value}
