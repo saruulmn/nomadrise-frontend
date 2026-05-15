@@ -58,9 +58,6 @@ export default function SearchBar({
           <div className="flex gap-[10%] items-center">
             {filters && <div className="w-[20%] [&>select]:w-full">{filters}</div>}
             <div className="flex w-[70%] items-center border border-gray-200 rounded-lg bg-white overflow-hidden focus-within:border-gray-400 transition-all">
-              <span className="pl-3.5 text-gray-400 shrink-0 pointer-events-none">
-                <SearchOutlined />
-              </span>
               <input
                 type="text"
                 value={localValue}
