@@ -484,3 +484,22 @@ body {
 .partner-logo img { max-height: 40px; max-width: 160px; filter: grayscale(1); opacity: .85; transition: filter .2s ease, opacity .2s ease }
 .partner-logo:hover img { filter: none; opacity: 1 }
 
+.custom-submit-btn {
+
+  border-radius: 0.5rem;
+  height: 3rem;
+  font-size: 1.125rem;
+  font-weight: 400;
+  background: white !important;
+  color: black !important;
+  border: 1px solid #d9d9d9 !important;
+  transition: all 0.3s ease;
+
+}
+
+.custom-submit-btn:hover {
+  background: #1677ff !important;
+  color: white !important;
+  border-color: #1677ff !important;
+
+}

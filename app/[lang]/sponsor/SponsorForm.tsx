@@ -198,22 +198,15 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
             {/* Submit Button */}
             <Form.Item style={{ marginBottom: 0, marginTop: "2rem" }}>
               <Button
-                type="primary"
-                htmlType="submit"
-                size="large"
-                loading={loading}
-                block
-                style={{
-                  borderRadius: "0.5rem",
-                  height: "3rem",
-                  fontSize: "1.125rem",
-                  fontWeight: "600",
-                  background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                  border: "none",
-                }}
-              >
-                {dict.submit}
-              </Button>
+  type="primary"
+  htmlType="submit"
+  size="large"
+  loading={loading}
+  block
+  className="custom-submit-btn"
+>
+  {dict.submit}
+</Button>
             </Form.Item>
           </Form>
         </Card>
