@@ -45,6 +45,31 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
     { key: "internship", label: <Link href={`/${lang}/scholarships?category=internship`}>{dictionary.nav.internship}</Link> },
   ];
 
+  const exploreItems = [
+    {
+      key: 'sponsor',
+      label: <Link href={`/${lang}/sponsor`}>{dictionary.nav.sponsor}</Link>,
+    },
+    {
+      key: 'programs',
+      label: dictionary.nav.programs,
+      children: [
+        { key: 'master', label: <Link href={`/${lang}/scholarships?category=postgraduate`}>{dictionary.nav.master}</Link> },
+        { key: 'phd', label: <Link href={`/${lang}/scholarships?category=doctorate`}>{dictionary.nav.phd}</Link> },
+        { key: 'exchange', label: <Link href={`/${lang}/scholarships?category=exchange`}>{dictionary.nav.exchange}</Link> },
+        { key: 'internship', label: <Link href={`/${lang}/scholarships?category=internship`}>{dictionary.nav.internship}</Link> },
+      ],
+    },
+    {
+      key: 'events',
+      label: <Link href={`/${lang}/events`}>{dictionary.nav.events}</Link>,
+    },
+    {
+      key: 'team',
+      label: <Link href={`/${lang}#team`}>{dictionary.nav.ourTeam}</Link>,
+    },
+  ];
+
   const mobileMenuItems = [
     {
       key: "programs",
@@ -81,35 +106,48 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
         </div>
 
         <nav className="nav-menu" aria-label="Main navigation">
-          <Link href={`/${lang}/sponsor`} className={isActive(`/${lang}/sponsor`) ? "nav-active" : undefined}>
-            {dictionary.nav.sponsor}
-          </Link>
+          {session?.user ? (
+            <Dropdown menu={{ items: exploreItems }} trigger={['hover']} placement="bottomLeft">
+              <button className={`dropdown-toggle ${
+                isActive(`/${lang}/sponsor`) || pathname.includes('/scholarships') ||
+                isActive(`/${lang}/events`) ? 'nav-active' : ''
+              }`}>
+                {dictionary.nav.explore}
+              </button>
+            </Dropdown>
+          ) : (
+            <>
+              <Link href={`/${lang}/sponsor`} className={isActive(`/${lang}/sponsor`) ? 'nav-active' : undefined}>
+                {dictionary.nav.sponsor}
+              </Link>
 
-          <Dropdown
-            menu={{ items }}
-            trigger={['hover']}
-            placement="bottomLeft"
-            open={open}
-            onOpenChange={(next) => setOpen(next)}
-          >
-            <button
-              className={`dropdown-toggle ${pathname.includes("/scholarships") ? "nav-active" : ""}`}
-              onFocus={() => setOpen(true)}
-              onBlur={() => setOpen(false)}
-              aria-haspopup="true"
-              aria-expanded={open}
-            >
-              {dictionary.nav.programs}
-            </button>
-          </Dropdown>
+              <Dropdown
+                menu={{ items }}
+                trigger={['hover']}
+                placement="bottomLeft"
+                open={open}
+                onOpenChange={(next) => setOpen(next)}
+              >
+                <button
+                  className={`dropdown-toggle ${pathname.includes('/scholarships') ? 'nav-active' : ''}`}
+                  onFocus={() => setOpen(true)}
+                  onBlur={() => setOpen(false)}
+                  aria-haspopup="true"
+                  aria-expanded={open}
+                >
+                  {dictionary.nav.programs}
+                </button>
+              </Dropdown>
 
-          <Link href={`/${lang}/events`} className={isActive(`/${lang}/events`) ? "nav-active" : undefined}>
-            {dictionary.nav.events}
-          </Link>
-          
-          <Link href={`/${lang}#team`}>
-            {dictionary.nav.ourTeam}
-          </Link>
+              <Link href={`/${lang}/events`} className={isActive(`/${lang}/events`) ? 'nav-active' : undefined}>
+                {dictionary.nav.events}
+              </Link>
+
+              <Link href={`/${lang}#team`}>
+                {dictionary.nav.ourTeam}
+              </Link>
+            </>
+          )}
         </nav>
 
         <div className="header-actions">
