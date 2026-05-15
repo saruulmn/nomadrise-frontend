@@ -294,12 +294,19 @@ export default function ProfilePage() {
                       src={avatarSrc}
                       alt={displayName}
                       className="w-24 h-24 rounded-full object-cover ring-4 ring-gray-100"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                        const next = e.currentTarget.nextElementSibling as HTMLElement | null;
+                        if (next) next.style.display = 'flex';
+                      }}
                     />
-                  ) : (
-                    <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-3xl font-bold ring-4 ring-gray-100">
-                      {displayName.charAt(0).toUpperCase()}
-                    </div>
-                  )}
+                  ) : null}
+                  <div
+                    className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-3xl font-bold ring-4 ring-gray-100"
+                    style={{ display: avatarSrc ? 'none' : 'flex' }}
+                  >
+                    {displayName.charAt(0).toUpperCase()}
+                  </div>
                   <span className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-white">
                     {uploadingAvatar ? (
                       <svg className="w-6 h-6 animate-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5}>
