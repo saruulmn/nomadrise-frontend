@@ -294,10 +294,10 @@ export default function ProfilePage() {
                       src={avatarSrc}
                       alt={displayName}
                       className="w-24 h-24 rounded-full object-cover ring-4 ring-gray-100"
+                      referrerPolicy="no-referrer"
                       onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).style.display = 'none';
-                        const next = e.currentTarget.nextElementSibling as HTMLElement | null;
-                        if (next) next.style.display = 'flex';
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.nextElementSibling?.removeAttribute('style');
                       }}
                     />
                   ) : null}
