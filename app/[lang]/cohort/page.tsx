@@ -46,24 +46,6 @@ export default function CohortPage() {
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
-  const filterChips = (
-    <>
-      {['', ...COHORT_CATEGORIES].map((cat) => (
-        <button
-          key={cat || 'all'}
-          onClick={() => { setActiveCategory(cat); setVisibleCount(PAGE_SIZE); }}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${
-            activeCategory === cat
-              ? 'bg-white text-blue-600 border-white shadow-sm'
-              : 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-          }`}
-        >
-          {cat || (lang === 'mn' ? 'Бүгд' : 'All')}
-        </button>
-      ))}
-    </>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50">
       <SearchBar
@@ -74,27 +56,21 @@ export default function CohortPage() {
         colored
         title={lang === 'mn' ? 'Элсэлт' : 'Cohorts'}
         subtitle={lang === 'mn' ? 'Хамт суралцаж, хамтдаа өс' : 'Learn together, grow together'}
-        filters={filterChips}
+        filters={
+          <select
+            value={activeCategory}
+            onChange={(e) => { setActiveCategory(e.target.value); setVisibleCount(PAGE_SIZE); }}
+            className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white focus:outline-none focus:border-gray-400 transition-all"
+          >
+            <option value="">{lang === 'mn' ? 'Бүх ангилал' : 'All categories'}</option>
+            {COHORT_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        }
       />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Mobile category filters */}
-        <div className="flex gap-2 flex-wrap mb-6 md:hidden">
-          {['', ...COHORT_CATEGORIES].map((cat) => (
-            <button
-              key={cat || 'all'}
-              onClick={() => { setActiveCategory(cat); setVisibleCount(PAGE_SIZE); }}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                activeCategory === cat
-                  ? 'bg-blue-600 text-white border-blue-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-blue-400'
-              }`}
-            >
-              {cat || (lang === 'mn' ? 'Бүгд' : 'All')}
-            </button>
-          ))}
-        </div>
-
         {/* Trending row */}
         {trending.length > 0 && !query && !activeCategory && (
           <div className="mb-10">
@@ -102,12 +78,12 @@ export default function CohortPage() {
               <FireOutlined className="text-orange-500" />
               {lang === 'mn' ? 'Трендийн элсэлт' : 'Trending Cohorts'}
             </h2>
-            <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
               {trending.map((cohort) => (
                 <Link
                   key={cohort.id}
                   href={`/${lang}/cohort/${cohort.id}`}
-                  className="shrink-0 w-56 bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-gray-200 hover:shadow-sm transition-all"
                 >
                   <div className="relative h-32 overflow-hidden">
                     <img src={cohort.thumbnail} alt={cohort.name} className="w-full h-full object-cover" />
@@ -165,7 +141,7 @@ export default function CohortPage() {
                 >
                   <div className="flex flex-wrap gap-1 mb-1">
                     {cohort.categories.map((cat) => (
-                      <span key={cat} className="text-xs text-blue-500 bg-blue-50 px-1.5 py-0.5 rounded">{cat}</span>
+                      <span key={cat} className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{cat}</span>
                     ))}
                   </div>
                   <p className="font-semibold text-gray-900 text-sm leading-snug">{cohort.name}</p>
@@ -191,7 +167,7 @@ export default function CohortPage() {
               <div className="flex justify-center mt-10">
                 <button
                   onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
-                  className="px-8 py-3 bg-white border-2 border-blue-600 text-blue-600 font-semibold rounded-xl hover:bg-blue-600 hover:text-white transition-all"
+                  className="px-8 py-2.5 bg-white border border-gray-300 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   {lang === 'mn' ? 'Дэлгэрэнгүй үзэх' : 'Load more'}
                 </button>

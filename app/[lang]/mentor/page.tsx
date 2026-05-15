@@ -34,24 +34,6 @@ export default function MentorPage() {
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
-  const filterChips = (
-    <>
-      {['', ...MENTOR_SKILLS].map((skill) => (
-        <button
-          key={skill || 'all'}
-          onClick={() => { setActiveSkill(skill); setVisibleCount(PAGE_SIZE); }}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${
-            activeSkill === skill
-              ? 'bg-white text-violet-600 border-white shadow-sm'
-              : 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-          }`}
-        >
-          {skill || (lang === 'mn' ? 'Бүгд' : 'All')}
-        </button>
-      ))}
-    </>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50">
       <SearchBar
@@ -62,27 +44,21 @@ export default function MentorPage() {
         colored
         title={lang === 'mn' ? 'Ментор хөтөлбөр' : 'Mentor Program'}
         subtitle={lang === 'mn' ? 'Туршлагатай мэргэжилтнүүдтэй хамт хөгжи' : 'Grow with experienced professionals'}
-        filters={filterChips}
+        filters={
+          <select
+            value={activeSkill}
+            onChange={(e) => { setActiveSkill(e.target.value); setVisibleCount(PAGE_SIZE); }}
+            className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white focus:outline-none focus:border-gray-400 transition-all"
+          >
+            <option value="">{lang === 'mn' ? 'Бүх ур чадвар' : 'All skills'}</option>
+            {MENTOR_SKILLS.map((skill) => (
+              <option key={skill} value={skill}>{skill}</option>
+            ))}
+          </select>
+        }
       />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Mobile skill filters */}
-        <div className="flex gap-2 flex-wrap mb-6 md:hidden">
-          {['', ...MENTOR_SKILLS].map((skill) => (
-            <button
-              key={skill || 'all'}
-              onClick={() => { setActiveSkill(skill); setVisibleCount(PAGE_SIZE); }}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                activeSkill === skill
-                  ? 'bg-violet-600 text-white border-violet-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-violet-400'
-              }`}
-            >
-              {skill || (lang === 'mn' ? 'Бүгд' : 'All')}
-            </button>
-          ))}
-        </div>
-
         {/* Trending row */}
         {trending.length > 0 && !query && !activeSkill && (
           <div className="mb-10">
@@ -90,12 +66,12 @@ export default function MentorPage() {
               <FireOutlined className="text-orange-500" />
               {lang === 'mn' ? 'Шилдэг менторууд' : 'Top Mentors'}
             </h2>
-            <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
               {trending.map((mentor) => (
                 <Link
                   key={mentor.id}
                   href={`/${lang}/mentor/${mentor.id}`}
-                  className="shrink-0 w-48 bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all p-4 text-center"
+                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-gray-200 hover:shadow-sm transition-all p-4 text-center"
                 >
                   <img
                     src={mentor.avatar}
@@ -103,7 +79,7 @@ export default function MentorPage() {
                     className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-violet-100"
                   />
                   <p className="font-semibold text-gray-900 text-xs mt-2 leading-tight line-clamp-2">{mentor.name}</p>
-                  <p className="text-xs text-violet-500 mt-0.5 truncate">{mentor.title}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 truncate">{mentor.title}</p>
                   <div className="flex items-center justify-center gap-1 mt-1">
                     <StarFilled className="text-yellow-400 text-xs" />
                     <span className="text-xs font-medium text-gray-700">{mentor.rating}</span>
@@ -155,7 +131,7 @@ export default function MentorPage() {
                   isAvatar
                 >
                   <p className="font-semibold text-gray-900 truncate">{mentor.name}</p>
-                  <p className="text-sm text-violet-600 truncate">{mentor.title}</p>
+                  <p className="text-sm text-gray-500 truncate">{mentor.title}</p>
                   <div className="flex flex-wrap gap-1 my-1">
                     {mentor.skills.slice(0, 3).map((s) => (
                       <span key={s} className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{s}</span>
@@ -167,7 +143,7 @@ export default function MentorPage() {
                       <span className="text-sm font-medium text-gray-700">{mentor.rating}</span>
                       <span className="text-xs text-gray-400">({mentor.reviewCount})</span>
                     </div>
-                    <span className="text-sm font-semibold text-violet-600">${mentor.price}/mo</span>
+                    <span className="text-sm font-semibold text-gray-800">${mentor.price}/mo</span>
                   </div>
                 </ThumbnailCard>
               ))}
@@ -176,7 +152,7 @@ export default function MentorPage() {
               <div className="flex justify-center mt-10">
                 <button
                   onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
-                  className="px-8 py-3 bg-white border-2 border-violet-600 text-violet-600 font-semibold rounded-xl hover:bg-violet-600 hover:text-white transition-all"
+                  className="px-8 py-2.5 bg-white border border-gray-300 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   {lang === 'mn' ? 'Дэлгэрэнгүй үзэх' : 'Load more'}
                 </button>

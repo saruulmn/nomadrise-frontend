@@ -34,24 +34,6 @@ export default function MasterClassPage() {
   const visible = filtered.slice(0, visibleCount);
   const hasMore = visibleCount < filtered.length;
 
-  const filterChips = (
-    <>
-      {['', ...MASTERCLASS_CATEGORIES].map((cat) => (
-        <button
-          key={cat || 'all'}
-          onClick={() => { setActiveCategory(cat); setVisibleCount(PAGE_SIZE); }}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all border ${
-            activeCategory === cat
-              ? 'bg-white text-indigo-600 border-white shadow-sm'
-              : 'bg-white/20 text-white border-white/30 hover:bg-white/30'
-          }`}
-        >
-          {cat || (lang === 'mn' ? 'Бүгд' : 'All')}
-        </button>
-      ))}
-    </>
-  );
-
   return (
     <div className="min-h-screen bg-gray-50">
       <SearchBar
@@ -62,27 +44,21 @@ export default function MasterClassPage() {
         colored
         title={lang === 'mn' ? 'Мастер Класс' : 'Master Classes'}
         subtitle={lang === 'mn' ? 'Мэргэжилтнүүдээс суралц' : 'Learn from the best in the field'}
-        filters={filterChips}
+        filters={
+          <select
+            value={activeCategory}
+            onChange={(e) => { setActiveCategory(e.target.value); setVisibleCount(PAGE_SIZE); }}
+            className="px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 bg-white focus:outline-none focus:border-gray-400 transition-all"
+          >
+            <option value="">{lang === 'mn' ? 'Бүх ангилал' : 'All categories'}</option>
+            {MASTERCLASS_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>{cat}</option>
+            ))}
+          </select>
+        }
       />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Mobile category filters */}
-        <div className="flex gap-2 flex-wrap mb-6 md:hidden">
-          {['', ...MASTERCLASS_CATEGORIES].map((cat) => (
-            <button
-              key={cat || 'all'}
-              onClick={() => { setActiveCategory(cat); setVisibleCount(PAGE_SIZE); }}
-              className={`px-3 py-1 rounded-full text-xs font-medium border transition-all ${
-                activeCategory === cat
-                  ? 'bg-indigo-600 text-white border-indigo-600'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-400'
-              }`}
-            >
-              {cat || (lang === 'mn' ? 'Бүгд' : 'All')}
-            </button>
-          ))}
-        </div>
-
         {/* Trending row */}
         {trending.length > 0 && !query && !activeCategory && (
           <div className="mb-10">
@@ -90,12 +66,12 @@ export default function MasterClassPage() {
               <FireOutlined className="text-orange-500" />
               {lang === 'mn' ? 'Трендийн мастер класс' : 'Trending Master Classes'}
             </h2>
-            <div className="flex gap-4 overflow-x-auto pb-2 -mx-1 px-1">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
               {trending.map((mc) => (
                 <Link
                   key={mc.id}
                   href={`/${lang}/masterclass/${mc.id}`}
-                  className="shrink-0 w-56 bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all"
+                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-gray-200 hover:shadow-sm transition-all"
                 >
                   <div className="relative h-32 overflow-hidden">
                     <img src={mc.thumbnail} alt={mc.title} className="w-full h-full object-cover" />
@@ -158,7 +134,7 @@ export default function MasterClassPage() {
                 >
                   <div className="flex flex-wrap gap-1 mb-1">
                     {mc.categories.map((cat) => (
-                      <span key={cat} className="text-xs text-indigo-500 bg-indigo-50 px-1.5 py-0.5 rounded">{cat}</span>
+                      <span key={cat} className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{cat}</span>
                     ))}
                   </div>
                   <p className="font-semibold text-gray-900 text-sm line-clamp-2 leading-snug">{mc.title}</p>
@@ -166,7 +142,7 @@ export default function MasterClassPage() {
                   <div className="flex items-center justify-between pt-1">
                     <span className="text-xs text-gray-400">{mc.duration}</span>
                     {mc.price !== null ? (
-                      <span className="text-sm font-semibold text-indigo-600">${mc.price}</span>
+                      <span className="text-sm font-semibold text-gray-800">${mc.price}</span>
                     ) : (
                       <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-0.5 rounded-full">Free</span>
                     )}
@@ -178,7 +154,7 @@ export default function MasterClassPage() {
               <div className="flex justify-center mt-10">
                 <button
                   onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
-                  className="px-8 py-3 bg-white border-2 border-indigo-600 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-600 hover:text-white transition-all"
+                  className="px-8 py-2.5 bg-white border border-gray-300 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   {lang === 'mn' ? 'Дэлгэрэнгүй үзэх' : 'Load more'}
                 </button>
