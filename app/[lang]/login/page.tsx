@@ -22,10 +22,10 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
   const router = useRouter();
   const { status } = useSession();
 
-  // Redirect to dashboard if already logged in
+  // Redirect to profile if already logged in
   useEffect(() => {
     if (status === "authenticated") {
-      router.replace(`/${lang}/dashboard`);
+      router.replace(`/${lang}/profile`);
     }
   }, [status, lang, router]);
 
@@ -68,8 +68,8 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
         return;
       }
 
-      // Redirect to dashboard on success
-      router.push(`/${lang}/dashboard`);
+      // Redirect to profile on success
+      router.push(`/${lang}/profile`);
     } catch (err: any) {
       setIsSubmitting(false);
       const errorMessage = err.data?.error || err.message || "Login failed";
@@ -321,7 +321,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           <button
             type="button"
             disabled={!agreeTerms}
-            onClick={() => signIn("google", { callbackUrl: `/${lang}/dashboard` })}
+            onClick={() => signIn("google", { callbackUrl: `/${lang}/profile` })}
             style={{
               width: "100%",
               height: "52px",
@@ -366,7 +366,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           <button
             type="button"
             disabled={!agreeTerms}
-            onClick={() => signIn("facebook", { callbackUrl: `/${lang}/dashboard` })}
+            onClick={() => signIn("facebook", { callbackUrl: `/${lang}/profile` })}
             style={{
               width: "100%",
               height: "52px",
