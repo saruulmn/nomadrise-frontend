@@ -6,6 +6,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
 import { getDictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
+import { DatePicker } from 'antd';
+import dayjs, { Dayjs } from 'dayjs';
 
 const EDUCATION_KEYS = [
   'secondary_student',
@@ -87,9 +89,6 @@ export default function ProfilePage() {
   const hasFetched = useRef(false);
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
-
-  const currentYear = new Date().getFullYear();
-  const yearOptions = Array.from({ length: 80 }, (_, i) => currentYear - 10 - i);
 
   useEffect(() => {
     getDictionary(lang).then(setDictionary);
@@ -372,12 +371,24 @@ export default function ProfilePage() {
                           <input name="phone" value={form.phone} onChange={handleChange} className="input-field" />
                         </Field>
                         <Field label={t.birthDate}>
-                          <select name="birth_date" value={form.birth_date} onChange={handleChange} className="input-field">
-                            <option value="">—</option>
-                            {yearOptions.map((year) => (
-                              <option key={year} value={String(year)}>{year}</option>
-                            ))}
-                          </select>
+                          <DatePicker
+                            picker="year"
+                            value={form.birth_date ? dayjs(form.birth_date, 'YYYY') : null}
+                            onChange={(date: Dayjs | null) => {
+                              setForm(prev => ({
+                                ...prev,
+                                birth_date: date ? date.format('YYYY') : '',
+                              }));
+                            }}
+                            disabledDate={(current) =>
+                              current && (
+                                current.year() > dayjs().year() - 10 ||
+                                current.year() < dayjs().year() - 90
+                              )
+                            }
+                            style={{ width: '100%' }}
+                            placeholder={lang === 'mn' ? 'Жил сонгох' : 'Select year'}
+                          />
                         </Field>
                       </div>
 
