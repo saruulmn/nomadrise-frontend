@@ -7,6 +7,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
 import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
+import { signIn } from "next-auth/react";
 
 export default function RegisterPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const [lang, setLang] = useState<Locale>("mn");
@@ -82,9 +83,18 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
 
       const data = await response.json();
 
-      setSuccess("Бүртгүүлэлт амжилттай! Та нэвтрэх хуудас руу шилжиж байна...");
+      // Sign in automatically using NextAuth Credentials provider
+      if (data.access && data.refresh) {
+        await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+      }
+
+      setSuccess("Бүртгүүлэлт амжилттай! Та сүүлийн хэмжээнд нэвтэрч байна...");
       setTimeout(() => {
-        router.push(`/${lang}/login`);
+        router.push(`/${lang}/profile`);
       }, 1500);
     } catch (err: any) {
       setIsSubmitting(false);
