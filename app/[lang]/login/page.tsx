@@ -21,7 +21,6 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
   const router = useRouter();
 
   // Safely grab theme context (SSR safe)
@@ -114,89 +113,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
       {/* Spatial Lighting Gradient Overlay */}
       <div className={`absolute inset-0 z-10 transition-opacity duration-500 ${currentTheme === "dark" ? "bg-gradient-to-b from-black/40 via-black/50 to-[#0a0c10]/95" : "bg-gradient-to-b from-white/20 via-white/40 to-[#f8fafc]/95"}`} />
 
-      {/* Floating Theme Selector Dropdown Widget */}
-      <div className="absolute top-6 right-6 z-30 flex items-center gap-3">
-        <div className="relative">
-          <button
-            type="button"
-            onClick={() => setIsThemeDropdownOpen(!isThemeDropdownOpen)}
-            className={`flex items-center gap-2 px-3.5 py-2.5 rounded-xl border text-xs font-semibold backdrop-blur-md transition-all duration-300 shadow-sm cursor-pointer ${
-              currentTheme === "dark"
-                ? "bg-white/[0.06] border-white/10 text-white hover:bg-white/[0.1] shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
-                : "bg-white/90 border-black/[0.08] text-gray-800 hover:bg-white shadow-[0_4px_20px_rgba(0,0,0,0.03)]"
-            }`}
-          >
-            {currentTheme === "light" ? (
-              <>
-                <svg className="w-4 h-4 text-amber-500 animate-spin-slow" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
-                </svg>
-                <span>{lang === "mn" ? "Гэгээлэг" : "Light"}</span>
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                </svg>
-                <span>{lang === "mn" ? "Харанхуй" : "Dark"}</span>
-              </>
-            )}
-            <svg className={`w-3.5 h-3.5 opacity-60 transition-transform duration-200 ${isThemeDropdownOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
 
-          {isThemeDropdownOpen && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setIsThemeDropdownOpen(false)} />
-              <div className={`absolute right-0 mt-2 w-36 rounded-2xl p-1.5 backdrop-blur-xl border shadow-2xl z-50 animate-[slideIn_0.2s_ease-out] ${
-                currentTheme === "dark"
-                  ? "bg-[#161a22]/95 border-white/10 text-white shadow-black/80"
-                  : "bg-white/95 border-black/[0.08] text-gray-900 shadow-gray-200"
-              }`}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (themeContext && themeContext.theme !== "light") {
-                      themeContext.toggleTheme();
-                    }
-                    setIsThemeDropdownOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                    currentTheme === "light"
-                      ? "bg-gray-100 text-[#667eea]"
-                      : "hover:bg-white/5 text-gray-400 hover:text-white"
-                  }`}
-                >
-                  <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.46 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 100 2h1z" clipRule="evenodd" />
-                  </svg>
-                  <span>{lang === "mn" ? "Гэгээлэг" : "Light"}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (themeContext && themeContext.theme !== "dark") {
-                      themeContext.toggleTheme();
-                    }
-                    setIsThemeDropdownOpen(false);
-                  }}
-                  className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold cursor-pointer transition-colors ${
-                    currentTheme === "dark"
-                      ? "bg-white/10 text-[#98a9fa]"
-                      : "hover:bg-gray-50 text-gray-500 hover:text-gray-900"
-                  }`}
-                >
-                  <svg className="w-4 h-4 text-indigo-400" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                  </svg>
-                  <span>{lang === "mn" ? "Харанхуй" : "Dark"}</span>
-                </button>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
 
       {/* Dynamic colorful blur blobs (Visible and accented in dark, soft pastel in light) */}
       <div className={`absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-80 h-80 rounded-full blur-3xl opacity-40 z-10 animate-pulse pointer-events-none transition-all duration-500 ${currentTheme === "dark" ? "bg-purple-600/20" : "bg-purple-400/5"}`} />
@@ -211,13 +128,6 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           0%, 100% { transform: translateX(0); }
           20%, 60% { transform: translateX(-6px); }
           40%, 80% { transform: translateX(6px); }
-        }
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 12s linear infinite;
         }
         .login-card {
           animation: slideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -357,12 +267,12 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           <button
             type="submit"
             disabled={isSubmitting || !agreeTerms}
-            className={`w-full h-13 text-white border-none rounded-xl text-sm font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${
+            className={`w-full h-14 text-white border-none rounded-xl text-sm font-extrabold tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 ${
               !agreeTerms
                 ? currentTheme === "dark"
-                  ? "bg-white/[0.04] text-gray-500 border border-white/5 cursor-not-allowed opacity-40 shadow-none"
-                  : "bg-black/[0.04] text-gray-400 border border-black/5 cursor-not-allowed opacity-40 shadow-none"
-                : "bg-gradient-to-r from-[#667eea] to-[#764ba2] cursor-pointer hover:shadow-[0_8px_24px_rgba(102,126,234,0.35)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+                  ? "bg-white/[0.04] text-gray-600 border border-white/5 cursor-not-allowed opacity-50 shadow-none"
+                  : "bg-gray-100 text-gray-400 border border-black/5 cursor-not-allowed opacity-50 shadow-none"
+                : "bg-gradient-to-r from-[#0b5fff] to-[#00d0ff] cursor-pointer hover:shadow-[0_8px_30px_rgba(11,95,255,0.35)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
             } ${isSubmitting ? "opacity-60 cursor-not-allowed" : ""}`}
           >
             {isSubmitting ? (
@@ -371,10 +281,10 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
-                <span>Нэвтэрч байна...</span>
+                <span>{lang === "mn" ? "Нэвтэрч байна..." : "Signing In..."}</span>
               </>
             ) : (
-              "Нэвтрэх"
+              dictionary.nav?.signIn || (lang === "mn" ? "Нэвтрэх" : "Sign In")
             )}
           </button>
 
@@ -390,14 +300,14 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
             type="button"
             onClick={() => handleSocialSignIn("google")}
             disabled={!agreeTerms}
-            className={`w-full h-12 text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 rounded-xl ${
+            className={`w-full h-14 text-sm font-bold tracking-wide flex items-center justify-center gap-3 transition-all duration-300 rounded-xl ${
               !agreeTerms
                 ? currentTheme === "dark"
-                  ? "bg-white/[0.01] text-gray-600 border border-white/5 cursor-not-allowed opacity-30 shadow-none"
-                  : "bg-black/[0.01] text-gray-300 border border-black/5 cursor-not-allowed opacity-30 shadow-none"
+                  ? "bg-white/[0.01] text-gray-600 border border-white/5 cursor-not-allowed opacity-35 shadow-none"
+                  : "bg-gray-50/50 text-gray-400 border border-black/5 cursor-not-allowed opacity-35 shadow-none"
                 : currentTheme === "dark"
-                  ? "bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 cursor-pointer hover:shadow-[0_4px_20px_rgba(255,255,255,0.05)] active:scale-[0.99]"
-                  : "bg-white hover:bg-gray-50/80 text-gray-700 border border-black/10 cursor-pointer hover:shadow-[0_4px_20px_rgba(0,0,0,0.03)] active:scale-[0.99]"
+                  ? "bg-white/[0.03] hover:bg-white/[0.08] text-white border border-white/10 hover:border-white/20 cursor-pointer hover:shadow-[0_6px_24px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 active:translate-y-0"
+                  : "bg-white hover:bg-gray-50 text-gray-800 border-black/10 hover:border-black/20 cursor-pointer hover:shadow-[0_6px_24px_rgba(0,0,0,0.04)] hover:-translate-y-0.5 active:translate-y-0"
             }`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" className={`flex-shrink-0 ${!agreeTerms ? "grayscale opacity-30" : ""}`}>
@@ -414,14 +324,14 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
             type="button"
             onClick={() => handleSocialSignIn("facebook")}
             disabled={!agreeTerms}
-            className={`w-full h-12 text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 rounded-xl ${
+            className={`w-full h-14 text-sm font-bold tracking-wide flex items-center justify-center gap-3 transition-all duration-300 rounded-xl ${
               !agreeTerms
                 ? currentTheme === "dark"
-                  ? "bg-white/[0.01] text-gray-600 border border-white/5 cursor-not-allowed opacity-30 shadow-none"
-                  : "bg-black/[0.01] text-gray-300 border border-black/5 cursor-not-allowed opacity-30 shadow-none"
+                  ? "bg-white/[0.01] text-gray-600 border border-white/5 cursor-not-allowed opacity-35 shadow-none"
+                  : "bg-gray-50/50 text-gray-400 border border-black/5 cursor-not-allowed opacity-35 shadow-none"
                 : currentTheme === "dark"
-                  ? "bg-[#1877F2]/90 hover:bg-[#1877F2] text-white border-none cursor-pointer hover:shadow-[0_8px_20px_rgba(24,119,242,0.25)] active:scale-[0.99]"
-                  : "bg-[#1877F2] hover:bg-[#166fe5] text-white border-none cursor-pointer hover:shadow-[0_8px_20px_rgba(24,119,242,0.2)] active:scale-[0.99]"
+                  ? "bg-[#1877F2]/90 hover:bg-[#1877F2] text-white border-none cursor-pointer hover:shadow-[0_6px_24px_rgba(24,119,242,0.3)] hover:-translate-y-0.5 active:translate-y-0"
+                  : "bg-[#1877F2] hover:bg-[#166fe5] text-white border-none cursor-pointer hover:shadow-[0_6px_24px_rgba(24,119,242,0.2)] hover:-translate-y-0.5 active:translate-y-0"
             }`}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="white" className={`flex-shrink-0 ${!agreeTerms ? "opacity-20" : ""}`}>
