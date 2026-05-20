@@ -229,8 +229,12 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           {/* Submit Button */}
           <button
             type="submit"
-            disabled={isSubmitting}
-            className={`w-full h-13 text-white border-none rounded-xl text-sm font-bold tracking-wide transition-all duration-300 bg-gradient-to-r from-[#667eea] to-[#764ba2] cursor-pointer hover:shadow-[0_8px_24px_rgba(102,126,234,0.35)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : ''}`}
+            disabled={isSubmitting || !agreeTerms}
+            className={`w-full h-13 text-white border-none rounded-xl text-sm font-bold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 ${
+              !agreeTerms
+                ? "bg-white/[0.04] text-gray-500 border border-white/5 cursor-not-allowed opacity-40 shadow-none"
+                : "bg-gradient-to-r from-[#667eea] to-[#764ba2] cursor-pointer hover:shadow-[0_8px_24px_rgba(102,126,234,0.35)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
+            } ${isSubmitting ? "opacity-60 cursor-not-allowed" : ""}`}
           >
             {isSubmitting ? (
               <>
@@ -256,9 +260,14 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           <button
             type="button"
             onClick={() => handleSocialSignIn("google")}
-            className="w-full h-12 bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 rounded-xl text-sm font-semibold cursor-pointer flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_4px_20px_rgba(255,255,255,0.05)] active:scale-[0.99] active:translate-y-0"
+            disabled={!agreeTerms}
+            className={`w-full h-12 text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 rounded-xl ${
+              !agreeTerms
+                ? "bg-white/[0.01] text-gray-600 border border-white/5 cursor-not-allowed opacity-30 shadow-none"
+                : "bg-white/[0.04] hover:bg-white/[0.08] text-white border border-white/10 cursor-pointer hover:shadow-[0_4px_20px_rgba(255,255,255,0.05)] active:scale-[0.99]"
+            }`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" className="flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" className={`flex-shrink-0 ${!agreeTerms ? "grayscale opacity-30" : ""}`}>
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A11.96 11.96 0 0 0 0 12c0 1.94.46 3.77 1.28 5.4l3.56-2.77.01-.54z" fill="#FBBC05" />
@@ -271,9 +280,14 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
           <button
             type="button"
             onClick={() => handleSocialSignIn("facebook")}
-            className="w-full h-12 bg-[#1877F2]/90 hover:bg-[#1877F2] text-white border-none rounded-xl text-sm font-semibold cursor-pointer flex items-center justify-center gap-3 transition-all duration-300 hover:shadow-[0_8px_20px_rgba(24,119,242,0.25)] active:scale-[0.99] active:translate-y-0"
+            disabled={!agreeTerms}
+            className={`w-full h-12 text-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 rounded-xl ${
+              !agreeTerms
+                ? "bg-white/[0.01] text-gray-600 border border-white/5 cursor-not-allowed opacity-30 shadow-none"
+                : "bg-[#1877F2]/90 hover:bg-[#1877F2] text-white border-none cursor-pointer hover:shadow-[0_8px_20px_rgba(24,119,242,0.25)] active:scale-[0.99]"
+            }`}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="white" className="flex-shrink-0">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="white" className={`flex-shrink-0 ${!agreeTerms ? "opacity-20" : ""}`}>
               <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
             </svg>
             <span>{dictionary.login?.continueFacebook || "Facebook-ээр нэвтрэх"}</span>
