@@ -9,6 +9,7 @@ import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
 import { signIn } from "next-auth/react";
 import { useTheme } from "@/app/components/ThemeProvider";
+import { ExclamationTriangleIcon, EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
 export default function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const { lang } = use(params);
@@ -163,9 +164,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
         {/* Error Message */}
         {error && (
           <div className={`px-4 py-3 rounded-xl text-xs md:text-sm flex items-center gap-2.5 transition-all duration-500 ${currentTheme === "dark" ? "bg-red-500/10 border border-red-500/20 text-red-200" : "bg-red-50 border border-red-200 text-red-800"}`}>
-            <svg className="w-5 h-5 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
+            <ExclamationTriangleIcon className="w-5 h-5 text-red-400 flex-shrink-0" aria-hidden="true" />
             <span>{error}</span>
           </div>
         )}
@@ -179,9 +178,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
             </label>
             <div className="relative group">
               <span className={`absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors duration-300 ${currentTheme === "dark" ? "text-gray-500 group-focus-within:text-[#667eea]" : "text-gray-400 group-focus-within:text-[#667eea]"}`}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                <EnvelopeIcon className="w-5 h-5" aria-hidden="true" />
               </span>
               <input
                 type="email"
@@ -204,9 +201,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
             </label>
             <div className="relative group">
               <span className={`absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none transition-colors duration-300 ${currentTheme === "dark" ? "text-gray-500 group-focus-within:text-[#667eea]" : "text-gray-400 group-focus-within:text-[#667eea]"}`}>
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
+                <LockClosedIcon className="w-5 h-5" aria-hidden="true" />
               </span>
               <input
                 type="password"
