@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { StarFilled, ClockCircleOutlined, CalendarOutlined } from '@ant-design/icons';
+import { StarIcon } from '@heroicons/react/24/solid';
+import { ClockIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { cohorts } from '@/lib/data/cohorts';
 import { masterClasses } from '@/lib/data/masterClasses';
 import { mentors } from '@/lib/data/mentors';
@@ -65,7 +66,7 @@ export default function HomeContentSections({ lang }: Props) {
                     ))}
                   </div>
                   <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
-                    <CalendarOutlined />
+                    <CalendarDaysIcon className="w-3 h-3" />
                     <span>{new Date(cohort.startDate).toLocaleDateString(isMn ? 'mn-MN' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                   </div>
                   <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
@@ -113,7 +114,7 @@ export default function HomeContentSections({ lang }: Props) {
                 </div>
                 <div className="flex items-center justify-between pt-1">
                   <div className="flex items-center gap-1 text-xs text-gray-400">
-                    <ClockCircleOutlined />
+                    <ClockIcon className="w-3 h-3" />
                     <span>{mc.duration}</span>
                   </div>
                   <span className="text-sm font-semibold text-gray-800">
@@ -161,7 +162,7 @@ export default function HomeContentSections({ lang }: Props) {
                 </div>
                 <div className="flex items-center justify-between pt-1">
                   <div className="flex items-center gap-1">
-                    <StarFilled className="text-yellow-400 text-xs" />
+                    <StarIcon className="w-3 h-3 text-yellow-400" />
                     <span className="text-sm font-medium text-gray-700">{mentor.rating}</span>
                     <span className="text-xs text-gray-400">({mentor.reviewCount})</span>
                   </div>

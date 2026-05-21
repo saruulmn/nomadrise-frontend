@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
-import { PlayCircleOutlined, FireOutlined } from '@ant-design/icons';
+import { PlayCircleIcon, FireIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import SearchBar from '@/app/components/SearchBar';
 import CorpDropdown from '@/app/components/CorpDropdown';
@@ -62,7 +62,7 @@ export default function MasterClassPage() {
         {trending.length > 0 && !query && !activeCategory && (
           <div className="mb-10">
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <FireOutlined className="text-orange-500" />
+              <FireIcon className="w-5 h-5 text-orange-500" />
               {lang === 'mn' ? 'Трендийн мастер класс' : 'Trending Master Classes'}
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -75,7 +75,7 @@ export default function MasterClassPage() {
                   <div className="relative h-32 overflow-hidden">
                     <img src={mc.thumbnail} alt={mc.title} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
-                      <PlayCircleOutlined className="text-white text-3xl" />
+                      <PlayCircleIcon className="w-8 h-8 text-white" />
                     </div>
                   </div>
                   <div className="p-3">
@@ -116,7 +116,7 @@ export default function MasterClassPage() {
           </GridContainer>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-gray-400">
-            <PlayCircleOutlined style={{ fontSize: 64, opacity: 0.3 }} />
+            <PlayCircleIcon className="w-16 h-16 opacity-30" />
             <p className="text-lg font-medium mt-4">
               {lang === 'mn' ? 'Мастер класс олдсонгүй' : 'No master classes found'}
             </p>

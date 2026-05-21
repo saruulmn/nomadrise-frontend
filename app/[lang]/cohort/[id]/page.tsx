@@ -3,7 +3,7 @@
 import { usePathname, notFound } from 'next/navigation';
 import { use } from 'react';
 import Link from 'next/link';
-import { TeamOutlined, CalendarOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { UsersIcon, CalendarDaysIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { cohorts, type CohortStatus } from '@/lib/data/cohorts';
 
 const STATUS_STYLES: Record<CohortStatus, string> = {
@@ -61,7 +61,7 @@ export default function CohortDetailPage({ params }: Props) {
       {/* Back link */}
       <div className="max-w-5xl mx-auto px-4 pt-6">
         <Link href={`/${lang}/cohort`} className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors">
-          <ArrowLeftOutlined />
+          <ArrowLeftIcon className="w-4 h-4" />
           {lang === 'mn' ? 'Буцах' : 'Back to cohorts'}
         </Link>
       </div>
@@ -105,7 +105,7 @@ export default function CohortDetailPage({ params }: Props) {
           {/* Stats card */}
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
             <div className="flex items-start gap-3">
-              <CalendarOutlined className="text-blue-500 mt-0.5 shrink-0" />
+              <CalendarDaysIcon className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">
                   {lang === 'mn' ? 'Эхлэх огноо' : 'Start date'}
@@ -114,7 +114,7 @@ export default function CohortDetailPage({ params }: Props) {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <CalendarOutlined className="text-gray-400 mt-0.5 shrink-0" />
+              <CalendarDaysIcon className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" />
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">
                   {lang === 'mn' ? 'Дуусах огноо' : 'End date'}
@@ -123,7 +123,7 @@ export default function CohortDetailPage({ params }: Props) {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <TeamOutlined className="text-blue-500 mt-0.5 shrink-0" />
+              <UsersIcon className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
               <div>
                 <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">
                   {lang === 'mn' ? 'Оролцогчид' : 'Members'}

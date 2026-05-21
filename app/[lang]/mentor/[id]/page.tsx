@@ -3,14 +3,8 @@
 import { usePathname, notFound } from 'next/navigation';
 import { use } from 'react';
 import Link from 'next/link';
-import {
-  StarFilled,
-  ArrowLeftOutlined,
-  LinkedinOutlined,
-  GlobalOutlined,
-  CalendarOutlined,
-  CheckCircleOutlined,
-} from '@ant-design/icons';
+import { StarIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, GlobeAltIcon, CalendarDaysIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { mentors } from '@/lib/data/mentors';
 
 interface Props {
@@ -34,7 +28,7 @@ export default function MentorDetailPage({ params }: Props) {
             href={`/${lang}/mentor`}
             className="inline-flex items-center gap-1.5 text-sm text-white/70 hover:text-white transition-colors mb-6"
           >
-            <ArrowLeftOutlined />
+            <ArrowLeftIcon className="w-4 h-4" />
             {lang === 'mn' ? 'Буцах' : 'Back to mentors'}
           </Link>
           <div className="flex flex-col sm:flex-row items-center sm:items-end gap-6">
@@ -47,7 +41,7 @@ export default function MentorDetailPage({ params }: Props) {
               <h1 className="text-2xl md:text-3xl font-bold text-white">{mentor.name}</h1>
               <p className="text-violet-200 text-sm mt-1">{mentor.title}</p>
               <div className="flex items-center justify-center sm:justify-start gap-2 mt-2">
-                <StarFilled className="text-yellow-400" />
+                <StarIcon className="w-5 h-5 text-yellow-400" />
                 <span className="text-white font-semibold">{mentor.rating}</span>
                 <span className="text-violet-200 text-sm">({mentor.reviewCount} {lang === 'mn' ? 'үнэлгээ' : 'reviews'})</span>
               </div>
@@ -78,7 +72,7 @@ export default function MentorDetailPage({ params }: Props) {
                   key={skill}
                   className="px-3 py-1.5 bg-violet-50 text-violet-700 text-sm font-medium rounded-lg border border-violet-100 flex items-center gap-1.5"
                 >
-                  <CheckCircleOutlined className="text-violet-400 text-xs" />
+                  <CheckCircleIcon className="w-3 h-3 text-violet-400" />
                   {skill}
                 </span>
               ))}
@@ -114,7 +108,7 @@ export default function MentorDetailPage({ params }: Props) {
             </div>
             <div className="bg-violet-50 rounded-xl p-4 mb-5">
               <div className="flex items-center gap-3">
-                <CalendarOutlined className="text-violet-500 text-lg shrink-0" />
+                <CalendarDaysIcon className="w-5 h-5 text-violet-500 shrink-0" />
                 <div>
                   <p className="font-semibold text-gray-800 text-sm">
                     {mentor.meetingsPerMonth} {lang === 'mn' ? 'уулзалт / сар' : 'meetings / month'}
@@ -143,7 +137,9 @@ export default function MentorDetailPage({ params }: Props) {
                   className="flex items-center gap-3 text-sm text-gray-700 hover:text-blue-700 transition-colors group"
                 >
                   <span className="w-9 h-9 rounded-lg bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center shrink-0 transition-colors">
-                    <LinkedinOutlined className="text-blue-600 text-base" />
+                    <svg className="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
                   </span>
                   <span className="truncate">LinkedIn</span>
                 </a>
@@ -156,7 +152,7 @@ export default function MentorDetailPage({ params }: Props) {
                   className="flex items-center gap-3 text-sm text-gray-700 hover:text-indigo-700 transition-colors group"
                 >
                   <span className="w-9 h-9 rounded-lg bg-indigo-50 group-hover:bg-indigo-100 flex items-center justify-center shrink-0 transition-colors">
-                    <GlobalOutlined className="text-indigo-600 text-base" />
+                    <GlobeAltIcon className="w-4 h-4 text-indigo-600" />
                   </span>
                   <span className="truncate">{mentor.websiteUrl.replace(/^https?:\/\//, '')}</span>
                 </a>

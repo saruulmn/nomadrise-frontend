@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTheme } from './ThemeProvider';
-import { SunOutlined, MoonOutlined } from '@ant-design/icons';
+import { SunIcon, MoonIcon } from '@heroicons/react/24/outline';
 
 export default function ThemeToggle() {
   try {
@@ -26,7 +26,7 @@ export default function ThemeToggle() {
         }}
         aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
       >
-        {theme === 'light' ? <MoonOutlined /> : <SunOutlined />}
+        {theme === 'light' ? <MoonIcon className="w-5 h-5" /> : <SunIcon className="w-5 h-5" />}
       </button>
     );
   } catch (error) {

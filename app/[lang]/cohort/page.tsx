@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
-import { TeamOutlined, FireOutlined } from '@ant-design/icons';
+import { UsersIcon, FireIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import SearchBar from '@/app/components/SearchBar';
 import CorpDropdown from '@/app/components/CorpDropdown';
@@ -74,7 +74,7 @@ export default function CohortPage() {
         {trending.length > 0 && !query && !activeCategory && (
           <div className="mb-10">
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <FireOutlined className="text-orange-500" />
+              <FireIcon className="w-5 h-5 text-orange-500" />
               {lang === 'mn' ? 'Трендийн элсэлт' : 'Trending Cohorts'}
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -93,7 +93,7 @@ export default function CohortPage() {
                   <div className="p-3">
                     <p className="font-semibold text-gray-900 text-xs leading-snug line-clamp-2">{cohort.name}</p>
                     <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-                      <TeamOutlined />{cohort.memberCount}
+                      <UsersIcon className="w-3 h-3" />{cohort.memberCount}
                     </p>
                   </div>
                 </Link>
@@ -123,7 +123,7 @@ export default function CohortPage() {
           </GridContainer>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-gray-400">
-            <TeamOutlined style={{ fontSize: 64, opacity: 0.3 }} />
+            <UsersIcon className="w-16 h-16 opacity-30" />
             <p className="text-lg font-medium mt-4">
               {lang === 'mn' ? 'Элсэлт олдсонгүй' : 'No cohorts found'}
             </p>
@@ -156,7 +156,7 @@ export default function CohortPage() {
                       {lang === 'mn' ? STATUS_MN[cohort.status] : cohort.status}
                     </span>
                     <span className="text-xs text-gray-400 flex items-center gap-1">
-                      <TeamOutlined />{cohort.memberCount}
+                      <UsersIcon className="w-3 h-3" />{cohort.memberCount}
                     </span>
                   </div>
                 </ThumbnailCard>

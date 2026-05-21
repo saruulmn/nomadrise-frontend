@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import { usePathname } from 'next/navigation';
-import { StarFilled, FireOutlined } from '@ant-design/icons';
+import { FireIcon } from '@heroicons/react/24/outline';
+import { StarIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import SearchBar from '@/app/components/SearchBar';
 import CorpDropdown from '@/app/components/CorpDropdown';
@@ -62,7 +63,7 @@ export default function MentorPage() {
         {trending.length > 0 && !query && !activeSkill && (
           <div className="mb-10">
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <FireOutlined className="text-orange-500" />
+              <FireIcon className="w-5 h-5 text-orange-500" />
               {lang === 'mn' ? 'Шилдэг менторууд' : 'Top Mentors'}
             </h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
@@ -80,7 +81,7 @@ export default function MentorPage() {
                   <p className="font-semibold text-gray-900 text-xs mt-2 leading-tight line-clamp-2">{mentor.name}</p>
                   <p className="text-xs text-gray-500 mt-0.5 truncate">{mentor.title}</p>
                   <div className="flex items-center justify-center gap-1 mt-1">
-                    <StarFilled className="text-yellow-400 text-xs" />
+                    <StarIcon className="w-3 h-3 text-yellow-400" />
                     <span className="text-xs font-medium text-gray-700">{mentor.rating}</span>
                   </div>
                 </Link>
@@ -138,7 +139,7 @@ export default function MentorPage() {
                   </div>
                   <div className="flex items-center justify-between pt-1">
                     <div className="flex items-center gap-1">
-                      <StarFilled className="text-yellow-400 text-xs" />
+                      <StarIcon className="w-3 h-3 text-yellow-400" />
                       <span className="text-sm font-medium text-gray-700">{mentor.rating}</span>
                       <span className="text-xs text-gray-400">({mentor.reviewCount})</span>
                     </div>

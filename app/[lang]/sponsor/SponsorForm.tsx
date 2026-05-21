@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 import { Form, Input, Select, Button, message, Card } from "antd";
-import {
-  UserOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  MessageOutlined,
-} from "@ant-design/icons";
+import { UserIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -130,7 +125,7 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
               rules={[{ required: true, message: dict.enterFullName }]}
             >
               <Input
-                prefix={<UserOutlined style={{ color: "#9ca3af" }} />}
+                prefix={<UserIcon className="w-4 h-4 text-gray-400" />}
                 placeholder={dict.enterFullName}
                 size="large"
                 style={{ borderRadius: "0.5rem" }}
@@ -151,7 +146,7 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
               ]}
             >
               <Input
-                prefix={<MailOutlined style={{ color: "#9ca3af" }} />}
+                prefix={<EnvelopeIcon className="w-4 h-4 text-gray-400" />}
                 placeholder={dict.enterEmail}
                 size="large"
                 style={{ borderRadius: "0.5rem" }}
@@ -168,7 +163,7 @@ export default function SponsorForm({ dictionary }: SponsorFormProps) {
               name="phone"
             >
               <Input
-                prefix={<PhoneOutlined style={{ color: "#9ca3af" }} />}
+                prefix={<PhoneIcon className="w-4 h-4 text-gray-400" />}
                 placeholder={dict.enterPhone}
                 size="large"
                 style={{ borderRadius: "0.5rem" }}

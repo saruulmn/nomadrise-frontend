@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Dropdown, Menu, Drawer } from "antd";
-import { MenuOutlined, DownOutlined } from "@ant-design/icons";
+import { Bars3Icon, ChevronDownIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import UserProfile from "./UserProfile";
@@ -137,7 +137,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
                   isActive(`/${lang}/events`) ? 'nav-active' : ''
                 }`} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                   {dictionary.nav.explore}
-                  <DownOutlined style={{ fontSize: "11px" }} />
+                  <ChevronDownIcon className="w-3 h-3" />
                 </button>
               </Dropdown>
               <Link href={`/${lang}/cohort`} className={isActive(`/${lang}/cohort`) ? 'nav-active' : undefined}>
@@ -172,7 +172,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
                   style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}
                 >
                   {dictionary.nav.programs}
-                  <DownOutlined style={{ fontSize: "11px" }} />
+                  <ChevronDownIcon className="w-3 h-3" />
                 </button>
               </Dropdown>
 
@@ -220,7 +220,7 @@ export default function NavBar({ dictionary: propDictionary }: NavBarProps = {})
           onClick={() => setDrawerOpen(true)}
           type="button"
         >
-          <MenuOutlined />
+          <Bars3Icon className="w-5 h-5" />
         </button>
       </div>
 

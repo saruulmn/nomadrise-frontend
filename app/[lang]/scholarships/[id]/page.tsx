@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { scholarshipApi, Scholarship } from "@/lib/api";
 import { Modal, Form, Input, Upload, Button, InputNumber, message, Select } from "antd";
-import { UploadOutlined, FileTextOutlined, ArrowLeftOutlined, CalendarOutlined, DollarOutlined, BookOutlined } from "@ant-design/icons";
+import { ArrowUpTrayIcon, DocumentTextIcon, ArrowLeftIcon, CalendarDaysIcon, CurrencyDollarIcon, BookOpenIcon } from "@heroicons/react/24/outline";
 import type { UploadFile } from "antd";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Locale } from "@/i18n/config";
@@ -180,7 +180,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
             marginBottom: "2rem",
             color: "#374151",
           }}>
-            <ArrowLeftOutlined />
+            <ArrowLeftIcon className="w-4 h-4" />
             {lang === "mn" ? "Буцах" : "Back to Scholarships"}
           </button>
         </Link>
@@ -239,7 +239,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
           }}>
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                <DollarOutlined style={{ fontSize: "1.5rem", color: "#667eea" }} />
+                <CurrencyDollarIcon className="w-6 h-6" style={{ color: "#667eea" }} />
                 <h3 style={{ fontSize: "0.875rem", color: "#6b7280", fontWeight: "600", textTransform: "uppercase" }}>
                   {lang === "mn" ? "Дүн" : "Amount"}
                 </h3>
@@ -251,7 +251,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
 
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                <CalendarOutlined style={{ fontSize: "1.5rem", color: "#667eea" }} />
+                <CalendarDaysIcon className="w-6 h-6" style={{ color: "#667eea" }} />
                 <h3 style={{ fontSize: "0.875rem", color: "#6b7280", fontWeight: "600", textTransform: "uppercase" }}>
                   {lang === "mn" ? "Хаах хугацаа" : "Deadline"}
                 </h3>
@@ -264,7 +264,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
             {scholarship.field_of_study && (
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                  <BookOutlined style={{ fontSize: "1.5rem", color: "#667eea" }} />
+                  <BookOpenIcon className="w-6 h-6" style={{ color: "#667eea" }} />
                   <h3 style={{ fontSize: "0.875rem", color: "#6b7280", fontWeight: "600", textTransform: "uppercase" }}>
                     {lang === "mn" ? "Салбар" : "Field of Study"}
                   </h3>
@@ -503,7 +503,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
             <Form.Item
               label={
                 <span>
-                  <FileTextOutlined style={{ marginRight: "0.5rem" }} />
+                  <DocumentTextIcon className="w-4 h-4 inline" style={{ marginRight: "0.5rem" }} />
                   {dict.scholarship.documents}
                 </span>
               }
@@ -518,7 +518,7 @@ export default function ScholarshipDetailPage({ params }: ScholarshipDetailPageP
               }}
             >
               <Upload {...uploadProps}>
-                <Button icon={<UploadOutlined />} size="large" style={{ width: "100%" }}>
+                <Button icon={<ArrowUpTrayIcon className="w-4 h-4" />} size="large" style={{ width: "100%" }}>
                   {dict.scholarship.selectFiles}
                 </Button>
               </Upload>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { DownOutlined } from '@ant-design/icons';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 interface Option {
   value: string;
@@ -36,8 +36,8 @@ export default function CorpDropdown({ value, onChange, options }: CorpDropdownP
         className="w-full flex items-center justify-between gap-2 px-3 py-2.5 border border-gray-500 bg-white text-sm text-gray-500 focus:outline-none focus:border-gray-600 transition-colors"
       >
         <span className="truncate">{selected?.label}</span>
-        <DownOutlined
-          className="shrink-0 text-gray-400 text-[10px]"
+        <ChevronDownIcon
+          className="w-3 h-3 shrink-0 text-gray-400"
           style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.15s' }}
         />
       </button>

@@ -1,6 +1,6 @@
 'use client';
 
-import { SearchOutlined } from '@ant-design/icons';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { useState, type KeyboardEvent, type ReactNode } from 'react';
 
 interface SearchBarProps {
@@ -70,7 +70,7 @@ export default function SearchBar({
                 onClick={handleSearchClick}
                 className="px-3 py-2.5 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
               >
-                <SearchOutlined />
+                <MagnifyingGlassIcon className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -83,7 +83,7 @@ export default function SearchBar({
     <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 py-3">
       <div className="max-w-6xl mx-auto relative">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
-          <SearchOutlined />
+          <MagnifyingGlassIcon className="w-4 h-4" />
         </span>
         <input
           type="text"

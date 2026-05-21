@@ -2,7 +2,7 @@
 
 import { useSession, signOut } from "next-auth/react";
 import { Button, Dropdown } from "antd";
-import { UserOutlined, LogoutOutlined, SettingOutlined } from "@ant-design/icons";
+import { UserIcon, ArrowRightOnRectangleIcon, Cog6ToothIcon } from "@heroicons/react/24/outline";
 import type { MenuProps } from "antd";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -30,12 +30,12 @@ export default function UserProfile() {
     {
       key: "profile",
       label: <a href={`/${lang}/profile`}>{dictionary.nav.profile || "Profile"}</a>,
-      icon: <UserOutlined />,
+      icon: <UserIcon className="w-4 h-4" />,
     },
     {
       key: "settings",
       label: <a href={`/${lang}/settings`}>{dictionary.nav.settings || "Settings"}</a>,
-      icon: <SettingOutlined />,
+      icon: <Cog6ToothIcon className="w-4 h-4" />,
     },
     {
       type: "divider",
@@ -43,7 +43,7 @@ export default function UserProfile() {
     {
       key: "logout",
       label: dictionary.nav.signOut || "Sign Out",
-      icon: <LogoutOutlined />,
+      icon: <ArrowRightOnRectangleIcon className="w-4 h-4" />,
       onClick: () => signOut({ callbackUrl: `/${lang}` }),
       danger: true,
     },
