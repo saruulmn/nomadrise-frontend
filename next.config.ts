@@ -1,5 +1,14 @@
 import type { NextConfig } from "next";
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "https://api.nomadrise.mn/api";
+const apiOrigin = (() => {
+  try {
+    return new URL(apiUrl).origin;
+  } catch {
+    return "https://api.nomadrise.mn";
+  }
+})();
+
 const nextConfig: NextConfig = {
   async headers() {
     return [
@@ -8,7 +17,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.nomadrise.mn https://accounts.google.com https://www.facebook.com https://appleid.apple.com; style-src 'self' 'unsafe-inline';",
+            value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' ${apiOrigin} https://accounts.google.com https://www.facebook.com https://appleid.apple.com; style-src 'self' 'unsafe-inline';`,
           },
           {
             key: 'X-Frame-Options',
