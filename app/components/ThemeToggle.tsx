@@ -14,13 +14,13 @@ export default function ThemeToggle() {
         style={{
           padding: '0.5rem',
           background: 'transparent',
-          border: '1px solid rgba(255,255,255,0.3)',
+          border: `1px solid ${theme === 'light' ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.3)'}`,
           borderRadius: '0.375rem',
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
+          color: theme === 'light' ? '#374151' : 'white',
           fontSize: '1.2rem',
           transition: 'all 0.3s ease',
         }}
