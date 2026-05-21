@@ -1,10 +1,12 @@
 'use client';
 
 import { usePathname, notFound } from 'next/navigation';
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { UsersIcon, CalendarDaysIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { cohorts, type CohortStatus } from '@/lib/data/cohorts';
+import { checkCohortContentAccess, createEnrollmentRequest } from '@/lib/api/approvals';
 
 const STATUS_STYLES: Record<CohortStatus, string> = {
   Active: 'bg-green-100 text-green-700',
@@ -26,8 +28,39 @@ export default function CohortDetailPage({ params }: Props) {
   const { id } = use(params);
   const pathname = usePathname();
   const lang = pathname.startsWith('/en') ? 'en' : 'mn';
+  const { data: session, status: authStatus } = useSession();
+  const [hasAccess, setHasAccess] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const cohort = cohorts.find((c) => c.id === id);
+
+  useEffect(() => {
+    if (authStatus !== 'authenticated' || !session?._at) return;
+    checkCohortContentAccess(id, session._at)
+      .then((data) => setHasAccess(data.has_access))
+      .catch(() => setHasAccess(false));
+  }, [authStatus, id, session?._at]);
+
+  const requestJoin = async () => {
+    if (!session?._at) {
+      setError(lang === 'mn' ? 'Эхлээд нэвтэрнэ үү.' : 'Please sign in first.');
+      return;
+    }
+    setSubmitting(true);
+    setError('');
+    setMessage('');
+    try {
+      await createEnrollmentRequest(id, session._at);
+      setMessage(lang === 'mn' ? 'Элсэх хүсэлт илгээгдлээ.' : 'Enrollment request sent.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : (lang === 'mn' ? 'Хүсэлт амжилтгүй боллоо.' : 'Request failed.'));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   if (!cohort) return notFound();
 
   const fmt = (date: string) =>
@@ -75,6 +108,21 @@ export default function CohortDetailPage({ params }: Props) {
               {lang === 'mn' ? 'Тухай' : 'About this cohort'}
             </h2>
             <p className="text-gray-600 leading-relaxed">{cohort.about}</p>
+          </section>
+
+          <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+            <h2 className="text-lg font-bold text-gray-900 mb-3">
+              {lang === 'mn' ? 'Хичээлийн контент' : 'Cohort content'}
+            </h2>
+            {hasAccess ? (
+              <div className="rounded-xl bg-green-50 border border-green-100 p-4 text-sm text-green-700">
+                {lang === 'mn' ? 'Таны элсэлт баталгаажсан. Контент үзэх боломжтой.' : 'Your enrollment is approved. Protected content is available.'}
+              </div>
+            ) : (
+              <div className="rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700">
+                {lang === 'mn' ? 'Контент үзэхийн тулд элсэлтийн хүсэлт батлагдсан байх ёстой.' : 'Your enrollment must be approved before you can access cohort content.'}
+              </div>
+            )}
           </section>
 
           {/* Teachers */}
@@ -134,11 +182,17 @@ export default function CohortDetailPage({ params }: Props) {
           </div>
 
           {/* CTA */}
-          <button className="w-full py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:opacity-90 transition-opacity shadow-md">
+          {message && <div className="rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700">{message}</div>}
+          {error && <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+          <button
+            onClick={requestJoin}
+            disabled={submitting || cohort.status === 'Completed'}
+            className="w-full py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:opacity-90 transition-opacity shadow-md disabled:opacity-50"
+          >
             {cohort.status === 'Upcoming'
-              ? (lang === 'mn' ? 'Бүртгүүлэх' : 'Apply now')
+              ? (submitting ? (lang === 'mn' ? 'Илгээж байна...' : 'Sending...') : (lang === 'mn' ? 'Бүртгүүлэх' : 'Apply now'))
               : cohort.status === 'Active'
-              ? (lang === 'mn' ? 'Элсэх' : 'Join cohort')
+              ? (submitting ? (lang === 'mn' ? 'Илгээж байна...' : 'Sending...') : (lang === 'mn' ? 'Элсэх' : 'Join cohort'))
               : (lang === 'mn' ? 'Дууссан' : 'Cohort ended')}
           </button>
         </div>

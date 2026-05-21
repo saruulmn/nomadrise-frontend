@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import AuthGuard from "@/app/components/AuthGuard";
+import ApprovalCenter from "@/app/components/approval/ApprovalCenter";
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -47,6 +48,9 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="mt-8">
+          <ApprovalCenter />
         </div>
       </div>
     </div>

@@ -1,10 +1,12 @@
 'use client';
 
 import { usePathname, notFound } from 'next/navigation';
-import { use } from 'react';
+import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { PlayCircleIcon, ArrowLeftIcon, ClockIcon, CheckIcon } from '@heroicons/react/24/outline';
 import { masterClasses } from '@/lib/data/masterClasses';
+import { checkMasterClassAccess } from '@/lib/api/approvals';
 
 interface Props {
   params: Promise<{ id: string; lang: string }>;
@@ -14,8 +16,18 @@ export default function MasterClassDetailPage({ params }: Props) {
   const { id } = use(params);
   const pathname = usePathname();
   const lang = pathname.startsWith('/en') ? 'en' : 'mn';
+  const { data: session, status: authStatus } = useSession();
+  const [hasAccess, setHasAccess] = useState(false);
 
   const mc = masterClasses.find((m) => m.id === id);
+
+  useEffect(() => {
+    if (authStatus !== 'authenticated' || !session?._at) return;
+    checkMasterClassAccess(id, session._at)
+      .then((data) => setHasAccess(data.has_access))
+      .catch(() => setHasAccess(false));
+  }, [authStatus, id, session?._at]);
+
   if (!mc) return notFound();
 
   return (
@@ -71,7 +83,12 @@ export default function MasterClassDetailPage({ params }: Props) {
                 {mc.sections.length} {lang === 'mn' ? 'хэсэг' : 'sections'}
               </span>
             </h2>
-            <div className="divide-y divide-gray-50">
+            {!hasAccess && (
+              <div className="mb-4 rounded-xl border border-amber-100 bg-amber-50 p-4 text-sm text-amber-700">
+                {lang === 'mn' ? 'Мастер класс үзэхийн тулд бүртгэл эсвэл зөвшөөрөл шаардлагатай.' : 'Registration or approval is required before watching this master class.'}
+              </div>
+            )}
+            <div className={`divide-y divide-gray-50 ${hasAccess ? '' : 'opacity-50'}`}>
               {mc.sections.map((section, i) => (
                 <div key={i} className="py-3 flex items-start gap-4">
                   <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0 mt-0.5">
@@ -85,7 +102,7 @@ export default function MasterClassDetailPage({ params }: Props) {
                         {section.duration}
                       </span>
                     </div>
-                    {section.description && (
+                    {hasAccess && section.description && (
                       <p className="text-xs text-gray-500 mt-0.5">{section.description}</p>
                     )}
                   </div>

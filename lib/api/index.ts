@@ -99,3 +99,7 @@ export {
   deleteSponsor,
 } from './sponsor';
 export type { Sponsor, SponsorCreatePayload, SponsorUpdatePayload } from './sponsor';
+
+// Approval/request flows
+export { default as approvalApi } from './approvals';
+export * from './approvals';

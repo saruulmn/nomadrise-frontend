@@ -1,11 +1,13 @@
 'use client';
 
 import { usePathname, notFound } from 'next/navigation';
-import { use } from 'react';
+import { use, useState } from 'react';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { StarIcon } from '@heroicons/react/24/solid';
 import { ArrowLeftIcon, GlobeAltIcon, CalendarDaysIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 import { mentors } from '@/lib/data/mentors';
+import { createMenteeRequest } from '@/lib/api/approvals';
 
 interface Props {
   params: Promise<{ id: string; lang: string }>;
@@ -15,9 +17,31 @@ export default function MentorDetailPage({ params }: Props) {
   const { id } = use(params);
   const pathname = usePathname();
   const lang = pathname.startsWith('/en') ? 'en' : 'mn';
+  const { data: session } = useSession();
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const mentor = mentors.find((m) => m.id === id);
   if (!mentor) return notFound();
+
+  const requestMentor = async () => {
+    if (!session?._at) {
+      setError(lang === 'mn' ? 'Эхлээд нэвтэрнэ үү.' : 'Please sign in first.');
+      return;
+    }
+    setSubmitting(true);
+    setError('');
+    setMessage('');
+    try {
+      await createMenteeRequest(id, session._at);
+      setMessage(lang === 'mn' ? 'Менторын хүсэлт илгээгдлээ.' : 'Mentee request sent.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : (lang === 'mn' ? 'Хүсэлт амжилтгүй боллоо.' : 'Request failed.'));
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -121,8 +145,14 @@ export default function MentorDetailPage({ params }: Props) {
                 </div>
               </div>
             </div>
-            <button className="w-full py-3.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl hover:opacity-90 transition-opacity shadow-md">
-              {lang === 'mn' ? 'Ментор сонгох' : 'Book a session'}
+            {message && <div className="mb-3 rounded-lg border border-green-200 bg-green-50 p-3 text-sm text-green-700">{message}</div>}
+            {error && <div className="mb-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+            <button
+              onClick={requestMentor}
+              disabled={submitting}
+              className="w-full py-3.5 bg-linear-to-r from-violet-600 to-indigo-600 text-white font-bold rounded-xl hover:opacity-90 transition-opacity shadow-md disabled:opacity-50"
+            >
+              {submitting ? (lang === 'mn' ? 'Илгээж байна...' : 'Sending...') : (lang === 'mn' ? 'Ментор сонгох' : 'Request mentorship')}
             </button>
           </div>
 
