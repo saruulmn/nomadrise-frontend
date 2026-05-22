@@ -10,7 +10,7 @@ const apiOrigin = (() => {
 
 const securityHeaders = [
   { key: "X-DNS-Prefetch-Control", value: "on" },
-  { key: "Content-Security-Policy", value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' ${apiOrigin} https://accounts.google.com https://www.facebook.com https://appleid.apple.com; style-src 'self' 'unsafe-inline';` },
+  { key: "Content-Security-Policy", value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' ${apiOrigin} https://accounts.google.com https://www.facebook.com https://appleid.apple.com; img-src 'self' ${apiOrigin} data: blob: https:; style-src 'self' 'unsafe-inline';` },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },

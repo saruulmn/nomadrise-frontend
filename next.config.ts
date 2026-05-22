@@ -17,7 +17,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' ${apiOrigin} https://accounts.google.com https://www.facebook.com https://appleid.apple.com; style-src 'self' 'unsafe-inline';`,
+            value: `default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' ${apiOrigin} https://accounts.google.com https://www.facebook.com https://appleid.apple.com; img-src 'self' ${apiOrigin} data: blob: https:; style-src 'self' 'unsafe-inline';`,
           },
           {
             key: 'X-Frame-Options',
