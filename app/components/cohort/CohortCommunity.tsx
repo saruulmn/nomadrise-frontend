@@ -300,7 +300,7 @@ export default function CohortCommunity({
   if (!enabled) {
     return (
       <section className="premium-card p-6 text-sm text-amber-700 dark:text-amber-300">
-        {lang === 'mn' ? 'Community харахын тулд элсэлт батлагдсан байх ёстой.' : 'Your enrollment must be approved to view the community.'}
+        {lang === 'mn' ? 'Ангид байгаа хичээлүүдийг харахын тулд элсэлт батлагдсан байх ёстой.' : 'Your enrollment must be approved to view the community.'}
       </section>
     );
   }

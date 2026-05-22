@@ -108,14 +108,14 @@ export default function CohortDetailPage({ params }: Props) {
             <button
               type="button"
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold transition-all ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700 dark:text-gray-300 dark:hover:bg-blue-500/10'}`}
+              className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold transition-all ${activeTab === 'overview' ? 'bg-blue-50 text-blue-700 shadow-[inset_0_0_0_1px_rgba(147,197,253,0.55)] dark:bg-blue-400/15 dark:text-blue-100 dark:shadow-[inset_0_0_0_1px_rgba(147,197,253,0.18)]' : 'text-gray-600 hover:bg-blue-50/70 hover:text-blue-700 dark:text-gray-300 dark:hover:bg-blue-500/10'}`}
             >
               {lang === 'mn' ? 'Тухай' : 'Overview'}
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('community')}
-              className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold transition-all ${activeTab === 'community' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700 dark:text-gray-300 dark:hover:bg-blue-500/10'}`}
+              className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold transition-all ${activeTab === 'community' ? 'bg-blue-50 text-blue-700 shadow-[inset_0_0_0_1px_rgba(147,197,253,0.55)] dark:bg-blue-400/15 dark:text-blue-100 dark:shadow-[inset_0_0_0_1px_rgba(147,197,253,0.18)]' : 'text-gray-600 hover:bg-blue-50/70 hover:text-blue-700 dark:text-gray-300 dark:hover:bg-blue-500/10'}`}
             >
               {lang === 'mn' ? 'Community' : 'Community'}
             </button>
