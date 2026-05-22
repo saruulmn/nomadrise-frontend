@@ -3,7 +3,11 @@ import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from "jwt-decode";
 import authConfig from "./auth.config";
 
-const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:8000/api";
+const API_BASE_URL = (
+  process.env.API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://api.nomadrise.mn/api"
+).replace(/\/$/, "");
 
 function isExpiringSoon(accessToken: string): boolean {
   try {
@@ -52,7 +56,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               password: credentials.password,
             }),
           });
-          if (!res.ok) return null;
+          if (!res.ok) {
+            const body = await res.text();
+            console.error("Credentials login failed:", {
+              status: res.status,
+              url: `${API_BASE_URL}/auth/login/`,
+              body: body.slice(0, 300),
+            });
+            return null;
+          }
           const data = await res.json();
           return {
             id: String(data.user?.id ?? ""),
@@ -61,7 +73,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             _at: data.access,
             _rt: data.refresh,
           };
-        } catch {
+        } catch (error) {
+          console.error("Credentials login request error:", {
+            url: `${API_BASE_URL}/auth/login/`,
+            error,
+          });
           return null;
         }
       },
