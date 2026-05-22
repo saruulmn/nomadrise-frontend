@@ -1,4 +1,5 @@
 import api from './base';
+import { getCurrentLocale } from './errors';
 
 const auth = (token?: string) =>
   token ? { headers: { Authorization: `Bearer ${token}` } } : undefined;
@@ -134,7 +135,8 @@ export async function uploadVideoToCloudflare(uploadUrl: string, file: File) {
     body,
   });
   if (!response.ok) {
-    throw new Error(`Cloudflare upload failed: ${response.status}`);
+    const lang = getCurrentLocale();
+    throw new Error(lang === 'mn' ? 'Видео upload амжилтгүй боллоо. Дахин оролдоно уу.' : 'Video upload failed. Please try again.');
   }
 }
 

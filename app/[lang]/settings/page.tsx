@@ -11,6 +11,7 @@ import {
   isPasswordStrong,
   PASSWORD_POLICY_ERROR,
 } from '@/lib/password-policy';
+import { getApiErrorMessage, normalizeApiError } from '@/lib/api/errors';
 
 type Dictionary = Awaited<ReturnType<typeof getDictionary>>;
 
@@ -68,6 +69,18 @@ function ProviderIcon({ provider }: { provider: string }) {
   );
 }
 
+function providerLabel(provider: string) {
+  if (provider === 'google') return 'Google';
+  if (provider === 'facebook') return 'Facebook';
+  return provider.charAt(0).toUpperCase() + provider.slice(1);
+}
+
+function firstFieldError(value: unknown) {
+  if (Array.isArray(value) && value.length > 0) return String(value[0]);
+  if (typeof value === 'string') return value;
+  return null;
+}
+
 // ---------- main component ----------
 
 export default function SettingsPage() {
@@ -118,20 +131,21 @@ export default function SettingsPage() {
       if (res.ok) {
         setLinkedData(await res.json());
       } else {
-        setLinkedError(dictionary?.settings?.loadError ?? 'Failed to load connected accounts.');
+        const data = await res.json().catch(() => ({}));
+        setLinkedError(getApiErrorMessage({ status: res.status, data }, lang));
       }
-    } catch {
-      setLinkedError(dictionary?.settings?.loadError ?? 'Failed to load connected accounts.');
+    } catch (err) {
+      setLinkedError(getApiErrorMessage(err, lang));
     } finally {
       setLinkedLoading(false);
     }
-  }, [session?._at, apiBase, dictionary]);
+  }, [session?._at, apiBase, lang]);
 
   useEffect(() => {
-    if (activeTab === 'connected' && session?._at) {
+    if (session?._at) {
       fetchLinkedAccounts();
     }
-  }, [activeTab, session?._at, fetchLinkedAccounts]);
+  }, [session?._at, fetchLinkedAccounts]);
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -141,6 +155,11 @@ export default function SettingsPage() {
 
     if (newPassword !== confirmPassword) {
       setPwError(dictionary?.settings?.passwordMismatch ?? 'Passwords do not match.');
+      return;
+    }
+
+    if (hasPassword && !currentPassword.trim()) {
+      setPwError(dictionary?.settings?.currentPasswordRequired ?? 'Current password is required to set a new one.');
       return;
     }
 
@@ -170,18 +189,17 @@ export default function SettingsPage() {
         setNewPassword('');
         setConfirmPassword('');
       } else {
-        const data = await res.json();
-        const msg =
-          data?.current_password?.[0] ??
-          data?.new_password?.[0] ??
-          data?.confirm_password?.[0] ??
-          data?.detail ??
-          data?.non_field_errors?.[0] ??
-          (dictionary?.settings?.passwordError ?? 'Failed to update password.');
-        setPwError(msg);
+        const data = await res.json().catch(() => ({}));
+        const normalized = normalizeApiError({ status: res.status, data }, lang);
+        setPwError(
+          firstFieldError(normalized.details.current_password) ??
+          firstFieldError(normalized.details.new_password) ??
+          firstFieldError(normalized.details.confirm_password) ??
+          normalized.message
+        );
       }
-    } catch {
-      setPwError(dictionary?.settings?.passwordError ?? 'Failed to update password.');
+    } catch (err) {
+      setPwError(getApiErrorMessage(err, lang));
     } finally {
       setPwSaving(false);
     }
@@ -200,14 +218,10 @@ export default function SettingsPage() {
         await fetchLinkedAccounts();
       } else {
         const data = await res.json().catch(() => ({}));
-        setLinkedError(
-          data?.detail ??
-          data?.non_field_errors?.[0] ??
-          (dictionary?.settings?.unlinkError ?? 'Failed to unlink account.')
-        );
+        setLinkedError(getApiErrorMessage({ status: res.status, data }, lang));
       }
-    } catch {
-      setLinkedError(dictionary?.settings?.unlinkError ?? 'Failed to unlink account.');
+    } catch (err) {
+      setLinkedError(getApiErrorMessage(err, lang));
     } finally {
       setUnlinkingProvider(null);
     }
@@ -218,6 +232,12 @@ export default function SettingsPage() {
   const d = dictionary.settings ?? {};
   const hasPassword = linkedData?.has_password ?? false;
   const linkedAccounts = linkedData?.accounts ?? [];
+  const primaryProvider = linkedAccounts[0]?.provider;
+  const createPasswordDesc = primaryProvider
+    ? (lang === 'mn'
+      ? `Та ${providerLabel(primaryProvider)}-ээр нэвтэрсэн байна. Имэйлээр нэвтрэхийн тулд нууц үг тохируулна уу.`
+      : `You signed in with ${providerLabel(primaryProvider)}. Set a password to also sign in with email.`)
+    : (d.createPasswordDesc ?? 'You signed in with a social account. Set a password to also sign in with email.');
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'security', label: d.tabSecurity ?? 'Security' },
@@ -289,7 +309,7 @@ export default function SettingsPage() {
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
                 {hasPassword
                   ? (d.changePasswordDesc ?? 'Enter your current password to set a new one.')
-                  : (d.createPasswordDesc ?? 'You signed in with a social account. Set a password to also sign in with email.')}
+                  : createPasswordDesc}
               </p>
 
               <form onSubmit={handlePasswordSubmit} className="space-y-4">
@@ -303,8 +323,12 @@ export default function SettingsPage() {
                       value={currentPassword}
                       onChange={(e) => setCurrentPassword(e.target.value)}
                       autoComplete="current-password"
+                      required
                       className="w-full rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
+                    <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                      {d.currentPasswordHelp ?? 'Current password is required to set a new one.'}
+                    </p>
                   </div>
                 )}
                 <div>
@@ -402,7 +426,7 @@ export default function SettingsPage() {
                           <ProviderIcon provider={account.provider} />
                           <div>
                             <p className="text-sm font-medium text-gray-900 dark:text-white capitalize">
-                              {account.provider}
+                              {providerLabel(account.provider)}
                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">
                               {new Date(account.date_joined).toLocaleDateString()}

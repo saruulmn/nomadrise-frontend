@@ -104,3 +104,4 @@ export type { Sponsor, SponsorCreatePayload, SponsorUpdatePayload } from './spon
 export { default as approvalApi } from './approvals';
 export * from './approvals';
 export * from './cohortCommunity';
+export * from './errors';

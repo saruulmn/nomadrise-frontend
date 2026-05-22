@@ -15,18 +15,7 @@ import {
   uploadVideoToCloudflare,
 } from '@/lib/api/cohortCommunity';
 import CloudflareStreamPlayer from '@/app/components/media/CloudflareStreamPlayer';
-
-function getErrorMessage(error: unknown) {
-  if (error && typeof error === 'object' && 'data' in error) {
-    const data = (error as { data?: unknown }).data;
-    if (data && typeof data === 'object') {
-      const detail = (data as { detail?: unknown }).detail;
-      if (typeof detail === 'string') return detail;
-      return Object.values(data as Record<string, unknown>).flat().join(' ');
-    }
-  }
-  return error instanceof Error ? error.message : 'Something went wrong.';
-}
+import { getApiErrorMessage } from '@/lib/api/errors';
 
 function formatDate(value: string, lang: string) {
   return new Date(value).toLocaleString(lang === 'mn' ? 'mn-MN' : 'en-US', {
@@ -117,7 +106,7 @@ function Comments({
     try {
       setComments(await listCohortCommunityComments(cohortId, post.id, token));
     } catch (error) {
-      onError(getErrorMessage(error));
+      onError(getApiErrorMessage(error, lang === 'mn' ? 'mn' : 'en'));
     } finally {
       setLoading(false);
     }
@@ -137,7 +126,7 @@ function Comments({
       setComments((current) => [...current, comment]);
       setBody('');
     } catch (error) {
-      onError(getErrorMessage(error));
+      onError(getApiErrorMessage(error, lang === 'mn' ? 'mn' : 'en'));
     } finally {
       setSubmitting(false);
     }
@@ -153,7 +142,7 @@ function Comments({
         setComments((current) => current.map((comment) => comment.id === commentId ? updated : comment));
       }
     } catch (error) {
-      onError(getErrorMessage(error));
+      onError(getApiErrorMessage(error, lang === 'mn' ? 'mn' : 'en'));
     }
   };
 
@@ -247,7 +236,7 @@ export default function CohortCommunity({
       setCanPost(data.can_post);
       setIsExpired(data.cohort.is_expired);
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(getApiErrorMessage(err, lang === 'mn' ? 'mn' : 'en'));
     } finally {
       setLoading(false);
     }
@@ -287,7 +276,7 @@ export default function CohortCommunity({
       setVideoId('');
       setVideoFile(null);
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(getApiErrorMessage(err, lang === 'mn' ? 'mn' : 'en'));
     } finally {
       setUploadingVideo(false);
       setSubmitting(false);
@@ -304,7 +293,7 @@ export default function CohortCommunity({
         setPosts((current) => current.map((post) => post.id === postId ? updated : post));
       }
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(getApiErrorMessage(err, lang === 'mn' ? 'mn' : 'en'));
     }
   };
 

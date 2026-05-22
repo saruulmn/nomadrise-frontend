@@ -15,7 +15,10 @@
  * - Client components must use internal API routes for secure backend communication
  */
 
+import { getCurrentLocale, type LocalizedMessage } from './errors';
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const REQUEST_TIMEOUT_MS = 30000;
 
 // ============================================================================
 // Types
@@ -43,9 +46,24 @@ export class ApiError extends Error {
     public statusText: string,
     public data?: unknown
   ) {
-    super(`API Error: ${status} ${statusText}`);
+    const message = extractErrorMessage(data) || `API Error: ${status} ${statusText}`;
+    super(message);
     this.name = 'ApiError';
   }
+}
+
+function extractErrorMessage(data: unknown): string | null {
+  if (!data || typeof data !== 'object') return null;
+  const record = data as { message?: unknown; detail?: unknown; error?: unknown };
+  const lang = getCurrentLocale();
+  if (typeof record.message === 'string') return record.message;
+  if (record.message && typeof record.message === 'object') {
+    const localized = record.message as LocalizedMessage;
+    return localized[lang] || localized.selected || localized.en || localized.mn || null;
+  }
+  if (typeof record.detail === 'string') return record.detail;
+  if (typeof record.error === 'string') return record.error;
+  return null;
 }
 
 // ============================================================================
@@ -91,11 +109,12 @@ async function request<T>(
   endpoint: string,
   options: ApiRequestOptions = {}
 ): Promise<ApiResponse<T>> {
-  const { method = 'GET', body, headers = {}, skipAuth = false, useApiKey = false } = options;
+  const { method = 'GET', body, headers = {}, useApiKey = false } = options;
 
   // Build headers
   const requestHeaders: Record<string, string> = {
     'Content-Type': 'application/json',
+    'Accept-Language': getCurrentLocale(),
     ...headers,
   };
 
@@ -122,13 +141,23 @@ async function request<T>(
     method,
     headers: requestHeaders,
   };
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  config.signal = controller.signal;
 
   if (body && method !== 'GET') {
     config.body = JSON.stringify(body);
   }
 
   // Make the request
-  let response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, config);
+  } catch (error) {
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   // Parse response
   let data: T;
@@ -141,6 +170,9 @@ async function request<T>(
 
   // Handle error responses
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('nomadrise:auth-expired'));
+    }
     throw new ApiError(response.status, response.statusText, data);
   }
 

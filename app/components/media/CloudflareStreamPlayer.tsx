@@ -3,16 +3,13 @@
 import { useEffect, useState } from 'react';
 import { Stream } from '@cloudflare/stream-react';
 import { getStreamPlaybackToken } from '@/lib/api/cohortCommunity';
+import { getApiErrorMessage } from '@/lib/api/errors';
 
 type Props = {
   videoUid?: string;
   token?: string;
   title?: string;
 };
-
-function getErrorMessage(error: unknown) {
-  return error instanceof Error ? error.message : 'Video playback is unavailable.';
-}
 
 export default function CloudflareStreamPlayer({ videoUid, token, title }: Props) {
   const [playbackToken, setPlaybackToken] = useState('');
@@ -29,7 +26,7 @@ export default function CloudflareStreamPlayer({ videoUid, token, title }: Props
         const data = await getStreamPlaybackToken(videoUid, token);
         if (!cancelled) setPlaybackToken(data.token);
       } catch (err) {
-        if (!cancelled) setError(getErrorMessage(err));
+        if (!cancelled) setError(getApiErrorMessage(err));
       } finally {
         if (!cancelled) setLoading(false);
       }

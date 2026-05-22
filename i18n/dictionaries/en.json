@@ -76,6 +76,8 @@
     "changePasswordDesc": "Enter your current password to set a new one.",
     "createPasswordDesc": "You signed in with a social account. Set a password to also sign in with email.",
     "currentPassword": "Current Password",
+    "currentPasswordHelp": "Current password is required to set a new one.",
+    "currentPasswordRequired": "Current password is required to set a new one.",
     "newPassword": "New Password",
     "confirmPassword": "Confirm New Password",
     "saving": "Saving…",

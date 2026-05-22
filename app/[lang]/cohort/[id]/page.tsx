@@ -110,7 +110,7 @@ export default function CohortDetailPage({ params }: Props) {
               onClick={() => setActiveTab('overview')}
               className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold ${activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
             >
-              {lang === 'mn' ? 'Тойм' : 'Overview'}
+              {lang === 'mn' ? 'Тухай' : 'Overview'}
             </button>
             <button
               type="button"

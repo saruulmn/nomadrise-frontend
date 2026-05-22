@@ -20,6 +20,7 @@ import {
   rejectEnrollmentRequest,
   rejectMenteeRequest,
 } from '@/lib/api/approvals';
+import { getApiErrorMessage } from '@/lib/api/errors';
 import StatusBadge from './StatusBadge';
 
 type Role = 'student' | 'teacher' | 'mentor' | 'teamMember';
@@ -32,18 +33,6 @@ function detectRole(groups: string[] = []): Role {
   if (groups.includes('teacher')) return 'teacher';
   if (groups.includes('teamMember')) return 'teamMember';
   return 'student';
-}
-
-function getErrorMessage(error: unknown) {
-  if (error && typeof error === 'object' && 'data' in error) {
-    const data = (error as { data?: unknown }).data;
-    if (data && typeof data === 'object') {
-      const detail = (data as { detail?: unknown }).detail;
-      if (typeof detail === 'string') return detail;
-      return Object.values(data as Record<string, unknown>).flat().join(' ');
-    }
-  }
-  return error instanceof Error ? error.message : 'Something went wrong.';
 }
 
 function RequestList({
@@ -141,7 +130,7 @@ export default function ApprovalCenter() {
         setPendingMentees(await listMentorMenteeRequests(token));
       }
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(getApiErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -164,7 +153,7 @@ export default function ApprovalCenter() {
       setSuccess(message);
       await load();
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(getApiErrorMessage(err));
     } finally {
       setSubmitting('');
     }
@@ -181,7 +170,7 @@ export default function ApprovalCenter() {
       setSuccess('Cohort approval request created.');
       await load();
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(getApiErrorMessage(err));
     } finally {
       setSubmitting('');
     }
@@ -198,7 +187,7 @@ export default function ApprovalCenter() {
       setSuccess('Master class approval request created.');
       await load();
     } catch (err) {
-      setError(getErrorMessage(err));
+      setError(getApiErrorMessage(err));
     } finally {
       setSubmitting('');
     }

@@ -6,6 +6,7 @@ import NavBar from "./components/NavBar";
 import AuthProvider from "./components/AuthProvider";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { LoadingProvider } from "./components/LoadingProvider";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -110,7 +111,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <LoadingProvider>
-              {children}
+              <ErrorBoundary>{children}</ErrorBoundary>
 
               <footer className="site-footer">
                 <div className="footer-inner">© {new Date().getFullYear()} <span style={{ color: '#c5c75c', fontWeight: 600 }}>nomadrise</span> — All rights reserved.</div>
