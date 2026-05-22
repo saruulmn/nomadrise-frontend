@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import { UsersIcon, CalendarDaysIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { cohorts, type CohortStatus } from '@/lib/data/cohorts';
 import { checkCohortContentAccess, createEnrollmentRequest } from '@/lib/api/approvals';
+import CohortCommunity from '@/app/components/cohort/CohortCommunity';
 
 const STATUS_STYLES: Record<CohortStatus, string> = {
   Active: 'bg-green-100 text-green-700',
@@ -33,6 +34,7 @@ export default function CohortDetailPage({ params }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<'overview' | 'community'>('overview');
 
   const cohort = cohorts.find((c) => c.id === id);
 
@@ -102,50 +104,76 @@ export default function CohortDetailPage({ params }: Props) {
       <div className="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-8">
-          {/* About */}
-          <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h2 className="text-lg font-bold text-gray-900 mb-3">
-              {lang === 'mn' ? 'Тухай' : 'About this cohort'}
-            </h2>
-            <p className="text-gray-600 leading-relaxed">{cohort.about}</p>
-          </section>
+          <div className="flex gap-2 rounded-xl border border-gray-200 bg-white p-1 shadow-sm">
+            <button
+              type="button"
+              onClick={() => setActiveTab('overview')}
+              className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold ${activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+            >
+              {lang === 'mn' ? 'Тойм' : 'Overview'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab('community')}
+              className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold ${activeTab === 'community' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+            >
+              {lang === 'mn' ? 'Community' : 'Community'}
+            </button>
+          </div>
 
-          <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h2 className="text-lg font-bold text-gray-900 mb-3">
-              {lang === 'mn' ? 'Хичээлийн контент' : 'Cohort content'}
-            </h2>
-            {hasAccess ? (
-              <div className="rounded-xl bg-green-50 border border-green-100 p-4 text-sm text-green-700">
-                {lang === 'mn' ? 'Таны элсэлт баталгаажсан. Контент үзэх боломжтой.' : 'Your enrollment is approved. Protected content is available.'}
-              </div>
-            ) : (
-              <div className="rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700">
-                {lang === 'mn' ? 'Контент үзэхийн тулд элсэлтийн хүсэлт батлагдсан байх ёстой.' : 'Your enrollment must be approved before you can access cohort content.'}
-              </div>
-            )}
-          </section>
+          {activeTab === 'overview' ? (
+            <>
+              <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                <h2 className="text-lg font-bold text-gray-900 mb-3">
+                  {lang === 'mn' ? 'Тухай' : 'About this cohort'}
+                </h2>
+                <p className="text-gray-600 leading-relaxed">{cohort.about}</p>
+              </section>
 
-          {/* Teachers */}
-          <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h2 className="text-lg font-bold text-gray-900 mb-4">
-              {lang === 'mn' ? 'Багш нар' : 'Instructors'}
-            </h2>
-            <div className="space-y-4">
-              {cohort.teachers.map((teacher) => (
-                <div key={teacher.name} className="flex items-center gap-4">
-                  <img
-                    src={teacher.avatar}
-                    alt={teacher.name}
-                    className="w-14 h-14 rounded-full object-cover border-2 border-blue-100 shrink-0"
-                  />
-                  <div>
-                    <p className="font-semibold text-gray-900">{teacher.name}</p>
-                    <p className="text-sm text-blue-600">{teacher.title}</p>
+              <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                <h2 className="text-lg font-bold text-gray-900 mb-3">
+                  {lang === 'mn' ? 'Хичээлийн контент' : 'Cohort content'}
+                </h2>
+                {hasAccess ? (
+                  <div className="rounded-xl bg-green-50 border border-green-100 p-4 text-sm text-green-700">
+                    {lang === 'mn' ? 'Таны элсэлт баталгаажсан. Контент үзэх боломжтой.' : 'Your enrollment is approved. Protected content is available.'}
                   </div>
+                ) : (
+                  <div className="rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700">
+                    {lang === 'mn' ? 'Контент үзэхийн тулд элсэлтийн хүсэлт батлагдсан байх ёстой.' : 'Your enrollment must be approved before you can access cohort content.'}
+                  </div>
+                )}
+              </section>
+
+              <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+                <h2 className="text-lg font-bold text-gray-900 mb-4">
+                  {lang === 'mn' ? 'Багш нар' : 'Instructors'}
+                </h2>
+                <div className="space-y-4">
+                  {cohort.teachers.map((teacher) => (
+                    <div key={teacher.name} className="flex items-center gap-4">
+                      <img
+                        src={teacher.avatar}
+                        alt={teacher.name}
+                        className="w-14 h-14 rounded-full object-cover border-2 border-blue-100 shrink-0"
+                      />
+                      <div>
+                        <p className="font-semibold text-gray-900">{teacher.name}</p>
+                        <p className="text-sm text-blue-600">{teacher.title}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
+              </section>
+            </>
+          ) : (
+            <CohortCommunity
+              cohortId={id}
+              token={session?._at}
+              lang={lang}
+              enabled={authStatus === 'authenticated' && hasAccess}
+            />
+          )}
         </div>
 
         {/* Sidebar */}
