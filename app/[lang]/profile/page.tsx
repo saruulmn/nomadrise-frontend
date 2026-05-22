@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import AuthGuard from '@/app/components/AuthGuard';
 import { getDictionary } from '@/i18n/dictionaries';
 import type { Locale } from '@/i18n/config';
+import { PROFILE_AVATAR_UPDATED_EVENT } from '@/lib/profile-avatar';
 import { DatePicker, Button } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 
@@ -20,7 +21,36 @@ const EDUCATION_KEYS = [
   'phd_graduate',
 ] as const;
 
+type EducationKey = (typeof EDUCATION_KEYS)[number];
 type UserRole = 'student' | 'teacher' | 'mentor' | 'teamMember';
+
+interface ProfileText {
+  title: string;
+  personalInfo: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  birthDate: string;
+  country: string;
+  city: string;
+  education: string;
+  changeAvatar: string;
+  currentStatus: string;
+  preferredLanguage: string;
+  bioEn: string;
+  bioMn: string;
+  subject?: string;
+  successMessage?: string;
+  errorMessage?: string;
+  roles?: Partial<Record<UserRole, string>>;
+  educationOptions?: Partial<Record<EducationKey, string>>;
+  roleInfo?: Partial<Record<Exclude<UserRole, 'student'> | 'title', string>>;
+}
+
+interface ProfileDictionary {
+  profile: ProfileText;
+}
 
 function detectRole(groups: string[]): UserRole {
   if (groups.includes('teacher')) return 'teacher';
@@ -72,7 +102,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const lang = (pathname.startsWith('/en') ? 'en' : 'mn') as Locale;
 
-  const [dictionary, setDictionary] = useState<any>(null);
+  const [dictionary, setDictionary] = useState<ProfileDictionary | null>(null);
   const [form, setForm] = useState<ProfileData>(EMPTY_PROFILE);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -99,9 +129,8 @@ export default function ProfilePage() {
       first_name: prev.first_name || socialFirst,
       last_name: prev.last_name || socialLast,
       email: prev.email || session.user?.email || '',
-      avatar_url: prev.avatar_url || session.user?.image || null,
     }));
-  }, [status, session?.user?.name, session?.user?.email, session?.user?.image]);
+  }, [status, session?.user?.name, session?.user?.email]);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -135,7 +164,7 @@ export default function ProfilePage() {
         if (!res.ok) throw new Error(`Profile fetch failed: HTTP ${res.status}`);
         return res.json();
       })
-      .then((data: Record<string, any> | null) => {
+      .then((data: Partial<ProfileData> | null) => {
         if (!data) return;
 
         const [sf = '', ...sr] = (session?.user?.name || '').split(' ');
@@ -151,7 +180,7 @@ export default function ProfilePage() {
           country:            data.country            || '',
           city:               data.city               || '',
           highest_education:  data.highest_education  || '',
-          avatar_url:         data.avatar_url         || session?.user?.image || null,
+          avatar_url:         data.avatar_url         || null,
           groups:             data.groups             || [],
           subject:            data.subject            || '',
           current_status:     data.current_status     || '',
@@ -194,7 +223,13 @@ export default function ProfilePage() {
       });
       if (!res.ok) throw new Error('Upload failed');
       const data = await res.json();
-      setForm((prev) => ({ ...prev, avatar_url: data.avatar_url || prev.avatar_url }));
+      const nextAvatarUrl = data.avatar_url || null;
+      setForm((prev) => ({ ...prev, avatar_url: nextAvatarUrl || prev.avatar_url }));
+      window.dispatchEvent(
+        new CustomEvent(PROFILE_AVATAR_UPDATED_EVENT, {
+          detail: { avatarUrl: nextAvatarUrl },
+        })
+      );
     } catch {
       setErrorMsg('Failed to upload avatar.');
     } finally {
@@ -260,7 +295,7 @@ export default function ProfilePage() {
   const t = dictionary.profile;
   const role = detectRole(form.groups);
   const hasRoleSection = role !== 'student';
-  const avatarSrc = form.avatar_url || session?.user?.image;
+  const avatarSrc = form.avatar_url;
   const displayName =
     [form.first_name, form.last_name].filter(Boolean).join(' ') ||
     session?.user?.name ||
