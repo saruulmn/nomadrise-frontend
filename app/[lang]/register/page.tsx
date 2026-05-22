@@ -8,10 +8,22 @@ import type { Locale } from "@/i18n/config";
 import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
 import { signIn } from "next-auth/react";
+import {
+  getPasswordRules,
+  isPasswordStrong,
+  PASSWORD_POLICY_ERROR,
+} from "@/lib/password-policy";
+
+interface RegisterDictionary {
+  register?: {
+    title?: string;
+    subtitle?: string;
+  };
+}
 
 export default function RegisterPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const [lang, setLang] = useState<Locale>("mn");
-  const [dictionary, setDictionary] = useState<any>(null);
+  const [dictionary, setDictionary] = useState<RegisterDictionary | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -29,7 +41,7 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
     params.then((p) => {
       setLang(p.lang);
       getDictionary(p.lang).then((dict) => {
-        setDictionary(dict);
+        setDictionary(dict as RegisterDictionary);
         setIsLoading(false);
       });
     });
@@ -39,22 +51,22 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
     e.preventDefault();
 
     if (!agreeTerms) {
-      setError("Үйлчилгээний нөхцөл болон нууцлалын бодлогийг зөвшөөрөх ёстой");
+      setError(lang === "mn" ? "Үйлчилгээний нөхцөл болон нууцлалын бодлогийг зөвшөөрөх ёстой" : "You must agree to the Terms of Service and Privacy Policy.");
       return;
     }
 
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
-      setError("Бүх талбарыг нөхөх ёстой");
+      setError(lang === "mn" ? "Бүх талбарыг бөглөнө үү" : "Please fill in all fields.");
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("Нууц үгүүд хүрэлцэхгүй байна");
+      setError(lang === "mn" ? "Нууц үгнүүд таарахгүй байна." : "Passwords do not match.");
       return;
     }
 
-    if (password.length < 8) {
-      setError("Нууц үг дор хаяж 8 тэмдэгт байх ёстой");
+    if (!isPasswordStrong(password)) {
+      setError(PASSWORD_POLICY_ERROR[lang]);
       return;
     }
 
@@ -67,6 +79,7 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept-Language": lang,
         },
         body: JSON.stringify({
           first_name: firstName,
@@ -78,7 +91,10 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Бүртгүүлэлт амжилтгүй болсон");
+        throw new Error(
+          errorData.error ||
+          (lang === "mn" ? "Бүртгүүлэлт амжилтгүй болсон" : "Registration failed.")
+        );
       }
 
       const data = await response.json();
@@ -92,13 +108,15 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
         });
       }
 
-      setSuccess("Бүртгүүлэлт амжилттай! Та сүүлийн хэмжээнд нэвтэрч байна...");
+      setSuccess(lang === "mn" ? "Бүртгүүлэлт амжилттай! Нэвтрүүлж байна..." : "Registration successful! Signing you in...");
       setTimeout(() => {
         router.push(`/${lang}/profile`);
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setIsSubmitting(false);
-      const errorMessage = err.message || "Бүртгүүлэлт амжилтгүй болсон";
+      const errorMessage = err instanceof Error
+        ? err.message
+        : (lang === "mn" ? "Бүртгүүлэлт амжилтгүй болсон" : "Registration failed.");
       setError(errorMessage);
     }
   };
@@ -376,6 +394,7 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
               onFocus={(e) => (e.currentTarget.style.borderColor = "#667eea")}
               onBlur={(e) => (e.currentTarget.style.borderColor = "#e5e7eb")}
             />
+            <PasswordRequirements password={password} lang={lang} />
           </div>
 
           {/* Confirm Password Input */}
@@ -576,6 +595,36 @@ export default function RegisterPage({ params }: { params: Promise<{ lang: Local
         showApproveButton={true}
         lang={lang as "en" | "mn"}
       />
+    </div>
+  );
+}
+
+function PasswordRequirements({ password, lang }: { password: string; lang: Locale }) {
+  const rules = getPasswordRules(password, lang);
+
+  return (
+    <div style={{ marginTop: "8px" }}>
+      <p style={{ margin: "0 0 6px", color: "#4b5563", fontSize: "12px", fontWeight: 600 }}>
+        {lang === "mn" ? "Нууц үгийн шаардлага" : "Password requirements"}
+      </p>
+      <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "grid", gap: "4px" }}>
+        {rules.map((rule) => (
+          <li
+            key={rule.key}
+            style={{
+              color: rule.isValid ? "#047857" : "#6b7280",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
+              fontSize: "12px",
+              lineHeight: 1.35,
+            }}
+          >
+            <span aria-hidden="true">{rule.isValid ? "✓" : "•"}</span>
+            <span>{rule.label}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

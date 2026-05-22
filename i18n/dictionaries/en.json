@@ -82,6 +82,8 @@
     "passwordSuccess": "Password updated successfully.",
     "passwordError": "Failed to update password. Please try again.",
     "passwordMismatch": "Passwords do not match.",
+    "passwordPolicyError": "Password must meet all password requirements.",
+    "passwordRequirements": "Password requirements",
     "connectedTitle": "Connected Accounts",
     "connectedDesc": "Manage the social accounts linked to your profile.",
     "noConnected": "No connected social accounts.",
