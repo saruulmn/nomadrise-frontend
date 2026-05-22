@@ -7,11 +7,14 @@ import {
   CommunityPost,
   createCohortCommunityComment,
   createCohortCommunityPost,
+  createStreamUploadURL,
   listCohortCommunityComments,
   listCohortCommunityPosts,
   moderateCohortCommunityComment,
   moderateCohortCommunityPost,
+  uploadVideoToCloudflare,
 } from '@/lib/api/cohortCommunity';
+import CloudflareStreamPlayer from '@/app/components/media/CloudflareStreamPlayer';
 
 function getErrorMessage(error: unknown) {
   if (error && typeof error === 'object' && 'data' in error) {
@@ -34,7 +37,7 @@ function formatDate(value: string, lang: string) {
   });
 }
 
-function MediaPreview({ media }: { media: CommunityMedia }) {
+function MediaPreview({ media, token }: { media: CommunityMedia; token?: string }) {
   if (media.kind === 'image' && media.url) {
     return (
       <img
@@ -43,6 +46,10 @@ function MediaPreview({ media }: { media: CommunityMedia }) {
         className="mt-4 max-h-96 w-full rounded-lg object-cover border border-gray-100"
       />
     );
+  }
+
+  if (media.kind === 'video' && media.stream_uid) {
+    return <CloudflareStreamPlayer videoUid={media.stream_uid} token={token} title={media.filename || 'Community video'} />;
   }
 
   if (media.kind === 'video' && media.url) {
@@ -222,6 +229,8 @@ export default function CohortCommunity({
   const [imageId, setImageId] = useState('');
   const [documentId, setDocumentId] = useState('');
   const [videoId, setVideoId] = useState('');
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [canPost, setCanPost] = useState(false);
   const [isExpired, setIsExpired] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -251,16 +260,24 @@ export default function CohortCommunity({
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
-    if (!token || (!body.trim() && !title.trim() && !imageId && !documentId && !videoId)) return;
+    if (!token || (!body.trim() && !title.trim() && !imageId && !documentId && !videoId && !videoFile)) return;
     setSubmitting(true);
+    setUploadingVideo(!!videoFile);
     setError('');
     try {
+      let uploadedVideoUid: string | undefined;
+      if (videoFile) {
+        const upload = await createStreamUploadURL(cohortId, videoFile, token);
+        await uploadVideoToCloudflare(upload.upload_url, videoFile);
+        uploadedVideoUid = upload.video_uid;
+      }
       const post = await createCohortCommunityPost(cohortId, {
         title: title.trim(),
         body: body.trim(),
         image_id: imageId || undefined,
         document_id: documentId || undefined,
         video_id: videoId || undefined,
+        video_uid: uploadedVideoUid,
       }, token);
       setPosts((current) => [post, ...current]);
       setBody('');
@@ -268,9 +285,11 @@ export default function CohortCommunity({
       setImageId('');
       setDocumentId('');
       setVideoId('');
+      setVideoFile(null);
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
+      setUploadingVideo(false);
       setSubmitting(false);
     }
   };
@@ -330,15 +349,28 @@ export default function CohortCommunity({
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
             <input value={imageId} onChange={(e) => setImageId(e.target.value)} disabled={!canPost} placeholder="Image media ID" className="rounded-lg border border-gray-300 px-3 py-2 text-xs disabled:bg-gray-100" />
             <input value={documentId} onChange={(e) => setDocumentId(e.target.value)} disabled={!canPost} placeholder="Document media ID" className="rounded-lg border border-gray-300 px-3 py-2 text-xs disabled:bg-gray-100" />
-            <input value={videoId} onChange={(e) => setVideoId(e.target.value)} disabled={!canPost} placeholder="Video media ID" className="rounded-lg border border-gray-300 px-3 py-2 text-xs disabled:bg-gray-100" />
+            <input value={videoId} onChange={(e) => setVideoId(e.target.value)} disabled={!canPost || !!videoFile} placeholder="Video media ID" className="rounded-lg border border-gray-300 px-3 py-2 text-xs disabled:bg-gray-100" />
           </div>
+          <label className="block rounded-lg border border-dashed border-gray-300 px-3 py-3 text-xs text-gray-600">
+            <span className="font-semibold text-gray-800">{lang === 'mn' ? 'Видео хавсаргах' : 'Attach video'}</span>
+            <input
+              type="file"
+              accept="video/*"
+              disabled={!canPost || submitting || !!videoId}
+              onChange={(event) => setVideoFile(event.target.files?.[0] || null)}
+              className="mt-2 block w-full text-xs"
+            />
+            {videoFile && <span className="mt-2 block truncate">{videoFile.name}</span>}
+          </label>
         </div>
         <button
           type="submit"
           disabled={!canPost || submitting}
           className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
-          {submitting ? (lang === 'mn' ? 'Илгээж байна...' : 'Posting...') : (lang === 'mn' ? 'Нийтлэх' : 'Post')}
+          {uploadingVideo
+            ? (lang === 'mn' ? 'Видео байршуулж байна...' : 'Uploading video...')
+            : submitting ? (lang === 'mn' ? 'Илгээж байна...' : 'Posting...') : (lang === 'mn' ? 'Нийтлэх' : 'Post')}
         </button>
       </form>
 
@@ -374,7 +406,7 @@ export default function CohortCommunity({
             </div>
             {post.title && <h3 className="mt-4 text-lg font-bold text-gray-900">{post.title}</h3>}
             {post.body && <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-700">{post.body}</p>}
-            {post.media.map((item) => <MediaPreview key={`${item.kind}-${item.id}`} media={item} />)}
+            {post.media.map((item) => <MediaPreview key={`${item.kind}-${item.id}`} media={item} token={token} />)}
             <Comments cohortId={cohortId} post={post} token={token} lang={lang} onError={setError} />
           </article>
         ))

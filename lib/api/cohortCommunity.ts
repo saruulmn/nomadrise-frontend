@@ -11,8 +11,11 @@ export type CommunityMedia = {
   size?: number;
   visibility?: string;
   url?: string | null;
+  playback_token_url?: string;
+  thumbnail_url?: string;
   stream_uid?: string;
   provider?: string;
+  upload_status?: string;
   duration_seconds?: number | null;
   alt_text?: string;
 };
@@ -70,6 +73,20 @@ export type CreateCommunityPostPayload = {
   image_id?: string;
   document_id?: string;
   video_id?: string;
+  video_uid?: string;
+};
+
+export type StreamUploadURLResponse = {
+  upload_url: string;
+  video_uid: string;
+  video_id: string;
+  status: string;
+};
+
+export type StreamPlaybackTokenResponse = {
+  token: string;
+  expires_in?: number;
+  video_uid: string;
 };
 
 export async function listCohortCommunityPosts(cohortId: string, token?: string) {
@@ -84,6 +101,46 @@ export async function createCohortCommunityPost(cohortId: string, payload: Creat
   const response = await api.post<CommunityPost>(
     `/cohorts/${cohortId}/community/posts/`,
     payload,
+    auth(token),
+  );
+  return response.data;
+}
+
+export async function createStreamUploadURL(
+  cohortId: string,
+  file: File,
+  token?: string,
+  maxDurationSeconds?: number,
+) {
+  const response = await api.post<StreamUploadURLResponse>(
+    '/videos/stream/upload-url/',
+    {
+      cohort_id: cohortId,
+      filename: file.name,
+      mime_type: file.type,
+      size: file.size,
+      max_duration_seconds: maxDurationSeconds,
+    },
+    auth(token),
+  );
+  return response.data;
+}
+
+export async function uploadVideoToCloudflare(uploadUrl: string, file: File) {
+  const body = new FormData();
+  body.append('file', file);
+  const response = await fetch(uploadUrl, {
+    method: 'POST',
+    body,
+  });
+  if (!response.ok) {
+    throw new Error(`Cloudflare upload failed: ${response.status}`);
+  }
+}
+
+export async function getStreamPlaybackToken(videoUid: string, token?: string) {
+  const response = await api.get<StreamPlaybackTokenResponse>(
+    `/videos/stream/${videoUid}/playback-token/`,
     auth(token),
   );
   return response.data;
