@@ -20,10 +20,10 @@ export default function ThumbnailCard({
   return (
     <Link
       href={href}
-      className="group block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+      className="group premium-card premium-card-hover block overflow-hidden"
     >
       <div
-        className={`relative bg-gray-100 overflow-hidden ${isAvatar ? 'flex items-center justify-center p-6' : ''}`}
+        className={`relative bg-gray-100 dark:bg-slate-800 overflow-hidden ${isAvatar ? 'flex items-center justify-center p-6' : ''}`}
         style={{ height: isAvatar ? 160 : 180 }}
       >
         <img
@@ -35,8 +35,9 @@ export default function ThumbnailCard({
               : 'w-full h-full object-cover group-hover:scale-105 transition-transform duration-300'
           }
         />
+        {!isAvatar && <div className="absolute inset-x-0 bottom-0 h-16 bg-linear-to-t from-black/28 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />}
       </div>
-      <div className="p-4 space-y-1">{children}</div>
+      <div className="p-4 space-y-2">{children}</div>
     </Link>
   );
 }

@@ -12,7 +12,7 @@ import ThumbnailCard from '@/app/components/ThumbnailCard';
 import { Skeleton } from '@/app/components/Skeleton';
 import { mentors, MENTOR_SKILLS } from '@/lib/data/mentors';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 
 export default function MentorPage() {
   const pathname = usePathname();
@@ -37,7 +37,7 @@ export default function MentorPage() {
   const hasMore = visibleCount < filtered.length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="lms-list-page">
       <SearchBar
         value={query}
         onChange={setQuery}
@@ -58,20 +58,20 @@ export default function MentorPage() {
         }
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="lms-page-container">
         {/* Trending row */}
         {trending.length > 0 && !query && !activeSkill && (
           <div className="mb-10">
-            <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <h2 className="lms-section-title mb-4 flex items-center gap-2">
               <FireIcon className="w-5 h-5 text-orange-500" />
               {lang === 'mn' ? 'Шилдэг менторууд' : 'Top Mentors'}
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            <div className="lms-trending-grid">
               {trending.map((mentor) => (
                 <Link
                   key={mentor.id}
                   href={`/${lang}/mentor/${mentor.id}`}
-                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-gray-200 hover:shadow-sm transition-all p-4 text-center"
+                  className="lms-mini-card p-4 text-center"
                 >
                   <img
                     src={mentor.avatar}
@@ -90,17 +90,17 @@ export default function MentorPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">
+        <div className="lms-section-head">
+          <h2 className="lms-section-title">
             {lang === 'mn' ? 'Бүх менторууд' : 'All Mentors'}
-            <span className="ml-2 text-sm font-normal text-gray-400">{filtered.length}</span>
+            <span className="lms-count-pill ml-2">{filtered.length}</span>
           </h2>
         </div>
 
         {loading ? (
           <GridContainer>
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-gray-100">
+              <div key={i} className="premium-card overflow-hidden">
                 <Skeleton className="h-40 w-full" />
                 <div className="p-4 space-y-2">
                   <Skeleton variant="text" className="w-3/4 h-5" />
@@ -110,7 +110,7 @@ export default function MentorPage() {
             ))}
           </GridContainer>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+          <div className="lms-empty-state">
             <svg className="w-16 h-16 mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M17 20h5v-2a4 4 0 00-5-3.87M9 20H4v-2a4 4 0 015-3.87M15 7a4 4 0 11-8 0 4 4 0 018 0zm6 4a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -134,7 +134,7 @@ export default function MentorPage() {
                   <p className="text-sm text-gray-500 truncate">{mentor.title}</p>
                   <div className="flex flex-wrap gap-1 my-1">
                     {mentor.skills.slice(0, 3).map((s) => (
-                      <span key={s} className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{s}</span>
+                      <span key={s} className="premium-chip">{s}</span>
                     ))}
                   </div>
                   <div className="flex items-center justify-between pt-1">
@@ -152,7 +152,7 @@ export default function MentorPage() {
               <div className="flex justify-center mt-10">
                 <button
                   onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
-                  className="px-8 py-2.5 bg-white border border-gray-300 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  className="premium-button premium-button-secondary"
                 >
                   {lang === 'mn' ? 'Дэлгэрэнгүй үзэх' : 'Load more'}
                 </button>
@@ -164,4 +164,3 @@ export default function MentorPage() {
     </div>
   );
 }
-

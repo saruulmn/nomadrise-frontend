@@ -33,7 +33,7 @@ export default function CorpDropdown({ value, onChange, options }: CorpDropdownP
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="w-full flex items-center justify-between gap-2 px-3 py-2.5 border border-gray-500 bg-white text-sm text-gray-500 focus:outline-none focus:border-gray-600 transition-colors"
+        className="premium-input w-full flex items-center justify-between gap-2 px-4 py-3 text-sm font-semibold text-gray-600 dark:text-gray-200 focus:outline-none"
       >
         <span className="truncate">{selected?.label}</span>
         <ChevronDownIcon
@@ -42,15 +42,15 @@ export default function CorpDropdown({ value, onChange, options }: CorpDropdownP
         />
       </button>
       {open && (
-        <div className="absolute left-0 top-full w-full bg-white border border-gray-500 border-t-0 z-50">
+        <div className="absolute left-0 top-[calc(100%+8px)] w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg z-50 dark:border-white/10 dark:bg-slate-900">
           {options.map((opt) => (
             <div
               key={opt.value}
               onClick={() => { onChange(opt.value); setOpen(false); }}
-              className={`px-3 py-2.5 my-0.5 mx-1 text-sm cursor-pointer transition-colors ${
+              className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
                 opt.value === value
-                  ? 'bg-gray-100 text-gray-900 font-medium'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800'
+                  ? 'bg-blue-50 text-blue-700 font-bold dark:bg-blue-500/10 dark:text-blue-200'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-800 dark:text-gray-300 dark:hover:bg-white/5'
               }`}
             >
               {opt.label}

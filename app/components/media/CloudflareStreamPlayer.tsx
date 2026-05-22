@@ -40,13 +40,13 @@ export default function CloudflareStreamPlayer({ videoUid, token, title }: Props
   if (!videoUid) return null;
 
   return (
-    <div className="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-black">
+    <div className="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-black shadow-sm dark:border-white/10">
       {loading ? (
-        <div className="flex aspect-video items-center justify-center text-sm text-white/80">Loading video...</div>
+        <div className="premium-skeleton flex aspect-video items-center justify-center text-sm text-white/80">Loading video...</div>
       ) : error ? (
         <div className="flex aspect-video items-center justify-center px-4 text-center text-sm text-red-100">{error}</div>
       ) : playbackToken ? (
-        <Stream controls src={playbackToken} title={title || 'Community video'} />
+        <Stream controls responsive src={playbackToken} title={title || 'Community video'} />
       ) : (
         <div className="flex aspect-video items-center justify-center text-sm text-white/80">Video is preparing...</div>
       )}

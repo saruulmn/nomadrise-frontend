@@ -13,7 +13,7 @@ export function Skeleton({
   width,
   height 
 }: SkeletonProps) {
-  const baseClasses = 'animate-pulse';
+  const baseClasses = 'premium-skeleton';
   
   const variantClasses = {
     text: 'rounded h-4',
@@ -21,9 +21,7 @@ export function Skeleton({
     rectangular: 'rounded-lg'
   };
 
-  const style: React.CSSProperties = {
-    backgroundColor: 'var(--border-color, rgba(0,0,0,0.1))'
-  };
+  const style: React.CSSProperties = {};
   if (width) style.width = typeof width === 'number' ? `${width}px` : width;
   if (height) style.height = typeof height === 'number' ? `${height}px` : height;
 

@@ -73,12 +73,12 @@ export default function CohortDetailPage({ params }: Props) {
     });
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="lms-list-page">
       {/* Cover image */}
-      <div className="relative h-64 md:h-80 overflow-hidden bg-gray-200">
+      <div className="relative h-72 md:h-[26rem] overflow-hidden bg-gray-200">
         <img src={cohort.cover} alt={cohort.name} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
-        <div className="absolute bottom-6 left-0 right-0 px-6 max-w-5xl mx-auto">
+        <div className="absolute inset-0 bg-linear-to-t from-slate-950/75 via-slate-950/25 to-transparent" />
+        <div className="absolute bottom-8 left-0 right-0 px-6 max-w-[1360px] mx-auto">
           <div className="flex flex-wrap gap-2 mb-2">
             <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${STATUS_STYLES[cohort.status]}`}>
               {lang === 'mn' ? STATUS_MN[cohort.status] : cohort.status}
@@ -89,33 +89,33 @@ export default function CohortDetailPage({ params }: Props) {
               </span>
             ))}
           </div>
-          <h1 className="text-2xl md:text-3xl font-bold text-white drop-shadow">{cohort.name}</h1>
+          <h1 className="max-w-4xl text-3xl md:text-5xl font-extrabold tracking-[-0.04em] text-white drop-shadow">{cohort.name}</h1>
         </div>
       </div>
 
       {/* Back link */}
-      <div className="max-w-5xl mx-auto px-4 pt-6">
+      <div className="max-w-[1360px] mx-auto px-5 pt-6">
         <Link href={`/${lang}/cohort`} className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors">
           <ArrowLeftIcon className="w-4 h-4" />
           {lang === 'mn' ? 'Буцах' : 'Back to cohorts'}
         </Link>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="max-w-[1360px] mx-auto px-5 py-6 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_22rem] xl:grid-cols-[minmax(0,1fr)_24rem] gap-8 xl:gap-10">
         {/* Main content */}
-        <div className="lg:col-span-2 space-y-8">
-          <div className="flex gap-2 rounded-xl border border-gray-200 bg-white p-1 shadow-sm">
+        <div className="space-y-8">
+          <div className="premium-card flex gap-2 p-1.5">
             <button
               type="button"
               onClick={() => setActiveTab('overview')}
-              className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold ${activeTab === 'overview' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+              className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold transition-all ${activeTab === 'overview' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700 dark:text-gray-300 dark:hover:bg-blue-500/10'}`}
             >
               {lang === 'mn' ? 'Тухай' : 'Overview'}
             </button>
             <button
               type="button"
               onClick={() => setActiveTab('community')}
-              className={`flex-1 rounded-lg px-4 py-2 text-sm font-semibold ${activeTab === 'community' ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}
+              className={`flex-1 rounded-full px-4 py-2.5 text-sm font-bold transition-all ${activeTab === 'community' ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-600 hover:bg-blue-50 hover:text-blue-700 dark:text-gray-300 dark:hover:bg-blue-500/10'}`}
             >
               {lang === 'mn' ? 'Community' : 'Community'}
             </button>
@@ -123,35 +123,35 @@ export default function CohortDetailPage({ params }: Props) {
 
           {activeTab === 'overview' ? (
             <>
-              <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <section className="premium-card p-6 md:p-7">
                 <h2 className="text-lg font-bold text-gray-900 mb-3">
                   {lang === 'mn' ? 'Тухай' : 'About this cohort'}
                 </h2>
-                <p className="text-gray-600 leading-relaxed">{cohort.about}</p>
+                <p className="text-gray-600 dark:text-gray-300 leading-7">{cohort.about}</p>
               </section>
 
-              <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <section className="premium-card p-6 md:p-7">
                 <h2 className="text-lg font-bold text-gray-900 mb-3">
                   {lang === 'mn' ? 'Хичээлийн контент' : 'Cohort content'}
                 </h2>
                 {hasAccess ? (
-                  <div className="rounded-xl bg-green-50 border border-green-100 p-4 text-sm text-green-700">
+                  <div className="rounded-lg bg-green-50 border border-green-100 p-4 text-sm text-green-700">
                     {lang === 'mn' ? 'Таны элсэлт баталгаажсан. Контент үзэх боломжтой.' : 'Your enrollment is approved. Protected content is available.'}
                   </div>
                 ) : (
-                  <div className="rounded-xl bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700">
+                  <div className="rounded-lg bg-amber-50 border border-amber-100 p-4 text-sm text-amber-700">
                     {lang === 'mn' ? 'Контент үзэхийн тулд элсэлтийн хүсэлт батлагдсан байх ёстой.' : 'Your enrollment must be approved before you can access cohort content.'}
                   </div>
                 )}
               </section>
 
-              <section className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
+              <section className="premium-card p-6 md:p-7">
                 <h2 className="text-lg font-bold text-gray-900 mb-4">
                   {lang === 'mn' ? 'Багш нар' : 'Instructors'}
                 </h2>
                 <div className="space-y-4">
                   {cohort.teachers.map((teacher) => (
-                    <div key={teacher.name} className="flex items-center gap-4">
+                    <div key={teacher.name} className="flex items-center gap-4 rounded-lg border border-gray-100 bg-gray-50/70 p-3 dark:border-white/10 dark:bg-white/5">
                       <img
                         src={teacher.avatar}
                         alt={teacher.name}
@@ -179,7 +179,7 @@ export default function CohortDetailPage({ params }: Props) {
         {/* Sidebar */}
         <div className="space-y-4">
           {/* Stats card */}
-          <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm space-y-4">
+          <div className="premium-card sticky top-24 p-6 space-y-5">
             <div className="flex items-start gap-3">
               <CalendarDaysIcon className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
               <div>
@@ -215,7 +215,7 @@ export default function CohortDetailPage({ params }: Props) {
           <button
             onClick={requestJoin}
             disabled={submitting || cohort.status === 'Completed'}
-            className="w-full py-3.5 bg-linear-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl hover:opacity-90 transition-opacity shadow-md disabled:opacity-50"
+            className="premium-button premium-button-primary w-full disabled:opacity-50"
           >
             {cohort.status === 'Upcoming'
               ? (submitting ? (lang === 'mn' ? 'Илгээж байна...' : 'Sending...') : (lang === 'mn' ? 'Бүртгүүлэх' : 'Apply now'))

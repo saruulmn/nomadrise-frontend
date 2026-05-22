@@ -98,24 +98,24 @@ export default function UserProfile() {
   const avatarSrc = profileAvatarUrl;
 
   return (
-    <Dropdown menu={{ items }} placement="bottomRight">
-      <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
+    <Dropdown menu={{ items }} placement="bottomRight" trigger={["click"]}>
+      <button type="button" className="flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-1.5 py-1 text-inherit transition-all hover:bg-white/15 hover:shadow-sm dark:border-white/10">
         {avatarSrc ? (
           <img
             src={avatarSrc}
             alt={session.user.name || "User"}
-            className="w-8 h-8 rounded-full"
+            className="w-8 h-8 rounded-full object-cover ring-2 ring-white/60"
             referrerPolicy="no-referrer"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
+          <div className="w-8 h-8 rounded-full bg-linear-to-br from-blue-500 to-teal-400 flex items-center justify-center text-white font-bold">
             {session.user.name?.charAt(0) || "U"}
           </div>
         )}
-        <span className="text-sm font-medium hidden sm:inline">
+        <span className="text-sm font-semibold hidden sm:inline pr-2 max-w-32 truncate">
           {session.user.name}
         </span>
-      </div>
+      </button>
     </Dropdown>
   );
 }

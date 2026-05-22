@@ -32,7 +32,7 @@ function MediaPreview({ media, token }: { media: CommunityMedia; token?: string 
       <img
         src={media.url}
         alt={media.alt_text || media.filename || 'Community image'}
-        className="mt-4 max-h-96 w-full rounded-lg object-cover border border-gray-100"
+        className="mt-4 max-h-[30rem] w-full rounded-lg object-cover border border-gray-100 shadow-sm dark:border-white/10"
       />
     );
   }
@@ -43,7 +43,7 @@ function MediaPreview({ media, token }: { media: CommunityMedia; token?: string 
 
   if (media.kind === 'video' && media.url) {
     return (
-      <div className="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-black">
+      <div className="mt-4 overflow-hidden rounded-lg border border-gray-100 bg-black shadow-sm dark:border-white/10">
         <iframe
           src={media.url}
           className="aspect-video w-full"
@@ -74,9 +74,9 @@ function MediaPreview({ media, token }: { media: CommunityMedia; token?: string 
 
 function AuthorAvatar({ post }: { post: Pick<CommunityPost, 'author'> }) {
   return post.author.avatar_url ? (
-    <img src={post.author.avatar_url} alt={post.author.name} className="h-10 w-10 rounded-full object-cover" />
+    <img src={post.author.avatar_url} alt={post.author.name} className="community-avatar h-11 w-11 rounded-full object-cover" />
   ) : (
-    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white">
+    <div className="community-avatar flex h-11 w-11 items-center justify-center rounded-full bg-linear-to-br from-blue-600 to-teal-400 text-sm font-bold text-white">
       {(post.author.name || 'U').charAt(0).toUpperCase()}
     </div>
   );
@@ -147,27 +147,27 @@ function Comments({
   };
 
   return (
-    <div className="mt-5 border-t border-gray-100 pt-4">
+    <div className="mt-6 border-t border-gray-100 pt-5 dark:border-white/10">
       {loading ? (
         <p className="text-sm text-gray-500">{lang === 'mn' ? 'Сэтгэгдэл уншиж байна...' : 'Loading comments...'}</p>
       ) : comments.length > 0 ? (
         <div className="space-y-3">
           {comments.map((comment) => (
-            <div key={comment.id} className="rounded-lg bg-gray-50 px-4 py-3">
+            <div key={comment.id} className="community-comment px-4 py-3">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="text-xs font-semibold text-gray-900">{comment.author.name}</p>
-                  <p className="mt-1 text-sm text-gray-700 whitespace-pre-wrap">{comment.body}</p>
+                  <p className="text-xs font-bold text-gray-900 dark:text-white">{comment.author.name}</p>
+                  <p className="mt-1 text-sm leading-6 text-gray-700 whitespace-pre-wrap dark:text-gray-300">{comment.body}</p>
                   <p className="mt-1 text-xs text-gray-400">{formatDate(comment.created_at, lang)}</p>
                 </div>
                 {comment.can_delete && (
                   <div className="flex gap-2 text-xs">
                     {comment.status === 'hidden' ? (
-                      <button type="button" onClick={() => moderate(comment.id, 'publish')} className="text-blue-600">Publish</button>
+                      <button type="button" onClick={() => moderate(comment.id, 'publish')} className="community-action text-blue-600">Publish</button>
                     ) : (
-                      <button type="button" onClick={() => moderate(comment.id, 'hide')} className="text-amber-600">Hide</button>
+                      <button type="button" onClick={() => moderate(comment.id, 'hide')} className="community-action text-amber-600">Hide</button>
                     )}
-                    <button type="button" onClick={() => moderate(comment.id, 'delete')} className="text-red-600">Delete</button>
+                    <button type="button" onClick={() => moderate(comment.id, 'delete')} className="community-action text-red-600">Delete</button>
                   </div>
                 )}
               </div>
@@ -182,12 +182,12 @@ function Comments({
             value={body}
             onChange={(event) => setBody(event.target.value)}
             placeholder={lang === 'mn' ? 'Сэтгэгдэл бичих...' : 'Write a comment...'}
-            className="min-w-0 flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+            className="premium-input min-w-0 flex-1 px-4 py-2.5 text-sm outline-none"
           />
           <button
             type="submit"
             disabled={submitting || !body.trim()}
-            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+            className="premium-button premium-button-primary min-h-0 px-4 py-2 text-sm disabled:opacity-50"
           >
             {submitting ? '...' : lang === 'mn' ? 'Илгээх' : 'Post'}
           </button>
@@ -299,33 +299,33 @@ export default function CohortCommunity({
 
   if (!enabled) {
     return (
-      <section className="rounded-2xl border border-amber-100 bg-amber-50 p-6 text-sm text-amber-700">
+      <section className="premium-card p-6 text-sm text-amber-700 dark:text-amber-300">
         {lang === 'mn' ? 'Community харахын тулд элсэлт батлагдсан байх ёстой.' : 'Your enrollment must be approved to view the community.'}
       </section>
     );
   }
 
   return (
-    <section className="space-y-5">
+    <section className="community-feed space-y-5">
       {isExpired && (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">
+        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-800 shadow-sm dark:border-amber-400/20 dark:bg-amber-400/10 dark:text-amber-200">
           {lang === 'mn'
             ? 'Энэ cohort дууссан. Пост болон сэтгэгдэл бичих боломжгүй.'
             : 'This cohort has expired. Posting and commenting are disabled.'}
         </div>
       )}
 
-      {error && <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">{error}</div>}
+      {error && <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm font-medium text-red-700 dark:border-red-400/20 dark:bg-red-400/10 dark:text-red-200">{error}</div>}
 
-      <form onSubmit={submit} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-        <h2 className="text-base font-bold text-gray-900">{lang === 'mn' ? 'Community пост' : 'Community post'}</h2>
+      <form onSubmit={submit} className="community-composer p-5 md:p-6">
+        <h2 className="text-base font-extrabold tracking-[-0.01em] text-gray-950 dark:text-white">{lang === 'mn' ? 'Community пост' : 'Community post'}</h2>
         <div className="mt-4 space-y-3">
           <input
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             disabled={!canPost}
             placeholder={lang === 'mn' ? 'Гарчиг' : 'Title'}
-            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none disabled:bg-gray-100"
+            className="premium-input w-full px-4 py-3 text-sm outline-none disabled:opacity-60"
           />
           <textarea
             value={body}
@@ -333,15 +333,15 @@ export default function CohortCommunity({
             disabled={!canPost}
             placeholder={lang === 'mn' ? 'Cohort community-дээ бичих...' : 'Share with your cohort community...'}
             rows={4}
-            className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none disabled:bg-gray-100"
+            className="premium-input w-full resize-none px-4 py-3 text-sm leading-6 outline-none disabled:opacity-60"
           />
           <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-            <input value={imageId} onChange={(e) => setImageId(e.target.value)} disabled={!canPost} placeholder="Image media ID" className="rounded-lg border border-gray-300 px-3 py-2 text-xs disabled:bg-gray-100" />
-            <input value={documentId} onChange={(e) => setDocumentId(e.target.value)} disabled={!canPost} placeholder="Document media ID" className="rounded-lg border border-gray-300 px-3 py-2 text-xs disabled:bg-gray-100" />
-            <input value={videoId} onChange={(e) => setVideoId(e.target.value)} disabled={!canPost || !!videoFile} placeholder="Video media ID" className="rounded-lg border border-gray-300 px-3 py-2 text-xs disabled:bg-gray-100" />
+            <input value={imageId} onChange={(e) => setImageId(e.target.value)} disabled={!canPost} placeholder="Image media ID" className="premium-input px-3 py-2 text-xs disabled:opacity-60" />
+            <input value={documentId} onChange={(e) => setDocumentId(e.target.value)} disabled={!canPost} placeholder="Document media ID" className="premium-input px-3 py-2 text-xs disabled:opacity-60" />
+            <input value={videoId} onChange={(e) => setVideoId(e.target.value)} disabled={!canPost || !!videoFile} placeholder="Video media ID" className="premium-input px-3 py-2 text-xs disabled:opacity-60" />
           </div>
-          <label className="block rounded-lg border border-dashed border-gray-300 px-3 py-3 text-xs text-gray-600">
-            <span className="font-semibold text-gray-800">{lang === 'mn' ? 'Видео хавсаргах' : 'Attach video'}</span>
+          <label className="block rounded-lg border border-dashed border-gray-300 bg-gray-50/70 px-4 py-4 text-xs text-gray-600 transition-colors hover:border-blue-300 hover:bg-blue-50/40 dark:border-white/10 dark:bg-white/5 dark:text-gray-300">
+            <span className="font-bold text-gray-900 dark:text-white">{lang === 'mn' ? 'Видео хавсаргах' : 'Attach video'}</span>
             <input
               type="file"
               accept="video/*"
@@ -355,7 +355,7 @@ export default function CohortCommunity({
         <button
           type="submit"
           disabled={!canPost || submitting}
-          className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+          className="premium-button premium-button-primary mt-4 disabled:opacity-50"
         >
           {uploadingVideo
             ? (lang === 'mn' ? 'Видео байршуулж байна...' : 'Uploading video...')
@@ -364,37 +364,37 @@ export default function CohortCommunity({
       </form>
 
       {loading ? (
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 text-sm text-gray-500">
+        <div className="premium-card p-6 text-sm text-gray-500">
           {lang === 'mn' ? 'Community уншиж байна...' : 'Loading community...'}
         </div>
       ) : posts.length === 0 ? (
-        <div className="rounded-2xl border border-gray-100 bg-white p-8 text-center text-sm text-gray-500">
+        <div className="lms-empty-state text-sm">
           {lang === 'mn' ? 'Одоогоор пост алга.' : 'No posts yet.'}
         </div>
       ) : (
         posts.map((post) => (
-          <article key={post.id} className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+          <article key={post.id} className="community-post p-5 md:p-6">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
                 <AuthorAvatar post={post} />
                 <div>
-                  <p className="font-semibold text-gray-900">{post.author.name}</p>
-                  <p className="text-xs text-gray-400">{formatDate(post.created_at, lang)} · {post.post_type}</p>
+                  <p className="font-bold text-gray-950 dark:text-white">{post.author.name}</p>
+                  <p className="text-xs font-medium text-gray-400">{formatDate(post.created_at, lang)} · {post.post_type}</p>
                 </div>
               </div>
               {post.can_delete && (
                 <div className="flex gap-2 text-xs">
                   {post.status === 'hidden' ? (
-                    <button type="button" onClick={() => moderate(post.id, 'publish')} className="text-blue-600">Publish</button>
+                    <button type="button" onClick={() => moderate(post.id, 'publish')} className="community-action text-blue-600">Publish</button>
                   ) : (
-                    <button type="button" onClick={() => moderate(post.id, 'hide')} className="text-amber-600">Hide</button>
+                    <button type="button" onClick={() => moderate(post.id, 'hide')} className="community-action text-amber-600">Hide</button>
                   )}
-                  <button type="button" onClick={() => moderate(post.id, 'delete')} className="text-red-600">Delete</button>
+                  <button type="button" onClick={() => moderate(post.id, 'delete')} className="community-action text-red-600">Delete</button>
                 </div>
               )}
             </div>
-            {post.title && <h3 className="mt-4 text-lg font-bold text-gray-900">{post.title}</h3>}
-            {post.body && <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-gray-700">{post.body}</p>}
+            {post.title && <h3 className="mt-5 text-xl font-extrabold tracking-[-0.02em] text-gray-950 dark:text-white">{post.title}</h3>}
+            {post.body && <p className="mt-2 whitespace-pre-wrap text-[0.95rem] leading-7 text-gray-700 dark:text-gray-300">{post.body}</p>}
             {post.media.map((item) => <MediaPreview key={`${item.kind}-${item.id}`} media={item} token={token} />)}
             <Comments cohortId={cohortId} post={post} token={token} lang={lang} onError={setError} />
           </article>

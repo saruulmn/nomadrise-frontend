@@ -11,7 +11,7 @@ import ThumbnailCard from '@/app/components/ThumbnailCard';
 import { Skeleton } from '@/app/components/Skeleton';
 import { cohorts, COHORT_CATEGORIES, type CohortStatus } from '@/lib/data/cohorts';
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 12;
 
 const STATUS_STYLES: Record<CohortStatus, string> = {
   Active: 'bg-green-100 text-green-700',
@@ -48,7 +48,7 @@ export default function CohortPage() {
   const hasMore = visibleCount < filtered.length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="lms-list-page">
       <SearchBar
         value={query}
         onChange={setQuery}
@@ -69,20 +69,20 @@ export default function CohortPage() {
         }
       />
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="lms-page-container">
         {/* Trending row */}
         {trending.length > 0 && !query && !activeCategory && (
           <div className="mb-10">
-            <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <h2 className="lms-section-title mb-4 flex items-center gap-2">
               <FireIcon className="w-5 h-5 text-orange-500" />
               {lang === 'mn' ? 'Трендийн элсэлт' : 'Trending Cohorts'}
             </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+            <div className="lms-trending-grid">
               {trending.map((cohort) => (
                 <Link
                   key={cohort.id}
                   href={`/${lang}/cohort/${cohort.id}`}
-                  className="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-gray-200 hover:shadow-sm transition-all"
+                  className="lms-mini-card"
                 >
                   <div className="relative h-32 overflow-hidden">
                     <img src={cohort.thumbnail} alt={cohort.name} className="w-full h-full object-cover" />
@@ -102,17 +102,17 @@ export default function CohortPage() {
           </div>
         )}
 
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-gray-900">
+        <div className="lms-section-head">
+          <h2 className="lms-section-title">
             {lang === 'mn' ? 'Бүх элсэлт' : 'All Cohorts'}
-            <span className="ml-2 text-sm font-normal text-gray-400">{filtered.length}</span>
+            <span className="lms-count-pill ml-2">{filtered.length}</span>
           </h2>
         </div>
 
         {loading ? (
           <GridContainer>
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl overflow-hidden border border-gray-100">
+              <div key={i} className="premium-card overflow-hidden">
                 <Skeleton className="h-44 w-full" />
                 <div className="p-4 space-y-2">
                   <Skeleton variant="text" className="w-3/4 h-5" />
@@ -122,7 +122,7 @@ export default function CohortPage() {
             ))}
           </GridContainer>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 text-gray-400">
+          <div className="lms-empty-state">
             <UsersIcon className="w-16 h-16 opacity-30" />
             <p className="text-lg font-medium mt-4">
               {lang === 'mn' ? 'Элсэлт олдсонгүй' : 'No cohorts found'}
@@ -140,7 +140,7 @@ export default function CohortPage() {
                 >
                   <div className="flex flex-wrap gap-1 mb-1">
                     {cohort.categories.map((cat) => (
-                      <span key={cat} className="text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{cat}</span>
+                      <span key={cat} className="premium-chip">{cat}</span>
                     ))}
                   </div>
                   <p className="font-semibold text-gray-900 text-sm leading-snug">{cohort.name}</p>
@@ -166,7 +166,7 @@ export default function CohortPage() {
               <div className="flex justify-center mt-10">
                 <button
                   onClick={() => setVisibleCount((n) => n + PAGE_SIZE)}
-                  className="px-8 py-2.5 bg-white border border-gray-300 text-gray-600 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  className="premium-button premium-button-secondary"
                 >
                   {lang === 'mn' ? 'Дэлгэрэнгүй үзэх' : 'Load more'}
                 </button>
@@ -178,4 +178,3 @@ export default function CohortPage() {
     </div>
   );
 }
-

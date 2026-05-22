@@ -51,27 +51,30 @@ export default function SearchBar({
 
   if (colored) {
     return (
-      <div className="bg-white border-b border-gray-100 px-4 pt-8 pb-5">
-        <div className="max-w-6xl mx-auto">
-          {title && <h1 className="text-2xl font-bold mb-0.5" style={{ color: 'oklch(54.6% 0.245 262.881)' }}>{title}</h1>}
-          {subtitle && <p className="text-gray-400 text-sm mb-4">{subtitle}</p>}
-          <div className="flex gap-[10%] items-center">
-            {filters && <div className="w-[25%] [&>select]:w-full">{filters}</div>}
-            <div className="flex w-[70%] items-center border border-gray-200 rounded-lg bg-white overflow-hidden focus-within:border-gray-400 transition-all">
+      <div className="px-4 pt-8 pb-6">
+        <div className="max-w-[1360px] mx-auto">
+          <div className="premium-card p-5 md:p-6">
+            {title && <h1 className="text-2xl md:text-3xl font-extrabold tracking-[-0.03em] text-gray-950 dark:text-white mb-1">{title}</h1>}
+            {subtitle && <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base mb-5">{subtitle}</p>}
+            <div className="flex flex-col gap-3 md:flex-row md:items-center">
+              {filters && <div className="md:w-64">{filters}</div>}
+              <div className="premium-input flex flex-1 items-center overflow-hidden">
               <input
                 type="text"
                 value={localValue}
                 onChange={(e) => handleChange(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={placeholder}
-                className="flex-1 px-3 py-2.5 bg-transparent text-gray-800 placeholder-[#7d838c] outline-none text-sm"
+                className="flex-1 px-4 py-3.5 bg-transparent text-gray-900 dark:text-white placeholder:text-gray-400 outline-none text-sm"
               />
               <button
                 onClick={handleSearchClick}
-                className="px-3 py-2.5 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+                className="mr-1 inline-flex h-10 w-10 items-center justify-center rounded-full text-gray-500 hover:bg-blue-50 hover:text-blue-600 dark:hover:bg-blue-500/10 transition-colors shrink-0"
+                aria-label="Search"
               >
-                <MagnifyingGlassIcon className="w-4 h-4" />
+                <MagnifyingGlassIcon className="w-5 h-5" />
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -81,7 +84,7 @@ export default function SearchBar({
 
   return (
     <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-gray-200 px-4 py-3">
-      <div className="max-w-6xl mx-auto relative">
+      <div className="max-w-[1360px] mx-auto relative">
         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
           <MagnifyingGlassIcon className="w-4 h-4" />
         </span>
