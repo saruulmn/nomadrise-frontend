@@ -8,14 +8,20 @@ import type { Locale } from "@/i18n/config";
 import PolicyModal from "@/app/components/PolicyModal";
 import { LoginSkeleton } from "@/app/components/Skeleton";
 import { signIn } from "next-auth/react";
-import { useTheme } from "@/app/components/ThemeProvider";
-import { ExclamationTriangleIcon, EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import {
+  ExclamationTriangleIcon,
+  EnvelopeIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  LockClosedIcon,
+} from "@heroicons/react/24/outline";
 
 export default function LoginPage({ params }: { params: Promise<{ lang: Locale }> }) {
   const { lang } = use(params);
-  const [dictionary, setDictionary] = useState<any>(null);
+  const [dictionary, setDictionary] = useState<Awaited<ReturnType<typeof getDictionary>> | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [shakeTerms, setShakeTerms] = useState(false);
   const [showPolicyModal, setShowPolicyModal] = useState(false);
@@ -23,22 +29,17 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
-
-  // Safely grab theme context (SSR safe)
-  let themeContext: any = null;
-  try {
-    themeContext = useTheme();
-  } catch (e) {
-    // SSR Safe Fallback
-  }
-
-  const [currentTheme, setCurrentTheme] = useState<"light" | "dark">("dark");
-
-  useEffect(() => {
-    if (themeContext) {
-      setCurrentTheme(themeContext.theme);
-    }
-  }, [themeContext?.theme]);
+  const [currentTheme] = useState<"light" | "dark">(() => {
+    if (typeof window === "undefined") return "dark";
+    const htmlTheme = document.documentElement.getAttribute("data-theme");
+    const savedTheme = localStorage.getItem("theme");
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    return htmlTheme === "light" || htmlTheme === "dark"
+      ? htmlTheme
+      : savedTheme === "light" || savedTheme === "dark"
+        ? savedTheme
+        : systemTheme;
+  });
 
   useEffect(() => {
     getDictionary(lang).then((dict) => {
@@ -88,7 +89,7 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
       }
       
       router.push(`/${lang}/profile`);
-    } catch (err: any) {
+    } catch {
       setIsSubmitting(false);
       setError(lang === "mn" ? "Гэнэтийн алдаа гарлаа" : "An unexpected error occurred");
     }
@@ -204,16 +205,37 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
                 <LockClosedIcon className="w-5 h-5" aria-hidden="true" />
               </span>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm font-medium outline-none transition-all duration-300 ${
+                className={`w-full pl-11 pr-12 py-3 border rounded-xl text-sm font-medium outline-none transition-all duration-300 ${
                   currentTheme === "dark"
                     ? "bg-black/20 focus:bg-black/35 border-white/10 hover:border-white/20 focus:border-[#667eea] focus:ring-4 focus:ring-[#667eea]/10 text-white placeholder:text-gray-500"
                     : "bg-gray-50 focus:bg-white border-black/10 hover:border-black/15 focus:border-[#667eea] focus:ring-4 focus:ring-[#667eea]/10 text-gray-900 placeholder:text-gray-400"
                 }`}
+                autoComplete="current-password"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((value) => !value)}
+                aria-label={
+                  showPassword
+                    ? (lang === "mn" ? "Нууц үг нуух" : "Hide password")
+                    : (lang === "mn" ? "Нууц үг харах" : "Show password")
+                }
+                className={`absolute inset-y-0 right-0 pr-3.5 flex items-center transition-colors duration-300 ${
+                  currentTheme === "dark"
+                    ? "text-gray-500 hover:text-gray-200"
+                    : "text-gray-400 hover:text-gray-700"
+                }`}
+              >
+                {showPassword ? (
+                  <EyeSlashIcon className="w-5 h-5" aria-hidden="true" />
+                ) : (
+                  <EyeIcon className="w-5 h-5" aria-hidden="true" />
+                )}
+              </button>
             </div>
           </div>
 
@@ -364,5 +386,3 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
     </div>
   );
 }
-
-
