@@ -24,6 +24,17 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.nomadrise.mn',
+          },
+        ],
+        destination: 'https://nomadrise.mn/:path*',
+        permanent: true,
+      },
+      {
         source: '/',
         destination: '/mn',
         permanent: false,

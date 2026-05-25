@@ -82,13 +82,14 @@ export default function LoginPage({ params }: { params: Promise<{ lang: Locale }
         redirect: false,
       });
       
-      if (response?.error) {
+      if (response?.error || !response?.ok) {
          setIsSubmitting(false);
          setError(lang === "mn" ? "Имэйл эсвэл нууц үг буруу байна" : "Invalid email or password");
          return;
       }
       
       router.push(`/${lang}/profile`);
+      router.refresh();
     } catch {
       setIsSubmitting(false);
       setError(lang === "mn" ? "Гэнэтийн алдаа гарлаа" : "An unexpected error occurred");

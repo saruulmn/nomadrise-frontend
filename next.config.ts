@@ -37,6 +37,17 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.nomadrise.mn',
+          },
+        ],
+        destination: 'https://nomadrise.mn/:path*',
+        permanent: true,
+      },
       // Redirect root to default locale
       {
         source: '/',

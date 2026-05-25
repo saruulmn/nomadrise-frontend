@@ -9,6 +9,21 @@ const API_BASE_URL = (
   "https://api.nomadrise.mn/api"
 ).replace(/\/$/, "");
 
+type DjangoUser = {
+  id?: number | string;
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  username?: string;
+  [key: string]: unknown;
+};
+
+type LoginResponse = {
+  access?: string;
+  refresh?: string;
+  user?: DjangoUser;
+};
+
 function isExpiringSoon(accessToken: string): boolean {
   try {
     const { exp } = jwtDecode<{ exp: number }>(accessToken);
@@ -38,6 +53,7 @@ async function refreshAccessToken(refreshToken: string): Promise<{ access: strin
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  trustHost: true,
   providers: [
     ...authConfig.providers,
     Credentials({
@@ -65,13 +81,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             });
             return null;
           }
-          const data = await res.json();
+          const data = (await res.json()) as LoginResponse;
+          const djangoUser = data.user;
+          if (!data.access || !data.refresh || !djangoUser?.id || !djangoUser?.email) {
+            console.error("Credentials login returned an invalid payload:", {
+              hasAccess: Boolean(data.access),
+              hasRefresh: Boolean(data.refresh),
+              hasUserId: Boolean(djangoUser?.id),
+              hasEmail: Boolean(djangoUser?.email),
+            });
+            return null;
+          }
+
+          const displayName =
+            [djangoUser.first_name, djangoUser.last_name].filter(Boolean).join(" ") ||
+            djangoUser.username ||
+            djangoUser.email;
+
           return {
-            id: String(data.user?.id ?? ""),
-            email: data.user?.email ?? "",
-            name: [data.user?.first_name, data.user?.last_name].filter(Boolean).join(" ") || data.user?.username || "",
+            id: String(djangoUser.id),
+            email: djangoUser.email,
+            name: displayName,
             _at: data.access,
             _rt: data.refresh,
+            djangoUser,
           };
         } catch (error) {
           console.error("Credentials login request error:", {
@@ -87,11 +120,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, account, user }) {
-      if (account?.type === "credentials" && user) {
-        const u = user as { _at?: string; _rt?: string };
+      if (account?.provider === "credentials" && user) {
+        const u = user as { id?: string; email?: string; name?: string; _at?: string; _rt?: string; djangoUser?: DjangoUser };
+        token.id = u.id;
+        token.email = u.email;
+        token.name = u.name;
         token._at = u._at;
         token._rt = u._rt;
+        if (u.djangoUser) {
+          token.djangoUser = u.djangoUser;
+        }
         return token;
       }
 
@@ -174,9 +214,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.authError = token.authError as string;
       }
       if (token.djangoUser) {
+        const djangoUser = token.djangoUser as DjangoUser;
         session.user = {
           ...session.user,
-          ...(token.djangoUser as Record<string, unknown>),
+          ...djangoUser,
+          id: String(djangoUser.id),
+          email: djangoUser.email || session.user.email,
+          name:
+            [djangoUser.first_name, djangoUser.last_name].filter(Boolean).join(" ") ||
+            djangoUser.username ||
+            session.user.name,
         };
       }
       return session;
