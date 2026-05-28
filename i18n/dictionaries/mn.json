@@ -39,13 +39,13 @@
       "student": "Оюутан",
       "teacher": "Багш",
       "mentor": "Ментор",
-      "teamMember": "Багийн гишүүн"
+      "staff": "Ажилтан"
     },
     "roleInfo": {
       "title": "Үүргийн мэдээлэл",
       "teacher": "Багшийн мэдээлэл",
       "mentor": "Менторын мэдээлэл",
-      "teamMember": "Багийн мэдээлэл"
+      "staff": "Ажилтны мэдээлэл"
     },
     "changeAvatar": "Зураг солих",
     "uploadingAvatar": "Байршуулж байна...",

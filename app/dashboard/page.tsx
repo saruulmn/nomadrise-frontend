@@ -32,7 +32,7 @@ import { getApiErrorMessage } from '@/lib/api/errors';
 import { cohorts as sampleCohorts } from '@/lib/data/cohorts';
 import { masterClasses as sampleMasterClasses } from '@/lib/data/masterClasses';
 
-type DashboardRole = 'teacher' | 'mentor' | 'student' | 'teamMember';
+type DashboardRole = 'teacher' | 'mentor' | 'student' | 'staff';
 
 type ProfileResponse = {
   username?: string;
@@ -40,6 +40,7 @@ type ProfileResponse = {
   last_name?: string;
   email?: string;
   avatar_url?: string | null;
+  is_staff?: boolean;
   groups?: string[];
 };
 
@@ -77,11 +78,12 @@ function hasRole(groups: string[] = [], role: DashboardRole) {
   return groups.some((group) => group.toLowerCase() === role.toLowerCase());
 }
 
-function getRoleOptions(groups: string[] = []): DashboardRole[] {
+function getRoleOptions(profile?: ProfileResponse | null): DashboardRole[] {
+  const groups = profile?.groups || [];
   const options: DashboardRole[] = [];
   if (hasRole(groups, 'teacher')) options.push('teacher');
   if (hasRole(groups, 'mentor')) options.push('mentor');
-  if (hasRole(groups, 'teamMember')) options.push('teamMember');
+  if (profile?.is_staff) options.push('staff');
   return options.length ? options : ['student'];
 }
 
@@ -166,7 +168,7 @@ function RoleTabs({
             activeRole === role ? 'bg-gray-900 text-white' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          {role === 'teamMember' ? 'staff' : role}
+          {role}
         </button>
       ))}
     </div>
@@ -482,7 +484,7 @@ export default function DashboardPage() {
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
 
-  const roleOptions = useMemo(() => getRoleOptions(profile?.groups), [profile?.groups]);
+  const roleOptions = useMemo(() => getRoleOptions(profile), [profile]);
 
   const load = useCallback(async () => {
     if (status === 'loading') return;
@@ -503,7 +505,7 @@ export default function DashboardPage() {
       });
       if (!profileResponse.ok) throw new Error(`Profile fetch failed: HTTP ${profileResponse.status}`);
       const nextProfile = (await profileResponse.json()) as ProfileResponse;
-      const nextRoles = getRoleOptions(nextProfile.groups);
+      const nextRoles = getRoleOptions(nextProfile);
       setProfile(nextProfile);
       setActiveRole((current) => (nextRoles.includes(current) ? current : nextRoles[0]));
 

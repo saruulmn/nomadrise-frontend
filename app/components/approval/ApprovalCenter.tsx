@@ -23,15 +23,16 @@ import {
 import { getApiErrorMessage } from '@/lib/api/errors';
 import StatusBadge from './StatusBadge';
 
-type Role = 'student' | 'teacher' | 'mentor' | 'teamMember';
-type ProfileResponse = { groups?: string[] };
+type Role = 'student' | 'teacher' | 'mentor' | 'staff';
+type ProfileResponse = { groups?: string[]; is_staff?: boolean };
 
 const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
-function detectRole(groups: string[] = []): Role {
+function detectRole(profile: ProfileResponse = {}): Role {
+  const groups = profile.groups || [];
   if (groups.includes('mentor')) return 'mentor';
   if (groups.includes('teacher')) return 'teacher';
-  if (groups.includes('teamMember')) return 'teamMember';
+  if (profile.is_staff) return 'staff';
   return 'student';
 }
 
@@ -103,7 +104,7 @@ export default function ApprovalCenter() {
         headers: { Authorization: `Bearer ${token}` },
       });
       const profile = profileRes.ok ? ((await profileRes.json()) as ProfileResponse) : { groups: [] };
-      const nextRole = detectRole(profile.groups || []);
+      const nextRole = detectRole(profile);
       setRole(nextRole);
 
       const [myEnrollments, myMentees, myBecomeMentor] = await Promise.all([
@@ -193,7 +194,7 @@ export default function ApprovalCenter() {
     }
   };
 
-  const roleLabel = useMemo(() => role === 'teamMember' ? 'staff' : role, [role]);
+  const roleLabel = useMemo(() => role, [role]);
 
   if (loading) {
     return <div className="rounded-xl border border-gray-200 bg-white p-6 text-sm text-gray-500">Loading requests...</div>;

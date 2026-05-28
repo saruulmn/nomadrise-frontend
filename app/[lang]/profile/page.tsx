@@ -22,7 +22,7 @@ const EDUCATION_KEYS = [
 ] as const;
 
 type EducationKey = (typeof EDUCATION_KEYS)[number];
-type UserRole = 'student' | 'teacher' | 'mentor' | 'teamMember';
+type UserRole = 'student' | 'teacher' | 'mentor' | 'staff';
 
 interface ProfileText {
   title: string;
@@ -52,10 +52,10 @@ interface ProfileDictionary {
   profile: ProfileText;
 }
 
-function detectRole(groups: string[]): UserRole {
-  if (groups.includes('teacher')) return 'teacher';
-  if (groups.includes('mentor')) return 'mentor';
-  if (groups.includes('teamMember')) return 'teamMember';
+function detectRole(profile: ProfileData): UserRole {
+  if (profile.groups.includes('teacher')) return 'teacher';
+  if (profile.groups.includes('mentor')) return 'mentor';
+  if (profile.is_staff) return 'staff';
   return 'student';
 }
 
@@ -69,6 +69,7 @@ interface ProfileData {
   city: string;
   highest_education: string;
   avatar_url: string | null;
+  is_staff: boolean;
   groups: string[];
   // role-specific fields
   subject: string;
@@ -88,6 +89,7 @@ const EMPTY_PROFILE: ProfileData = {
   city: '',
   highest_education: '',
   avatar_url: null,
+  is_staff: false,
   groups: [],
   subject: '',
   current_status: '',
@@ -181,6 +183,7 @@ export default function ProfilePage() {
           city:               data.city               || '',
           highest_education:  data.highest_education  || '',
           avatar_url:         data.avatar_url         || null,
+          is_staff:           data.is_staff           || false,
           groups:             data.groups             || [],
           subject:            data.subject            || '',
           current_status:     data.current_status     || '',
@@ -293,7 +296,7 @@ export default function ProfilePage() {
   if (!dictionary) return null;
 
   const t = dictionary.profile;
-  const role = detectRole(form.groups);
+  const role = detectRole(form);
   const hasRoleSection = role !== 'student';
   const avatarSrc = form.avatar_url;
   const displayName =
@@ -454,7 +457,7 @@ export default function ProfilePage() {
                             <input name="subject" value={form.subject} onChange={handleChange} className="input-field" />
                           </Field>
                         )}
-                        {(role === 'teacher' || role === 'teamMember') && (
+                        {(role === 'teacher' || role === 'staff') && (
                           <Field label={t.currentStatus}>
                             <input name="current_status" value={form.current_status} onChange={handleChange} className="input-field" />
                           </Field>

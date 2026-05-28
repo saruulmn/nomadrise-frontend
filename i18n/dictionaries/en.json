@@ -39,13 +39,13 @@
       "student": "Student",
       "teacher": "Teacher",
       "mentor": "Mentor",
-      "teamMember": "Team Member"
+      "staff": "Staff"
     },
     "roleInfo": {
       "title": "Role Information",
       "teacher": "Teacher Information",
       "mentor": "Mentor Information",
-      "teamMember": "Team Information"
+      "staff": "Staff Information"
     },
     "changeAvatar": "Change photo",
     "uploadingAvatar": "Uploading...",
