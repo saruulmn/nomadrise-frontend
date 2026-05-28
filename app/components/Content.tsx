@@ -1,4 +1,8 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
+import { contentApi, ContentItem } from "@/lib/api";
+import { Locale } from "@/i18n/config";
 
 type ContentProps = {
   dictionary: {
@@ -10,9 +14,57 @@ type ContentProps = {
       cta: string;
     };
   };
+  lang?: Locale;
 };
 
-export default function Content({ dictionary }: ContentProps) {
+const ABOUT_KEYS = {
+  vision: "about.vision",
+  challenge: "about.challenge",
+  solution: "about.solution",
+  cta: "about.cta",
+} as const;
+
+function getBlockText(block: ContentItem | undefined, fallback: string, lang: Locale) {
+  if (!block) return fallback;
+  return (lang === "mn" ? block.body_mn || block.body_en : block.body_en || block.body_mn) || fallback;
+}
+
+function getBlockTitle(block: ContentItem | undefined, fallback: string) {
+  return block?.title || fallback;
+}
+
+export default function Content({ dictionary, lang = "mn" }: ContentProps) {
+  const [blocks, setBlocks] = useState<ContentItem[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    contentApi
+      .getAll()
+      .then((data) => {
+        if (isMounted) setBlocks(data);
+      })
+      .catch((err) => {
+        console.error("Error fetching about content blocks:", err);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const blockByKey = useMemo(() => {
+    return blocks.reduce<Record<string, ContentItem>>((acc, block) => {
+      acc[block.key] = block;
+      return acc;
+    }, {});
+  }, [blocks]);
+
+  const vision = blockByKey[ABOUT_KEYS.vision];
+  const challenge = blockByKey[ABOUT_KEYS.challenge];
+  const solution = blockByKey[ABOUT_KEYS.solution];
+  const cta = blockByKey[ABOUT_KEYS.cta];
+
   return (
     <section className="team-wrap">
       <div className="team-header">
@@ -23,34 +75,34 @@ export default function Content({ dictionary }: ContentProps) {
         {/* Static dictionary content */}
         <div style={{ marginBottom: "3rem" }}>
           <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
-            {dictionary.about.vision.title}
+            {getBlockTitle(vision, dictionary.about.vision.title)}
           </h3>
           <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
-            {dictionary.about.vision.text}
+            {getBlockText(vision, dictionary.about.vision.text, lang)}
           </p>
         </div>
 
         <div style={{ marginBottom: "3rem" }}>
           <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
-            {dictionary.about.challenge.title}
+            {getBlockTitle(challenge, dictionary.about.challenge.title)}
           </h3>
           <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
-            {dictionary.about.challenge.text}
+            {getBlockText(challenge, dictionary.about.challenge.text, lang)}
           </p>
         </div>
 
         <div style={{ marginBottom: "3rem" }}>
           <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
-            {dictionary.about.solution.title}
+            {getBlockTitle(solution, dictionary.about.solution.title)}
           </h3>
           <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
-            {dictionary.about.solution.text}
+            {getBlockText(solution, dictionary.about.solution.text, lang)}
           </p>
         </div>
 
         <div style={{ textAlign: "center", padding: "2rem", background: "#f9fafb", borderRadius: "0.5rem", marginTop: "3rem" }}>
           <p style={{ fontSize: "1rem", fontWeight: "500", color: "#1f2937" }}>
-            {dictionary.about.cta}
+            {getBlockText(cta, dictionary.about.cta, lang)}
           </p>
         </div>
       </div>

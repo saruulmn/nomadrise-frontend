@@ -12,24 +12,30 @@ import api from './base';
 // ============================================================================
 
 export interface ContentItem {
-  id?: number;
-  url: string;
+  id?: string;
+  key: string;
   title: string;
-  description: string;
+  body_en: string;
+  body_mn: string;
+  is_active?: boolean;
   created_at?: string;
   updated_at?: string;
 }
 
 export interface ContentCreatePayload {
-  url: string;
+  key: string;
   title: string;
-  description: string;
+  body_en: string;
+  body_mn: string;
+  is_active?: boolean;
 }
 
 export interface ContentUpdatePayload {
-  url?: string;
+  key?: string;
   title?: string;
-  description?: string;
+  body_en?: string;
+  body_mn?: string;
+  is_active?: boolean;
 }
 
 // ============================================================================
@@ -40,7 +46,7 @@ export interface ContentUpdatePayload {
  * Get all content items
  */
 export async function getAllContent(): Promise<ContentItem[]> {
-  const response = await api.get<ContentItem[]>('/contents/', { skipAuth: true });
+  const response = await api.get<ContentItem[]>('/content-blocks/', { skipAuth: true });
   return response.data;
 }
 
@@ -48,7 +54,7 @@ export async function getAllContent(): Promise<ContentItem[]> {
  * Get content item by ID
  */
 export async function getContentById(id: number): Promise<ContentItem> {
-  const response = await api.get<ContentItem>(`/contents/${id}/`, { skipAuth: true });
+  const response = await api.get<ContentItem>(`/content-blocks/${id}/`, { skipAuth: true });
   return response.data;
 }
 
@@ -56,7 +62,7 @@ export async function getContentById(id: number): Promise<ContentItem> {
  * Create new content item
  */
 export async function createContent(data: ContentCreatePayload): Promise<ContentItem> {
-  const response = await api.post<ContentItem>('/contents/', data);
+  const response = await api.post<ContentItem>('/content-blocks/', data);
   return response.data;
 }
 
@@ -64,7 +70,7 @@ export async function createContent(data: ContentCreatePayload): Promise<Content
  * Update content item
  */
 export async function updateContent(id: number, data: ContentUpdatePayload): Promise<ContentItem> {
-  const response = await api.put<ContentItem>(`/contents/${id}/`, data);
+  const response = await api.put<ContentItem>(`/content-blocks/${id}/`, data);
   return response.data;
 }
 
@@ -72,7 +78,7 @@ export async function updateContent(id: number, data: ContentUpdatePayload): Pro
  * Delete content item
  */
 export async function deleteContent(id: number): Promise<void> {
-  await api.delete(`/contents/${id}/`);
+  await api.delete(`/content-blocks/${id}/`);
 }
 
 // ============================================================================
