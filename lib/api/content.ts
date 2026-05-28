@@ -38,6 +38,13 @@ export interface ContentUpdatePayload {
   is_active?: boolean;
 }
 
+type ListResponse<T> = T[] | { results?: T[] };
+
+function unwrapList<T>(data: ListResponse<T>): T[] {
+  if (Array.isArray(data)) return data;
+  return Array.isArray(data.results) ? data.results : [];
+}
+
 // ============================================================================
 // Content Operations
 // ============================================================================
@@ -46,14 +53,14 @@ export interface ContentUpdatePayload {
  * Get all content items
  */
 export async function getAllContent(): Promise<ContentItem[]> {
-  const response = await api.get<ContentItem[]>('/content-blocks/', { skipAuth: true });
-  return response.data;
+  const response = await api.get<ListResponse<ContentItem>>('/content-blocks/', { skipAuth: true });
+  return unwrapList(response.data);
 }
 
 /**
  * Get content item by ID
  */
-export async function getContentById(id: number): Promise<ContentItem> {
+export async function getContentById(id: string): Promise<ContentItem> {
   const response = await api.get<ContentItem>(`/content-blocks/${id}/`, { skipAuth: true });
   return response.data;
 }
@@ -69,7 +76,7 @@ export async function createContent(data: ContentCreatePayload): Promise<Content
 /**
  * Update content item
  */
-export async function updateContent(id: number, data: ContentUpdatePayload): Promise<ContentItem> {
+export async function updateContent(id: string, data: ContentUpdatePayload): Promise<ContentItem> {
   const response = await api.put<ContentItem>(`/content-blocks/${id}/`, data);
   return response.data;
 }
@@ -77,7 +84,7 @@ export async function updateContent(id: number, data: ContentUpdatePayload): Pro
 /**
  * Delete content item
  */
-export async function deleteContent(id: number): Promise<void> {
+export async function deleteContent(id: string): Promise<void> {
   await api.delete(`/content-blocks/${id}/`);
 }
 
