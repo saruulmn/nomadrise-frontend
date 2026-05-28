@@ -4,8 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Modal } from "antd";
 import { Locale } from "@/i18n/config";
 
-type MentorProfile = {
-  user_id: number;
+type TeamMemberProfile = {
+  user_uuid: string;
   username: string;
   first_name: string;
   last_name: string;
@@ -39,7 +39,7 @@ type TeamProps = {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
-function mapProfileToMember(profile: MentorProfile, lang: Locale): Member {
+function mapProfileToMember(profile: TeamMemberProfile, lang: Locale): Member {
   const location = [profile.city, profile.country].filter(Boolean).join(", ");
   const bio = lang === "mn" ? (profile.bio_mn || profile.bio_en) : (profile.bio_en || profile.bio_mn);
   return {
@@ -72,7 +72,7 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
         if (!Array.isArray(data)) throw new Error("Invalid format");
         
         if (isMounted) {
-          setMembers(data.map((p: MentorProfile) => mapProfileToMember(p, lang)));
+          setMembers(data.map((p: TeamMemberProfile) => mapProfileToMember(p, lang)));
         }
       } catch (err) {
         console.error("Error fetching team members:", err);
