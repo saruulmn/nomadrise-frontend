@@ -13,16 +13,19 @@ type TeamMemberProfile = {
   country: string | null;
   city: string | null;
   highest_education: string | null;
+  show_on_team?: boolean;
   current_status: string | null;
   preferred_language: string | null;
   bio_en: string | null;
   bio_mn: string | null;
+  sort_order?: number;
 };
 
 type Member = {
   name: string;
   position: string;
   location: string;
+  sortOrder: number;
   photo?: string;
   bio?: string;
 };
@@ -46,6 +49,7 @@ function mapProfileToMember(profile: TeamMemberProfile, lang: Locale): Member {
     name: `${profile.first_name} ${profile.last_name}`.trim() || profile.username,
     position: profile.current_status || "",
     location: location || "",
+    sortOrder: profile.sort_order ?? 0,
     photo: profile.avatar_url || undefined,
     bio: bio || undefined,
   };
@@ -72,7 +76,12 @@ export default function Team({ dictionary, lang = "mn" }: TeamProps) {
         if (!Array.isArray(data)) throw new Error("Invalid format");
         
         if (isMounted) {
-          setMembers(data.map((p: TeamMemberProfile) => mapProfileToMember(p, lang)));
+          setMembers(
+            data
+              .filter((p: TeamMemberProfile) => p.show_on_team !== false)
+              .sort((a: TeamMemberProfile, b: TeamMemberProfile) => (a.sort_order ?? 0) - (b.sort_order ?? 0))
+              .map((p: TeamMemberProfile) => mapProfileToMember(p, lang))
+          );
         }
       } catch (err) {
         console.error("Error fetching team members:", err);
