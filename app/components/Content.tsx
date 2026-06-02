@@ -18,11 +18,7 @@ type ContentProps = {
 };
 
 const ABOUT_KEYS = {
-  title: "about.title",
-  vision: "about.vision",
-  challenge: "about.challenge",
-  solution: "about.solution",
-  cta: "about.cta",
+  content: "about.content",
 } as const;
 
 function getBlockText(block: ContentItem | undefined, fallback: string, lang: Locale) {
@@ -32,6 +28,18 @@ function getBlockText(block: ContentItem | undefined, fallback: string, lang: Lo
 
 function getBlockTitle(block: ContentItem | undefined, fallback: string, lang: Locale) {
   return lang === "mn" ? block?.title || fallback : fallback;
+}
+
+function getFallbackBody(dictionary: ContentProps["dictionary"]) {
+  return [
+    `<h3>${dictionary.about.vision.title}</h3>`,
+    `<p>${dictionary.about.vision.text}</p>`,
+    `<h3>${dictionary.about.challenge.title}</h3>`,
+    `<p>${dictionary.about.challenge.text}</p>`,
+    `<h3>${dictionary.about.solution.title}</h3>`,
+    `<p>${dictionary.about.solution.text}</p>`,
+    `<p><strong>${dictionary.about.cta}</strong></p>`,
+  ].join("");
 }
 
 export default function Content({ dictionary, lang = "mn" }: ContentProps) {
@@ -61,52 +69,19 @@ export default function Content({ dictionary, lang = "mn" }: ContentProps) {
     }, {});
   }, [blocks]);
 
-  const title = blockByKey[ABOUT_KEYS.title];
-  const vision = blockByKey[ABOUT_KEYS.vision];
-  const challenge = blockByKey[ABOUT_KEYS.challenge];
-  const solution = blockByKey[ABOUT_KEYS.solution];
-  const cta = blockByKey[ABOUT_KEYS.cta];
+  const content = blockByKey[ABOUT_KEYS.content];
+  const contentBody = getBlockText(content, getFallbackBody(dictionary), lang);
 
   return (
     <section className="team-wrap">
       <div className="team-header">
-        <h2 className="team-title">{getBlockText(title, dictionary.about.title, lang)}</h2>
+        <h2 className="team-title">{getBlockTitle(content, dictionary.about.title, lang)}</h2>
       </div>
 
-      <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "0 2rem" }}>
-        <div style={{ marginBottom: "3rem" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
-            {getBlockTitle(vision, dictionary.about.vision.title, lang)}
-          </h3>
-          <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
-            {getBlockText(vision, dictionary.about.vision.text, lang)}
-          </p>
-        </div>
-
-        <div style={{ marginBottom: "3rem" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
-            {getBlockTitle(challenge, dictionary.about.challenge.title, lang)}
-          </h3>
-          <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
-            {getBlockText(challenge, dictionary.about.challenge.text, lang)}
-          </p>
-        </div>
-
-        <div style={{ marginBottom: "3rem" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: "600", marginBottom: "1rem", color: "#1f2937" }}>
-            {getBlockTitle(solution, dictionary.about.solution.title, lang)}
-          </h3>
-          <p style={{ fontSize: "0.9rem", lineHeight: "1.75", color: "#4b5563" }}>
-            {getBlockText(solution, dictionary.about.solution.text, lang)}
-          </p>
-        </div>
-
-        <div style={{ textAlign: "center", padding: "2rem", background: "#f9fafb", borderRadius: "0.5rem", marginTop: "3rem" }}>
-          <p style={{ fontSize: "1rem", fontWeight: "500", color: "#1f2937" }}>
-            {getBlockText(cta, dictionary.about.cta, lang)}
-          </p>
-        </div>
-      </div>
+      <div
+        className="about-rich-content"
+        dangerouslySetInnerHTML={{ __html: contentBody }}
+      />
     </section>
   );
 }
